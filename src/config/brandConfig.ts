@@ -16,10 +16,10 @@ export const BRAND_CONFIG = {
   },
   
   contact: {
-    primaryPhone: '+91 98490 54321',
-    secondaryPhone: '+91 87654 32109',
-    whatsappNumber: '+919849054321',
-    displayWhatsapp: '+91 98490 54321',
+    primaryPhone: '+91 97015 35231',
+    secondaryPhone: '+91 97015 35231',
+    whatsappNumber: '+919701535231',
+    displayWhatsapp: '+91 97015 35231',
     emailRetail: 'care@lggoldrice.com',
     emailWholesale: 'wholesale@lggoldrice.com',
     emailExport: 'exports@lggoldrice.com',
