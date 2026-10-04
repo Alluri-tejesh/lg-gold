@@ -156,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
             <div className="flex items-center justify-between text-xs text-[#5F806D] px-1">
               <span className="flex items-center gap-1 font-medium">
                 <PhoneCall className="w-3.5 h-3.5 text-[#C9A227]" />
-                {BRAND_CONFIG.contact.displayWhatsapp}
+                {BRAND_CONFIG.contact.primaryPhone}
               </span>
               <span className="uppercase text-[10px] font-bold tracking-wider">{BRAND_CONFIG.location.city}, Telangana</span>
             </div>

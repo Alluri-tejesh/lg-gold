@@ -315,7 +315,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. 98490 12345"
+                  placeholder="10-digit mobile number"
                   value={form.phoneWhatsapp}
                   onChange={(e) => setForm({ ...form, phoneWhatsapp: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"

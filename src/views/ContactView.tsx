@@ -100,7 +100,6 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
             <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Phone & WhatsApp</h3>
             <div className="space-y-1 text-xs text-[#202522]">
               <p>Direct Calling: <strong>{BRAND_CONFIG.contact.primaryPhone}</strong></p>
-              <p>Customer Support: <strong>{BRAND_CONFIG.contact.secondaryPhone}</strong></p>
               <p>Email: <strong>{BRAND_CONFIG.contact.emailRetail}</strong></p>
             </div>
             <button
@@ -185,7 +184,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                     <input
                       type="tel"
                       required
-                      placeholder="e.g. 98490 12345"
+                      placeholder="10-digit mobile number"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"

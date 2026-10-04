@@ -17,9 +17,6 @@ export const BRAND_CONFIG = {
   
   contact: {
     primaryPhone: '+91 97015 35231',
-    secondaryPhone: '+91 97015 35231',
-    whatsappNumber: '+919701535231',
-    displayWhatsapp: '+91 97015 35231',
     emailRetail: 'care@lggoldrice.com',
     emailWholesale: 'wholesale@lggoldrice.com',
     emailExport: 'exports@lggoldrice.com',
@@ -51,7 +48,7 @@ export const BRAND_CONFIG = {
 };
 
 export const createWhatsAppUrl = (message: string): string => {
-  const cleanNumber = BRAND_CONFIG.contact.whatsappNumber.replace(/[^0-9]/g, '');
+  const cleanNumber = BRAND_CONFIG.contact.primaryPhone.replace(/[^0-9]/g, '');
   const encodedMsg = encodeURIComponent(message);
   return `https://wa.me/${cleanNumber}?text=${encodedMsg}`;
 };

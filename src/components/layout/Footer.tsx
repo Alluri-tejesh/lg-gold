@@ -212,7 +212,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   rel="noopener noreferrer"
                   className="hover:text-[#C9A227]"
                 >
-                  WhatsApp: {BRAND_CONFIG.contact.displayWhatsapp}
+                  WhatsApp: {BRAND_CONFIG.contact.primaryPhone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
