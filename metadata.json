@@ -1,0 +1,6 @@
+{
+  "name": "LG GOLD - Premium Rice Brand",
+  "description": "Premium Indian FMCG Rice Brand by Sri Lakshmi Ganapathi Trading Company. Supplying HMT and JSR Rice for retail, wholesale, bulk, and global export markets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
