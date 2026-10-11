@@ -76,7 +76,7 @@ export function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F5EA] text-[#202522] font-sans antialiased selection:bg-[#C9A227]/30 selection:text-[#174A32]">
+    <div className="min-h-screen flex flex-col bg-[#F3F4EC] text-[#15231C] font-sans antialiased selection:bg-[#E0A21A]/30 selection:text-[#0B3B2C]">
       
       {/* Top Sticky & Announcement Bars */}
       <AnnouncementBar onNavigate={handleNavigate} />

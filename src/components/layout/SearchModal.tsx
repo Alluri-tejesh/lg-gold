@@ -56,18 +56,18 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-start justify-center pt-16 px-4 pb-20 animate-fadeIn">
-      <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-2xl border border-[#E7D59A] overflow-hidden">
+      <div className="bg-[#FFFFFF] w-full max-w-2xl rounded-2xl shadow-2xl border border-[#F0D890] overflow-hidden">
         
         {/* Search Header */}
         <div className="p-4 sm:p-6 border-b border-gray-100 flex items-center gap-3">
-          <Search className="w-6 h-6 text-[#174A32] shrink-0" />
+          <Search className="w-6 h-6 text-[#0B3B2C] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search LG Gold rice, recipes, pack sizes, wholesale or export..."
-            className="flex-1 text-base sm:text-lg outline-none text-[#202522] placeholder:text-gray-400 font-medium"
+            className="flex-1 text-base sm:text-lg outline-none text-[#15231C] placeholder:text-gray-400 font-medium"
           />
           {query && (
             <button
@@ -79,22 +79,22 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           )}
           <button
             onClick={onClose}
-            className="text-xs font-bold text-gray-500 hover:text-[#174A32] px-2 py-1 bg-gray-100 rounded-md"
+            className="text-xs font-bold text-gray-500 hover:text-[#0B3B2C] px-2 py-1 bg-gray-100 rounded-md"
           >
             ESC
           </button>
         </div>
 
         {/* Quick Suggestion Pills */}
-        <div className="px-4 py-3 bg-[#F8F5EA] border-b border-[#E7D59A]/30 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-[#5F806D] flex items-center gap-1">
+        <div className="px-4 py-3 bg-[#F3F4EC] border-b border-[#F0D890]/30 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-semibold text-[#4C6358] flex items-center gap-1">
             <Tag className="w-3.5 h-3.5" /> Popular:
           </span>
           {quickSearches.map((item, idx) => (
             <button
               key={idx}
               onClick={() => handleSelect(item.route, item.param)}
-              className="text-xs px-2.5 py-1 rounded-full bg-white text-[#174A32] border border-[#C9A227]/30 hover:border-[#C9A227] hover:bg-[#C9A227]/10 font-medium transition-colors cursor-pointer"
+              className="text-xs px-2.5 py-1 rounded-full bg-white text-[#0B3B2C] border border-[#E0A21A]/30 hover:border-[#E0A21A] hover:bg-[#E0A21A]/10 font-medium transition-colors cursor-pointer"
             >
               {item.label}
             </button>
@@ -107,8 +107,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           {/* Products Results */}
           {filteredProducts.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
-                <Package className="w-4 h-4 text-[#C9A227]" />
+              <div className="flex items-center gap-2 text-xs font-bold text-[#0B3B2C] mb-3">
+                <Package className="w-4 h-4 text-[#E0A21A]" />
                 <span>Rice Products ({filteredProducts.length})</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -116,7 +116,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   <div
                     key={p.id}
                     onClick={() => handleSelect('product-detail', p.slug)}
-                    className="p-3 rounded-xl border border-gray-200 hover:border-[#C9A227] hover:shadow-md transition-all flex items-center gap-3 cursor-pointer bg-white group"
+                    className="p-3 rounded-xl border border-gray-200 hover:border-[#E0A21A] hover:shadow-md transition-all flex items-center gap-3 cursor-pointer bg-white group"
                   >
                     <img
                       src={p.images.primary}
@@ -125,15 +125,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm text-[#174A32] truncate group-hover:text-[#C9A227]">
+                      <h4 className="font-bold text-sm text-[#0B3B2C] truncate group-hover:text-[#E0A21A]">
                         {p.name}
                       </h4>
                       <p className="text-xs text-gray-500 truncate">{p.subTitle}</p>
-                      <span className="text-xs font-bold text-[#C9A227] mt-0.5 inline-block">
+                      <span className="text-xs font-bold text-[#E0A21A] mt-0.5 inline-block">
                         From ₹{p.packOptions[0].retailPrice}
                       </span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#174A32] group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#0B3B2C] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 ))}
               </div>
@@ -143,8 +143,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           {/* Recipes Results */}
           {filteredRecipes.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
-                <Utensils className="w-4 h-4 text-[#C9A227]" />
+              <div className="flex items-center gap-2 text-xs font-bold text-[#0B3B2C] mb-3">
+                <Utensils className="w-4 h-4 text-[#E0A21A]" />
                 <span>Recipes ({filteredRecipes.length})</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -152,7 +152,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   <div
                     key={r.id}
                     onClick={() => handleSelect('recipe-detail', r.slug)}
-                    className="p-3 rounded-xl border border-gray-200 hover:border-[#C9A227] hover:shadow-md transition-all flex items-center gap-3 cursor-pointer bg-white group"
+                    className="p-3 rounded-xl border border-gray-200 hover:border-[#E0A21A] hover:shadow-md transition-all flex items-center gap-3 cursor-pointer bg-white group"
                   >
                     <img
                       src={r.image}
@@ -161,15 +161,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm text-[#202522] truncate group-hover:text-[#174A32]">
+                      <h4 className="font-bold text-sm text-[#15231C] truncate group-hover:text-[#0B3B2C]">
                         {r.title}
                       </h4>
                       <p className="text-xs text-gray-500 truncate">{r.shortDescription}</p>
-                      <span className="text-[11px] text-[#5F806D] font-medium">
+                      <span className="text-[11px] text-[#4C6358] font-medium">
                         {r.totalTimeMinutes} mins • {r.difficulty}
                       </span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#174A32] group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#0B3B2C] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 ))}
               </div>
@@ -178,39 +178,39 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
 
           {/* Commercial Inquiries Links */}
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
-              <Globe className="w-4 h-4 text-[#C9A227]" />
+            <div className="flex items-center gap-2 text-xs font-bold text-[#0B3B2C] mb-3">
+              <Globe className="w-4 h-4 text-[#E0A21A]" />
               <span>Commercial & Export Services</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 onClick={() => handleSelect('export')}
-                className="p-3 rounded-xl bg-[#174A32]/5 border border-[#174A32]/15 hover:bg-[#174A32] hover:text-white transition-all text-left flex items-center justify-between cursor-pointer group"
+                className="p-3 rounded-xl bg-[#0B3B2C]/5 border border-[#0B3B2C]/15 hover:bg-[#0B3B2C] hover:text-white transition-all text-left flex items-center justify-between cursor-pointer group"
               >
                 <div>
-                  <span className="font-bold text-xs sm:text-sm text-[#174A32] group-hover:text-white block">
+                  <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] group-hover:text-white block">
                     Export Desk & Container Shipping
                   </span>
-                  <span className="text-[11px] text-gray-600 group-hover:text-[#E7D59A]">
+                  <span className="text-[11px] text-gray-600 group-hover:text-[#F0D890]">
                     20ft/40ft FCL • Middle East & Global
                   </span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[#C9A227] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 text-[#E0A21A] group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 onClick={() => handleSelect('wholesale')}
-                className="p-3 rounded-xl bg-[#C9A227]/10 border border-[#C9A227]/30 hover:bg-[#C9A227] hover:text-[#174A32] transition-all text-left flex items-center justify-between cursor-pointer group"
+                className="p-3 rounded-xl bg-[#E0A21A]/10 border border-[#E0A21A]/30 hover:bg-[#E0A21A] hover:text-[#0B3B2C] transition-all text-left flex items-center justify-between cursor-pointer group"
               >
                 <div>
-                  <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+                  <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
                     Wholesale & Bulk Orders
                   </span>
                   <span className="text-[11px] text-gray-700">
                     50kg Bags • Supermarkets & Caterers
                   </span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[#174A32] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 text-[#0B3B2C] group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>
@@ -224,13 +224,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
               <div className="mt-4 flex justify-center gap-3">
                 <button
                   onClick={() => handleSelect('products')}
-                  className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold rounded-lg"
+                  className="px-4 py-2 bg-[#0B3B2C] text-white text-xs font-bold rounded-lg"
                 >
                   View All Products
                 </button>
                 <button
                   onClick={() => handleSelect('contact')}
-                  className="px-4 py-2 bg-[#C9A227] text-[#174A32] text-xs font-bold rounded-lg"
+                  className="px-4 py-2 bg-[#E0A21A] text-[#0B3B2C] text-xs font-bold rounded-lg"
                 >
                   Contact Mill Desk
                 </button>

@@ -55,7 +55,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#FFFFFF] border-t border-[#E7D59A]/60 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] backdrop-blur-md bg-white/95 safe-area-pb">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#FFFFFF] border-t border-[#F0D890]/60 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] backdrop-blur-md bg-white/95 safe-area-pb">
       <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -65,16 +65,16 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
               onClick={item.action}
               className={`flex flex-col items-center justify-center relative py-1 px-1 transition-colors cursor-pointer ${
                 item.isActive
-                  ? 'text-[#174A32] font-bold'
+                  ? 'text-[#0B3B2C] font-bold'
                   : item.isHighlight
                   ? 'text-[#128C7E] font-semibold'
-                  : 'text-[#202522]/70 hover:text-[#174A32]'
+                  : 'text-[#15231C]/70 hover:text-[#0B3B2C]'
               }`}
             >
               <div className="relative">
                 <Icon className={`w-5 h-5 ${item.isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
                 {item.badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2 bg-[#C9A227] text-[#174A32] font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  <span className="absolute -top-1.5 -right-2 bg-[#E0A21A] text-[#0B3B2C] font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                     {item.badge}
                   </span>
                 )}
@@ -83,7 +83,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
                 {item.label}
               </span>
               {item.isActive && (
-                <span className="absolute bottom-1 w-6 h-0.5 bg-[#C9A227] rounded-full" />
+                <span className="absolute bottom-1 w-6 h-0.5 bg-[#E0A21A] rounded-full" />
               )}
             </button>
           );

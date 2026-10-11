@@ -14,17 +14,17 @@ interface GrainComparisonProps {
 
 export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) => {
   return (
-    <div className="bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-4 sm:p-8 shadow-clean rounded-sm space-y-6">
+    <div className="bg-white border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 p-4 sm:p-8 shadow-clean rounded-sm space-y-6">
       
       {/* Header Section */}
       <div className="text-center max-w-2xl mx-auto space-y-1.5 pb-2">
-        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#C9A227] block">
+        <span className="text-[10px] sm:text-xs font-bold text-[#E0A21A] block">
           Direct Variety Comparison
         </span>
-        <h2 className="font-serif-brand font-light text-2xl sm:text-3xl text-[#174A32]">
+        <h2 className="font-serif-brand font-bold text-2xl sm:text-3xl text-[#0B3B2C]">
           HMT vs JSR Rice Comparison
         </h2>
-        <p className="text-xs sm:text-sm text-[#5F806D] max-w-lg mx-auto">
+        <p className="text-xs sm:text-sm text-[#4C6358] max-w-lg mx-auto">
           Understand the grain dimensions, cooking behavior, and culinary suitability for each single-origin Telangana variety.
         </p>
       </div>
@@ -37,28 +37,28 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           
           {/* Column 1: Attribute Label */}
           <div className="col-span-6 sm:col-span-6">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <span className="text-[10px] sm:text-[11px] font-bold text-gray-400">
               Attribute
             </span>
           </div>
 
           {/* Column 2: LG Gold HMT Header */}
           <div className="col-span-3 sm:col-span-3 text-center flex flex-col items-center justify-end">
-            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#174A32]/10 text-[#174A32] flex items-center justify-center mb-1 shadow-2xs">
-              <Wheat className="w-4 h-4 sm:w-5 sm:h-5 text-[#174A32]" />
+            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#0B3B2C]/10 text-[#0B3B2C] flex items-center justify-center mb-1 shadow-2xs">
+              <Wheat className="w-4 h-4 sm:w-5 sm:h-5 text-[#0B3B2C]" />
             </div>
-            <span className="font-bold text-[11px] sm:text-sm text-[#174A32] leading-tight block">
+            <span className="font-bold text-[11px] sm:text-sm text-[#0B3B2C] leading-tight block">
               LG Gold HMT
             </span>
-            <span className="text-[9px] sm:text-[10px] text-[#5F806D] font-medium block mt-0.5">
+            <span className="text-[9px] sm:text-[10px] text-[#4C6358] font-medium block mt-0.5">
               Medium-Slender
             </span>
           </div>
 
           {/* Column 3: LG Gold JSR Header */}
           <div className="col-span-3 sm:col-span-3 text-center flex flex-col items-center justify-end">
-            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#C9A227]/20 text-[#916E14] flex items-center justify-center mb-1 shadow-2xs">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#C9A227]" />
+            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#E0A21A]/20 text-[#916E14] flex items-center justify-center mb-1 shadow-2xs">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#E0A21A]" />
             </div>
             <span className="font-bold text-[11px] sm:text-sm text-[#916E14] leading-tight block">
               LG Gold JSR
@@ -72,13 +72,13 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 1: Average Grain Length */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Grain Length
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Pre-cooked kernel size</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C]">
               5.4 mm
             </span>
           </div>
@@ -92,18 +92,18 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 2: 100% Sortex Optical Cleaned */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               100% Sortex Cleaned
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">High-speed CCD color sorting</span>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0B3B2C] text-white flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#E0A21A] text-[#0B3B2C] flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
@@ -112,18 +112,18 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 3: Zero Stones & Foreign Seeds */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Zero Stones & Seeds
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Multi-vibratory sieves</span>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0B3B2C] text-white flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#E0A21A] text-[#0B3B2C] flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
@@ -132,18 +132,18 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 4: Moisture Controlled (< 13%) */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Moisture &lt; 13%
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Prevents spoilage & pest growth</span>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#0B3B2C] text-white flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
           <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#E0A21A] text-[#0B3B2C] flex items-center justify-center shadow-2xs">
               <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
             </div>
           </div>
@@ -152,13 +152,13 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 5: Natural Godown Aging */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Natural Aging
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Aerated Telangana storage</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C]">
               12+ Months
             </span>
           </div>
@@ -172,13 +172,13 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 6: Cooked Grain Texture */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Cooked Texture
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Grain separation & mouthfeel</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-semibold text-[11px] sm:text-xs text-[#174A32] leading-tight block">
+            <span className="font-semibold text-[11px] sm:text-xs text-[#0B3B2C] leading-tight block">
               Firm & Separate
             </span>
           </div>
@@ -192,13 +192,13 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row 7: Cooking Water Ratio */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Water Ratio
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Optimum absorption (Rice : Water)</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C]">
               1 : 2.0
             </span>
           </div>
@@ -213,14 +213,14 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         <div className="pt-2">
           
           {/* Main Category Header Row */}
-          <div className="my-2 py-2 px-2.5 sm:px-3 bg-[#F8F5EA] border-y border-[#C9A227]/30 flex items-center justify-between rounded-xs">
+          <div className="my-2 py-2 px-2.5 sm:px-3 bg-[#F3F4EC] border-y border-[#E0A21A]/30 flex items-center justify-between rounded-xs">
             <div className="flex items-center gap-1.5">
-              <Utensils className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-              <span className="font-bold text-xs sm:text-sm text-[#174A32]">
+              <Utensils className="w-3.5 h-3.5 text-[#E0A21A] shrink-0" />
+              <span className="font-bold text-xs sm:text-sm text-[#0B3B2C]">
                 Culinary Suitability
               </span>
             </div>
-            <span className="text-[10px] sm:text-xs text-[#5F806D] font-medium">
+            <span className="text-[10px] sm:text-xs text-[#4C6358] font-medium">
               Dish & Recipe Matching
             </span>
           </div>
@@ -229,10 +229,10 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
               <span className="text-xs sm:text-sm shrink-0">🍚</span>
-              <span className="text-[11px] sm:text-xs text-[#202522] font-medium leading-tight">Biryani & Pulao</span>
+              <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Biryani & Pulao</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-[10px] sm:text-xs font-bold text-[#174A32]">Best Match ⭐</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#0B3B2C]">Best Match ⭐</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
@@ -243,7 +243,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
               <span className="text-xs sm:text-sm shrink-0">🍛</span>
-              <span className="text-[11px] sm:text-xs text-[#202522] font-medium leading-tight">Thali & Sambar</span>
+              <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Thali & Sambar</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
@@ -257,7 +257,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
               <span className="text-xs sm:text-sm shrink-0">🥣</span>
-              <span className="text-[11px] sm:text-xs text-[#202522] font-medium leading-tight">Rasam & Curd</span>
+              <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Rasam & Curd</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
@@ -271,10 +271,10 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
               <span className="text-xs sm:text-sm shrink-0">🏠</span>
-              <span className="text-[11px] sm:text-xs text-[#202522] font-medium leading-tight">Daily Family Meals</span>
+              <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Daily Family Meals</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-[10px] sm:text-xs font-bold text-[#174A32]">Everyday Choice</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#0B3B2C]">Everyday Choice</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs font-bold text-[#916E14]">Special Dining</span>
@@ -286,13 +286,13 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         {/* Row: Standard Packaging */}
         <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Standard Packaging
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Tamper-evident machine stitched</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C]">
               26kg Bag
             </span>
           </div>
@@ -304,15 +304,15 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
         </div>
 
         {/* Row: Retail Price */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b-2 border-[#C9A227]/30 gap-2 bg-[#F8F5EA]/30 px-1 sm:px-2 rounded-xs">
+        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b-2 border-[#E0A21A]/30 gap-2 bg-[#F3F4EC]/30 px-1 sm:px-2 rounded-xs">
           <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
+            <span className="font-bold text-xs sm:text-sm text-[#0B3B2C] block">
               Price (26kg Bag)
             </span>
             <span className="text-[10px] text-gray-500 hidden sm:block">Includes GST & mill-direct packing</span>
           </div>
           <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-serif-brand font-bold text-xs sm:text-base text-[#174A32]">
+            <span className="font-serif-brand font-bold text-xs sm:text-base text-[#0B3B2C]">
               ₹1,650
             </span>
           </div>
@@ -328,7 +328,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           
           {/* Desktop Left Text */}
           <div className="hidden sm:block sm:col-span-6">
-            <span className="text-[11px] text-[#5F806D]">
+            <span className="text-[11px] text-[#4C6358]">
               Click to view detailed grain specs, recipes & reviews
             </span>
           </div>
@@ -337,7 +337,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="col-span-1 sm:col-span-3">
             <button
               onClick={() => onNavigate('product-detail', 'hmt-rice')}
-              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#174A32] hover:bg-[#226444] text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
+              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#0B3B2C] hover:bg-[#14553F] text-white font-bold text-[11px] sm:text-xs rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
             >
               <span>View HMT</span>
               <ArrowRight className="w-3.5 h-3.5 shrink-0" />
@@ -348,7 +348,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           <div className="col-span-1 sm:col-span-3">
             <button
               onClick={() => onNavigate('product-detail', 'jsr-rice')}
-              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#C9A227] hover:bg-[#b08d1f] text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
+              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#E0A21A] hover:bg-[#b08d1f] text-white font-bold text-[11px] sm:text-xs rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
             >
               <span>View JSR</span>
               <ArrowRight className="w-3.5 h-3.5 shrink-0" />

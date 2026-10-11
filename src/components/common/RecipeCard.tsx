@@ -14,10 +14,10 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onViewRecipe }) 
   return (
     <div
       onClick={() => onViewRecipe(recipe.slug)}
-      className="bg-[#FFFFFF] border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer rounded-sm"
+      className="bg-[#FFFFFF] border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean hover:border-[#E0A21A] transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer rounded-sm"
     >
       {/* Recipe Food Image */}
-      <div className="relative aspect-16/10 bg-[#F8F5EA] overflow-hidden border-b border-[#C9A227]/20">
+      <div className="relative aspect-16/10 bg-[#F3F4EC] overflow-hidden border-b border-[#E0A21A]/20">
         <img
           src={recipe.image}
           alt={recipe.title}
@@ -26,20 +26,20 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onViewRecipe }) 
         />
 
         {/* Highlight Badge */}
-        <div className="absolute top-3.5 left-3.5 bg-[#174A32] text-[#F8F5EA] text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 shadow-xs border border-[#C9A227]/40 flex items-center gap-1.5 rounded-xs">
-          <Utensils className="w-3 h-3 text-[#C9A227]" />
+        <div className="absolute top-3.5 left-3.5 bg-[#0B3B2C] text-[#F3F4EC] text-[10px] font-bold px-2.5 py-0.5 shadow-xs border border-[#E0A21A]/40 flex items-center gap-1.5 rounded-xs">
+          <Utensils className="w-3 h-3 text-[#E0A21A]" />
           <span>{matchedProduct ? matchedProduct.shortName : 'LG Gold Rice'}</span>
         </div>
 
         {/* Time and difficulty badge */}
         <div className="absolute bottom-3 right-3 bg-black/80 text-white text-[11px] font-semibold px-2 py-0.5 rounded-xs flex items-center gap-2">
           <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-[#C9A227]" />
+            <Clock className="w-3 h-3 text-[#E0A21A]" />
             {recipe.totalTimeMinutes}m
           </span>
           <span className="text-white/40">•</span>
           <span className="flex items-center gap-1">
-            <ChefHat className="w-3 h-3 text-[#C9A227]" />
+            <ChefHat className="w-3 h-3 text-[#E0A21A]" />
             {recipe.difficulty}
           </span>
         </div>
@@ -53,30 +53,30 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onViewRecipe }) 
             {recipe.categories.slice(0, 2).map((cat, idx) => (
               <span
                 key={idx}
-                className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-xs bg-[#F8F5EA] text-[#5F806D] border border-[#C9A227]/20"
+                className="text-[9px] font-bold px-2 py-0.5 rounded-xs bg-[#F3F4EC] text-[#4C6358] border border-[#E0A21A]/20"
               >
                 {cat}
               </span>
             ))}
           </div>
 
-          <h3 className="font-serif-brand font-light text-xl text-[#174A32] group-hover:text-[#C9A227] transition-colors leading-snug">
+          <h3 className="font-serif-brand font-bold text-xl text-[#0B3B2C] group-hover:text-[#E0A21A] transition-colors leading-snug">
             {recipe.title}
           </h3>
 
-          <p className="text-xs text-[#5F806D] mt-2 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-[#4C6358] mt-2 line-clamp-2 leading-relaxed">
             {recipe.shortDescription}
           </p>
         </div>
 
         {/* Footer Conversion Link */}
-        <div className="pt-3 border-t border-[#C9A227]/20 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#174A32] group-hover:text-[#C9A227] flex items-center gap-1 transition-colors">
+        <div className="pt-3 border-t border-[#E0A21A]/20 flex items-center justify-between">
+          <span className="text-xs font-bold text-[#0B3B2C] group-hover:text-[#E0A21A] flex items-center gap-1 transition-colors">
             <span>View Recipe</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </span>
 
-          <span className="text-[11px] font-bold text-[#5F806D]">
+          <span className="text-[11px] font-bold text-[#4C6358]">
             Serves {recipe.servings}
           </span>
         </div>

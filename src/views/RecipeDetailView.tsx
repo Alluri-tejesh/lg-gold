@@ -67,10 +67,10 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
   };
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
+    <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Breadcrumb Nav */}
-      <div className="bg-white/80 backdrop-blur-xs border-b border-[#C9A227]/20 py-2.5">
+      <div className="bg-white/80 backdrop-blur-xs border-b border-[#E0A21A]/20 py-2.5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumbs
             items={[
@@ -85,13 +85,13 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-10">
         
         {/* Recipe Title & Meta Header */}
-        <div className="bg-white rounded-3xl border border-[#E7D59A] p-6 sm:p-10 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl border border-[#F0D890] p-6 sm:p-10 shadow-sm space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               {recipe.categories.map((cat, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 rounded-full text-xs font-bold bg-[#F8F5EA] text-[#5F806D] border border-[#E7D59A]"
+                  className="px-3 py-1 rounded-full text-xs font-bold bg-[#F3F4EC] text-[#4C6358] border border-[#F0D890]"
                 >
                   {cat}
                 </span>
@@ -117,7 +117,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
           </div>
 
           <div>
-            <h1 className="font-serif-brand font-extrabold text-3xl sm:text-5xl text-[#174A32] leading-tight">
+            <h1 className="font-serif-brand font-extrabold text-3xl sm:text-5xl text-[#0B3B2C] leading-tight">
               {recipe.title}
             </h1>
             <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed">
@@ -127,42 +127,42 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
 
           {/* Key Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-gray-100 text-xs">
-            <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
-              <Clock className="w-4 h-4 text-[#174A32]" />
+            <div className="p-3 bg-[#F3F4EC] rounded-xl border border-[#F0D890]/60 flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-[#0B3B2C]" />
               <div>
                 <span className="text-gray-500 block text-[10px]">Prep Time</span>
-                <span className="font-bold text-[#174A32]">{recipe.prepTimeMinutes} mins</span>
+                <span className="font-bold text-[#0B3B2C]">{recipe.prepTimeMinutes} mins</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
-              <Clock className="w-4 h-4 text-[#174A32]" />
+            <div className="p-3 bg-[#F3F4EC] rounded-xl border border-[#F0D890]/60 flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-[#0B3B2C]" />
               <div>
                 <span className="text-gray-500 block text-[10px]">Cook Time</span>
-                <span className="font-bold text-[#174A32]">{recipe.cookTimeMinutes} mins</span>
+                <span className="font-bold text-[#0B3B2C]">{recipe.cookTimeMinutes} mins</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
-              <Users className="w-4 h-4 text-[#174A32]" />
+            <div className="p-3 bg-[#F3F4EC] rounded-xl border border-[#F0D890]/60 flex items-center gap-2.5">
+              <Users className="w-4 h-4 text-[#0B3B2C]" />
               <div>
                 <span className="text-gray-500 block text-[10px]">Servings</span>
-                <span className="font-bold text-[#174A32]">{recipe.servings} People</span>
+                <span className="font-bold text-[#0B3B2C]">{recipe.servings} People</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
-              <ChefHat className="w-4 h-4 text-[#174A32]" />
+            <div className="p-3 bg-[#F3F4EC] rounded-xl border border-[#F0D890]/60 flex items-center gap-2.5">
+              <ChefHat className="w-4 h-4 text-[#0B3B2C]" />
               <div>
                 <span className="text-gray-500 block text-[10px]">Difficulty</span>
-                <span className="font-bold text-[#174A32]">{recipe.difficulty}</span>
+                <span className="font-bold text-[#0B3B2C]">{recipe.difficulty}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Hero Recipe Image */}
-        <div className="rounded-3xl overflow-hidden shadow-md border-4 border-white aspect-16/9 bg-[#F8F5EA] relative">
+        <div className="rounded-3xl overflow-hidden shadow-md border-4 border-white aspect-16/9 bg-[#F3F4EC] relative">
           <img
             src={recipe.image}
             alt={recipe.title}
@@ -172,7 +172,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
         </div>
 
         {/* "Made with LG Gold [Product] Rice" Conversion Box */}
-        <div className="bg-[#174A32] text-white rounded-3xl p-6 sm:p-8 border-2 border-[#C9A227] shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-[#0B3B2C] text-white rounded-3xl p-6 sm:p-8 border-2 border-[#E0A21A] shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl bg-white p-1 shrink-0 overflow-hidden">
               <img
@@ -183,13 +183,13 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">
+              <span className="text-[10px] font-bold text-[#E0A21A] block">
                 Recommended Authentic Ingredient
               </span>
               <h3 className="font-serif-brand font-bold text-xl sm:text-2xl text-white">
                 Made with {matchedProduct.name}
               </h3>
-              <p className="text-xs text-[#F8F5EA]/85 mt-0.5">
+              <p className="text-xs text-[#F3F4EC]/85 mt-0.5">
                 Sortex optical cleaned, aged grains with guaranteed moisture stability.
               </p>
             </div>
@@ -200,8 +200,8 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               onClick={handleAddToCart}
               className={`w-full md:w-auto px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                 isAddedToCart
-                  ? 'bg-[#226444] text-white'
-                  : 'bg-[#C9A227] text-[#174A32] hover:bg-[#E7D59A]'
+                  ? 'bg-[#14553F] text-white'
+                  : 'bg-[#E0A21A] text-[#0B3B2C] hover:bg-[#F0D890]'
               }`}
             >
               {isAddedToCart ? (
@@ -230,10 +230,10 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Ingredients Column (5 Cols) */}
-          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#E7D59A] p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#F0D890] p-6 sm:p-8 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h2 className="font-serif-brand font-bold text-xl text-[#174A32] flex items-center gap-2">
-                <Utensils className="w-5 h-5 text-[#C9A227]" />
+              <h2 className="font-serif-brand font-bold text-xl text-[#0B3B2C] flex items-center gap-2">
+                <Utensils className="w-5 h-5 text-[#E0A21A]" />
                 <span>Ingredients</span>
               </h2>
               <span className="text-xs text-gray-500">{recipe.ingredients.length} items</span>
@@ -253,11 +253,11 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                     className={`p-3 rounded-xl border text-xs flex items-center justify-between cursor-pointer transition-all ${
                       isChecked
                         ? 'bg-gray-50 border-gray-200 text-gray-400 line-through'
-                        : 'bg-[#F8F5EA]/50 border-[#E7D59A]/60 text-gray-800 hover:border-[#C9A227]'
+                        : 'bg-[#F3F4EC]/50 border-[#F0D890]/60 text-gray-800 hover:border-[#E0A21A]'
                     }`}
                   >
                     <span className="font-medium">{ing.item}</span>
-                    <span className="font-bold text-[#174A32] shrink-0 ml-2">
+                    <span className="font-bold text-[#0B3B2C] shrink-0 ml-2">
                       {ing.amount}
                     </span>
                   </div>
@@ -267,13 +267,13 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
           </div>
 
           {/* Instructions Column (7 Cols) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7D59A] p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#F0D890] p-6 sm:p-8 shadow-sm space-y-6">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h2 className="font-serif-brand font-bold text-xl text-[#174A32] flex items-center gap-2">
-                <ChefHat className="w-5 h-5 text-[#C9A227]" />
+              <h2 className="font-serif-brand font-bold text-xl text-[#0B3B2C] flex items-center gap-2">
+                <ChefHat className="w-5 h-5 text-[#E0A21A]" />
                 <span>Step-by-Step Instructions</span>
               </h2>
-              <span className="text-xs font-bold text-[#174A32]">
+              <span className="text-xs font-bold text-[#0B3B2C]">
                 {completedSteps.length} of {recipe.instructions.length} completed
               </span>
             </div>
@@ -288,14 +288,14 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                     className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                       isCompleted
                         ? 'bg-green-50/60 border-green-200 opacity-80'
-                        : 'bg-[#F8F5EA]/40 border-[#E7D59A]/70 hover:border-[#C9A227]'
+                        : 'bg-[#F3F4EC]/40 border-[#F0D890]/70 hover:border-[#E0A21A]'
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <span
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                           isCompleted
-                            ? 'bg-[#174A32] text-[#C9A227]'
+                            ? 'bg-[#0B3B2C] text-[#E0A21A]'
                             : 'bg-gray-200 text-gray-700'
                         }`}
                       >
@@ -312,9 +312,9 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
 
             {/* Chef's Tips */}
             {recipe.chefTips && (
-              <div className="p-4 rounded-2xl bg-[#F8F5EA] border border-[#E7D59A] space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#174A32]">
-                  <Sparkles className="w-4 h-4 text-[#C9A227]" />
+              <div className="p-4 rounded-2xl bg-[#F3F4EC] border border-[#F0D890] space-y-1.5">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#0B3B2C]">
+                  <Sparkles className="w-4 h-4 text-[#E0A21A]" />
                   <span>Chef's Grain Secret</span>
                 </div>
                 <p className="text-xs text-gray-700 leading-relaxed">

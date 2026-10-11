@@ -68,21 +68,21 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
+    <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Wholesale Supplier' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-[10px] font-bold text-[#E0A21A]">
               B2B Merchant & Institutional Channel
             </span>
-            <h1 className="font-serif-brand font-light text-3xl sm:text-5xl text-white">
+            <h1 className="font-serif-brand font-bold text-3xl sm:text-5xl text-white">
               Wholesale Rice Supplier
             </h1>
-            <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
+            <p className="text-sm sm:text-base text-[#F3F4EC]/85 leading-relaxed">
               Direct mill supply of aged LG Gold HMT and JSR rice for retailers, distributors, supermarkets, hotels, restaurants, caterers, and institutions across India.
             </p>
           </div>
@@ -92,18 +92,18 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 space-y-14">
         
         {/* Interactive Wholesale Estimator & Calculator */}
-        <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#C9A227]/20 pb-4">
+        <div className="bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 p-6 sm:p-8 shadow-clean space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E0A21A]/20 pb-4">
             <div>
-              <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-[#E0A21A] text-xs font-bold">
                 <Calculator className="w-4 h-4" />
                 <span>B2B Commercial Estimator</span>
               </div>
-              <h2 className="font-serif-brand font-light text-2xl text-[#174A32] mt-0.5">
+              <h2 className="font-serif-brand font-bold text-2xl text-[#0B3B2C] mt-0.5">
                 Calculate Approximate Wholesale Order
               </h2>
             </div>
-            <span className="text-xs text-[#5F806D]">
+            <span className="text-xs text-[#4C6358]">
               *Taxes & transport freight calculated based on destination pin code
             </span>
           </div>
@@ -113,19 +113,19 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               
               {/* Variety Select */}
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">1. Select Variety</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1.5">1. Select Variety</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setCalcVariety('hmt')}
                     className={`p-3.5 rounded-xs border text-left transition-all cursor-pointer ${
                       calcVariety === 'hmt'
-                        ? 'border-[#174A32] bg-[#F8F5EA] text-[#174A32] ring-1 ring-[#174A32]'
-                        : 'border-gray-200 bg-white hover:border-[#C9A227]'
+                        ? 'border-[#0B3B2C] bg-[#F3F4EC] text-[#0B3B2C] ring-1 ring-[#0B3B2C]'
+                        : 'border-gray-200 bg-white hover:border-[#E0A21A]'
                     }`}
                   >
-                    <span className="font-bold text-sm text-[#174A32] block">LG Gold HMT Rice</span>
-                    <span className="text-xs text-[#5F806D]">Medium-Slender Aged Grain</span>
+                    <span className="font-bold text-sm text-[#0B3B2C] block">LG Gold HMT Rice</span>
+                    <span className="text-xs text-[#4C6358]">Medium-Slender Aged Grain</span>
                   </button>
 
                   <button
@@ -133,25 +133,25 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                     onClick={() => setCalcVariety('jsr')}
                     className={`p-3.5 rounded-xs border text-left transition-all cursor-pointer ${
                       calcVariety === 'jsr'
-                        ? 'border-[#174A32] bg-[#F8F5EA] text-[#174A32] ring-1 ring-[#174A32]'
-                        : 'border-gray-200 bg-white hover:border-[#C9A227]'
+                        ? 'border-[#0B3B2C] bg-[#F3F4EC] text-[#0B3B2C] ring-1 ring-[#0B3B2C]'
+                        : 'border-gray-200 bg-white hover:border-[#E0A21A]'
                     }`}
                   >
-                    <span className="font-bold text-sm text-[#174A32] block">LG Gold JSR Rice</span>
-                    <span className="text-xs text-[#5F806D]">Super-Fine Table Rice</span>
+                    <span className="font-bold text-sm text-[#0B3B2C] block">LG Gold JSR Rice</span>
+                    <span className="text-xs text-[#4C6358]">Super-Fine Table Rice</span>
                   </button>
                 </div>
               </div>
 
               {/* Standard Packaging Spec */}
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">2. Standard Packaging Unit</label>
-                <div className="p-3 bg-[#F8F5EA] border border-[#C9A227]/40 rounded-xs flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1.5">2. Standard Packaging Unit</label>
+                <div className="p-3 bg-[#F3F4EC] border border-[#E0A21A]/40 rounded-xs flex items-center justify-between">
                   <div>
-                    <span className="font-bold text-xs text-[#174A32] block">Standard 26kg Heavy-Duty Woven PP Bag</span>
-                    <span className="text-[11px] text-[#5F806D]">Tamper-evident machine stitched, 100% Sortex clean rice</span>
+                    <span className="font-bold text-xs text-[#0B3B2C] block">Standard 26kg Heavy-Duty Woven PP Bag</span>
+                    <span className="text-[11px] text-[#4C6358]">Tamper-evident machine stitched, 100% Sortex clean rice</span>
                   </div>
-                  <span className="text-xs font-bold bg-[#174A32] text-white px-2.5 py-1 rounded-xs">
+                  <span className="text-xs font-bold bg-[#0B3B2C] text-white px-2.5 py-1 rounded-xs">
                     26 KG / Bag
                   </span>
                 </div>
@@ -159,9 +159,9 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
               {/* Bag Quantity Stepper & Quick Presets */}
               <div>
-                <div className="flex justify-between text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">
+                <div className="flex justify-between text-xs font-bold text-[#0B3B2C] mb-1.5">
                   <span>3. Number of 26kg Bags:</span>
-                  <span className="text-[#174A32]">{calcBags} Bags ({totalWeightKg.toLocaleString('en-IN')} kg / {(totalWeightKg / 1000).toFixed(2)} MT)</span>
+                  <span className="text-[#0B3B2C]">{calcBags} Bags ({totalWeightKg.toLocaleString('en-IN')} kg / {(totalWeightKg / 1000).toFixed(2)} MT)</span>
                 </div>
                 
                 {/* Quick Presets */}
@@ -178,8 +178,8 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                       onClick={() => setCalcBags(preset.val)}
                       className={`py-2 px-2 text-[10px] sm:text-[11px] font-bold rounded-xs border transition-all cursor-pointer whitespace-nowrap text-center ${
                         calcBags === preset.val
-                          ? 'bg-[#174A32] text-white border-[#174A32]'
-                          : 'bg-white text-gray-700 border-gray-200 hover:border-[#C9A227]'
+                          ? 'bg-[#0B3B2C] text-white border-[#0B3B2C]'
+                          : 'bg-white text-gray-700 border-gray-200 hover:border-[#E0A21A]'
                       }`}
                     >
                       {preset.label}
@@ -194,7 +194,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                   step="5"
                   value={calcBags}
                   onChange={(e) => setCalcBags(Number(e.target.value))}
-                  className="w-full accent-[#174A32]"
+                  className="w-full accent-[#0B3B2C]"
                 />
                 <div className="flex justify-between text-[10px] text-gray-400 mt-1 uppercase font-bold">
                   <span>5 Bags (Min)</span>
@@ -207,27 +207,27 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
             </div>
 
             {/* Estimated Output Card */}
-            <div className="lg:col-span-5 bg-[#F8F5EA] rounded-xs p-6 border border-[#C9A227]/30 space-y-4 text-xs sm:text-sm">
-              <span className="font-serif-brand font-light text-xl text-[#174A32] block">
+            <div className="lg:col-span-5 bg-[#F3F4EC] rounded-xs p-6 border border-[#E0A21A]/30 space-y-4 text-xs sm:text-sm">
+              <span className="font-serif-brand font-bold text-xl text-[#0B3B2C] block">
                 Estimated Trade Valuation
               </span>
 
-              <div className="space-y-2 text-[#202522]">
+              <div className="space-y-2 text-[#15231C]">
                 <div className="flex justify-between">
-                  <span className="text-[#5F806D]">Total Volume:</span>
-                  <span className="font-bold text-[#174A32]">{totalWeightKg.toLocaleString('en-IN')} kg ({calcBags} bags)</span>
+                  <span className="text-[#4C6358]">Total Volume:</span>
+                  <span className="font-bold text-[#0B3B2C]">{totalWeightKg.toLocaleString('en-IN')} kg ({calcBags} bags)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#5F806D]">Est. Mill Rate / kg:</span>
+                  <span className="text-[#4C6358]">Est. Mill Rate / kg:</span>
                   <span className="font-bold">₹{baseWholesalePricePerKg}/kg approx</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#5F806D]">Dispatched From:</span>
+                  <span className="text-[#4C6358]">Dispatched From:</span>
                   <span className="font-medium">Venkatadri Palem, Telangana</span>
                 </div>
-                <div className="pt-3 border-t border-[#C9A227]/30 flex justify-between items-baseline">
-                  <span className="font-bold text-sm uppercase tracking-wider text-[#174A32]">Est. Value:</span>
-                  <span className="font-serif-brand font-bold text-2xl text-[#174A32]">
+                <div className="pt-3 border-t border-[#E0A21A]/30 flex justify-between items-baseline">
+                  <span className="font-bold text-sm text-[#0B3B2C]">Est. Value:</span>
+                  <span className="font-serif-brand font-bold text-2xl text-[#0B3B2C]">
                     ₹{estimatedCost.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -235,7 +235,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
               <button
                 onClick={handleWhatsAppQuote}
-                className="w-full py-3 bg-[#25D366] text-white rounded-xs font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
+                className="w-full py-3 bg-[#25D366] text-white rounded-xs font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
                 <span>Confirm Live Trade Price</span>
@@ -245,13 +245,13 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
         </div>
 
         {/* Wholesale Form Section */}
-        <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean overflow-hidden max-w-4xl mx-auto">
-          <div className="bg-[#174A32] text-white p-6 sm:p-8 border-b border-[#C9A227]/40">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Direct RFQ</span>
-            <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-white">
+        <div className="bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean overflow-hidden max-w-4xl mx-auto">
+          <div className="bg-[#0B3B2C] text-white p-6 sm:p-8 border-b border-[#E0A21A]/40">
+            <span className="text-[10px] font-bold text-[#E0A21A]">Direct RFQ</span>
+            <h3 className="font-serif-brand font-bold text-2xl sm:text-3xl text-white">
               Request Official Wholesale Quotation
             </h3>
-            <p className="text-xs text-[#F8F5EA]/80 mt-1">
+            <p className="text-xs text-[#F3F4EC]/80 mt-1">
               For recurring supply agreements, supermarket placement, or catering inquiries.
             </p>
           </div>
@@ -259,35 +259,35 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
           <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Business / Firm Name *</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Business / Firm Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Swagath Grand Caterers / More Supermarket"
                   value={form.businessName}
                   onChange={(e) => setForm({ ...form, businessName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Contact Person *</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Contact Person *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. K. Srinivas"
                   value={form.contactPerson}
                   onChange={(e) => setForm({ ...form, contactPerson: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Business Type</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Business Type</label>
                 <select
                   value={form.businessType}
                   onChange={(e) => setForm({ ...form, businessType: e.target.value as any })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none bg-white"
                 >
                   <option value="Supermarket">Supermarket / Grocery Retail Chain</option>
                   <option value="Retailer">Independent Kirana / Retailer</option>
@@ -299,46 +299,46 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">City & State *</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">City & State *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Hyderabad, Telangana / Bengaluru, Karnataka"
                   value={form.cityState}
                   onChange={(e) => setForm({ ...form, cityState: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Phone / WhatsApp *</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Phone / WhatsApp *</label>
                 <input
                   type="tel"
                   required
                   placeholder="10-digit mobile number"
                   value={form.phoneWhatsapp}
                   onChange={(e) => setForm({ ...form, phoneWhatsapp: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Email Address</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Email Address</label>
                 <input
                   type="email"
                   placeholder="purchase@business.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Preferred Variety</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Preferred Variety</label>
                 <select
                   value={form.riceVariety}
                   onChange={(e) => setForm({ ...form, riceVariety: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none bg-white"
                 >
                   <option value="LG Gold HMT Rice">LG Gold HMT Rice</option>
                   <option value="LG Gold JSR Rice">LG Gold JSR Rice</option>
@@ -347,11 +347,11 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Monthly Requirement</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Monthly Requirement</label>
                 <select
                   value={form.monthlyRequirement}
                   onChange={(e) => setForm({ ...form, monthlyRequirement: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none bg-white"
                 >
                   <option value="500kg to 1 Ton (Trial Order)">500kg to 1 Ton (Trial Order)</option>
                   <option value="1 to 5 Tons (Regular Supermarket / Catering)">1 to 5 Tons per month</option>
@@ -361,29 +361,29 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Message / Special Instructions</label>
+                <label className="block text-xs font-bold text-[#0B3B2C] mb-1">Message / Special Instructions</label>
                 <textarea
                   rows={2}
                   placeholder="Need sample pouches, specific packaging, or payment credit terms?"
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none resize-none"
+                  className="w-full px-3.5 py-2 rounded-xs border border-gray-300 text-sm focus:border-[#0B3B2C] focus:ring-1 focus:ring-[#0B3B2C] outline-none resize-none"
                 />
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col sm:flex-row gap-3">
+            <div className="pt-3 border-t border-[#E0A21A]/20 flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="px-8 py-3.5 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
+                className="px-8 py-3.5 bg-[#0B3B2C] text-white font-bold text-xs rounded-xs hover:bg-[#14553F] transition-colors flex items-center justify-center gap-2 border border-[#0B3B2C] cursor-pointer"
               >
                 <span>Request Wholesale Quote</span>
-                <ArrowRight className="w-4 h-4 text-[#C9A227]" />
+                <ArrowRight className="w-4 h-4 text-[#E0A21A]" />
               </button>
               <button
                 type="button"
                 onClick={handleWhatsAppQuote}
-                className="px-6 py-3.5 bg-[#25D366] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 bg-[#25D366] text-white font-bold text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Instant WhatsApp Quote</span>

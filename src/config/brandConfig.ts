@@ -37,13 +37,13 @@ export const BRAND_CONFIG = {
   ],
 
   colors: {
-    primaryGreen: '#174A32',
-    premiumGold: '#C9A227',
-    riceCream: '#F8F5EA',
+    primaryGreen: '#0B3B2C',
+    premiumGold: '#E0A21A',
+    riceCream: '#F3F4EC',
     white: '#FFFFFF',
-    charcoal: '#202522',
-    mutedGreen: '#5F806D',
-    softGold: '#E7D59A',
+    charcoal: '#15231C',
+    mutedGreen: '#4C6358',
+    softGold: '#F0D890',
   }
 };
 

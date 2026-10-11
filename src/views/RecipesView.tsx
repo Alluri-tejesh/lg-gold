@@ -35,22 +35,22 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
   });
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
+    <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Recipes' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#E0A21A] flex items-center gap-1.5">
               <ChefHat className="w-4 h-4" />
               LG Gold Culinary Kitchen
             </span>
             <h1 className="font-serif-brand font-extrabold text-3xl sm:text-5xl text-white">
               Cook Something Delicious
             </h1>
-            <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
+            <p className="text-sm sm:text-base text-[#F3F4EC]/85 leading-relaxed">
               Unlock the full culinary potential of LG Gold HMT and JSR rice. From aromatic Hyderabadi biryanis and fluffy South Indian bagara rice to comforting curd rice and lemon rice.
             </p>
           </div>
@@ -60,15 +60,15 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-12">
         
         {/* "What Can I Cook Today?" Interactive Tool */}
-        <div className="bg-white rounded-3xl border border-[#E7D59A] p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold uppercase">
+        <div className="bg-white rounded-3xl border border-[#F0D890] p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-2 text-[#E0A21A] text-xs font-bold uppercase">
             <Sparkles className="w-4 h-4" />
             <span>Interactive Kitchen Assistant</span>
           </div>
 
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h2 className="font-serif-brand font-bold text-2xl text-[#174A32]">
+              <h2 className="font-serif-brand font-bold text-2xl text-[#0B3B2C]">
                 What Can I Cook Today?
               </h2>
               <p className="text-xs text-gray-600 mt-1">
@@ -89,8 +89,8 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
                   onClick={() => setMealTimeFilter(m.id as any)}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     mealTimeFilter === m.id
-                      ? 'bg-[#174A32] text-white shadow-xs'
-                      : 'bg-[#F8F5EA] text-gray-700 hover:bg-gray-200'
+                      ? 'bg-[#0B3B2C] text-white shadow-xs'
+                      : 'bg-[#F3F4EC] text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   {m.label}
@@ -107,7 +107,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
               placeholder="Search recipes by name, ingredient (e.g. biryani, ghee, lemon, curd)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-[#174A32] outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-[#0B3B2C] outline-none"
             />
           </div>
         </div>
@@ -120,8 +120,8 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-[#174A32] text-white shadow-sm'
-                  : 'bg-white text-gray-700 border border-[#E7D59A]/80 hover:border-[#C9A227]'
+                  ? 'bg-[#0B3B2C] text-white shadow-sm'
+                  : 'bg-white text-gray-700 border border-[#F0D890]/80 hover:border-[#E0A21A]'
               }`}
             >
               {cat}
@@ -151,7 +151,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
                 setSearchQuery('');
                 setMealTimeFilter('any');
               }}
-              className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold rounded-lg"
+              className="px-4 py-2 bg-[#0B3B2C] text-white text-xs font-bold rounded-lg"
             >
               Reset Filters
             </button>
