@@ -10,13 +10,9 @@ interface ProductsViewProps {
 }
 
 export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
-  const [selectedVarietyFilter, setSelectedVarietyFilter] = useState<'all' | 'hmt' | 'jsr'>('all');
+  const [selectedVarietyFilter, setSelectedVarietyFilter] = useState<string>('all');
 
-  const filteredProducts = PRODUCTS.filter(p => {
-    if (selectedVarietyFilter === 'hmt') return p.slug === 'hmt-rice';
-    if (selectedVarietyFilter === 'jsr') return p.slug === 'jsr-rice';
-    return true;
-  });
+  const filteredProducts = PRODUCTS.filter(p => selectedVarietyFilter === 'all' || p.slug === selectedVarietyFilter);
 
   return (
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
@@ -58,26 +54,19 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
               >
                 All ({PRODUCTS.length})
               </button>
-              <button
-                onClick={() => setSelectedVarietyFilter('hmt')}
-                className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-xs ${
-                  selectedVarietyFilter === 'hmt'
-                    ? 'bg-[#174A32] text-white'
-                    : 'bg-[#F8F5EA] text-[#202522] hover:bg-[#E7D59A]/40'
-                }`}
-              >
-                HMT Rice
-              </button>
-              <button
-                onClick={() => setSelectedVarietyFilter('jsr')}
-                className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-xs ${
-                  selectedVarietyFilter === 'jsr'
-                    ? 'bg-[#174A32] text-white'
-                    : 'bg-[#F8F5EA] text-[#202522] hover:bg-[#E7D59A]/40'
-                }`}
-              >
-                JSR Rice
-              </button>
+              {PRODUCTS.map((p) => (
+                <button
+                  key={p.slug}
+                  onClick={() => setSelectedVarietyFilter(p.slug)}
+                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-xs ${
+                    selectedVarietyFilter === p.slug
+                      ? 'bg-[#174A32] text-white'
+                      : 'bg-[#F8F5EA] text-[#202522] hover:bg-[#E7D59A]/40'
+                  }`}
+                >
+                  {p.shortName}
+                </button>
+              ))}
             </div>
           </div>
 

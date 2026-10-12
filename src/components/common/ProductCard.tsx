@@ -19,6 +19,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
   const priceDate = formatPriceDate(priceInfo.updated);
   const outOfStock = !currentPack.inStock;
+  const detailed = product.detailed !== false; // false for products added from the catalog
+  const mainPackName = product.packOptions[0].size.split(' (')[0];
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -54,21 +56,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Brand Stamp */}
         <div className="absolute top-3.5 left-3.5 bg-[#174A32] text-white px-2.5 py-0.5 border border-[#C9A227]/40 shadow-xs flex items-center gap-1.5 rounded-xs">
           <span className="font-serif-brand font-bold text-xs text-[#C9A227]">LG GOLD</span>
-          <span className="hidden sm:inline text-xs text-[#E7D59A]">• {product.grainSpecs.aging}</span>
+          {product.grainSpecs.aging && (
+            <span className="hidden sm:inline text-xs text-[#E7D59A]">• {product.grainSpecs.aging}</span>
+          )}
         </div>
 
-        {/* Rating badge */}
-        <div className="absolute top-3.5 right-3.5 bg-white text-[#202522] px-2 py-0.5 text-xs font-bold shadow-xs flex items-center gap-1 border border-gray-200 rounded-xs">
-          <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
-          <span>{product.rating}</span>
-          <span className="text-gray-400 font-normal text-xs">({product.reviewCount})</span>
-        </div>
+        {/* Rating badge: only when there are real reviews */}
+        {product.reviewCount > 0 && (
+          <div className="absolute top-3.5 right-3.5 bg-white text-[#202522] px-2 py-0.5 text-xs font-bold shadow-xs flex items-center gap-1 border border-gray-200 rounded-xs">
+            <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
+            <span>{product.rating}</span>
+            <span className="text-gray-400 font-normal text-xs">({product.reviewCount})</span>
+          </div>
+        )}
 
         {/* Grain Spec Ribbon */}
-        <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/80 via-black/40 to-transparent p-3 pt-6 text-white flex items-center justify-between text-xs font-medium">
-          <span className="truncate">{product.grainSpecs.grainLength}</span>
-          <span className="text-[#E7D59A] text-xs font-bold">100% Sortex Clean</span>
-        </div>
+        {detailed && (
+          <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/80 via-black/40 to-transparent p-3 pt-6 text-white flex items-center justify-between text-xs font-medium">
+            <span className="truncate">{product.grainSpecs.grainLength}</span>
+            <span className="text-[#E7D59A] text-xs font-bold">100% Sortex Clean</span>
+          </div>
+        )}
       </div>
 
       {/* Product Content */}
@@ -80,7 +88,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
               {product.grainSpecs.variety}
             </span>
             <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 border border-[#C9A227]/30">
-              Standard 26kg Pack
+              {detailed ? 'Standard 26kg Pack' : `Pack: ${mainPackName}`}
             </span>
           </div>
 
@@ -96,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Commercial Availability Badges */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
           <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/20 rounded-xs">
-            ✓ 26kg Mill Bags
+            ✓ {detailed ? '26kg Mill Bags' : mainPackName}
           </span>
           <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/20 rounded-xs">
             <Boxes className="w-3 h-3 text-[#C9A227]" /> Wholesale Supply

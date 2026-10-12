@@ -47,6 +47,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
   const priceDate = formatPriceDate(priceInfo.updated);
   const outOfStock = !currentPack.inStock;
+  const detailed = product.detailed !== false; // false for products added from the catalog
+  const currentTab = detailed ? activeTab : 'commercial';
 
   // Linked recipes made with this rice
   const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id).slice(0, 3);
@@ -110,13 +112,15 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               />
 
               <div className="absolute top-4 left-4 bg-[#174A32] text-white px-2.5 py-0.5 text-xs font-bold border border-[#C9A227]/50 shadow-xs rounded-xs">
-                <span className="text-[#C9A227] font-serif-brand">LG GOLD</span> • {product.grainSpecs.aging}
+                <span className="text-[#C9A227] font-serif-brand">LG GOLD</span>{product.grainSpecs.aging ? ` • ${product.grainSpecs.aging}` : ''}
               </div>
 
-              <div className="absolute bottom-0 inset-x-0 bg-black/80 text-white px-3 py-2 text-xs flex items-center justify-between">
-                <span>100% Sortex Optical Checked</span>
-                <span className="text-[#E7D59A] font-bold text-xs">Grade A Quality</span>
-              </div>
+              {detailed && (
+                <div className="absolute bottom-0 inset-x-0 bg-black/80 text-white px-3 py-2 text-xs flex items-center justify-between">
+                  <span>100% Sortex Optical Checked</span>
+                  <span className="text-[#E7D59A] font-bold text-xs">Grade A Quality</span>
+                </div>
+              )}
             </div>
 
             {/* Thumbnail Row */}
@@ -142,6 +146,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
 
             {/* Commercial Verification Badges */}
+            {detailed && (
             <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-3">
               <div className="bg-[#F8F5EA]/80 border border-[#C9A227]/30 p-2.5 sm:p-3 rounded-xs text-center shadow-2xs flex flex-col items-center justify-center">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#174A32]/10 text-[#174A32] flex items-center justify-center mb-1.5 shrink-0">
@@ -179,6 +184,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 </span>
               </div>
             </div>
+            )}
           </div>
 
           {/* Right Column: Details & Ordering (6 Cols) */}
@@ -188,18 +194,22 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               {/* Top Meta Bar: Origin/Sortex Badge + Rating + Share */}
               <div className="flex items-center justify-between gap-2 pb-2 border-b border-gray-100">
                 <div className="flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/30 rounded-xs whitespace-nowrap">
-                    <Wheat className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-                    <span>100% Sortex Cleaned • Aged 12+ M</span>
-                  </span>
+                  {detailed && (
+                    <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/30 rounded-xs whitespace-nowrap">
+                      <Wheat className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                      <span>100% Sortex Cleaned • Aged 12+ M</span>
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="flex items-center gap-1 text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/20 rounded-xs whitespace-nowrap">
-                    <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
-                    <span>{product.rating}</span>
-                    <span className="text-gray-400 font-normal">({product.reviewCount})</span>
-                  </div>
+                  {product.reviewCount > 0 && (
+                    <div className="flex items-center gap-1 text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/20 rounded-xs whitespace-nowrap">
+                      <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
+                      <span>{product.rating}</span>
+                      <span className="text-gray-400 font-normal">({product.reviewCount})</span>
+                    </div>
+                  )}
                   <button
                     onClick={handleShare}
                     aria-label="Share product"
@@ -222,7 +232,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 <div className="flex items-center gap-2 flex-wrap pt-0.5">
                   <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-semibold text-[#916E14] bg-[#C9A227]/10 px-2.5 py-0.5 rounded-xs border border-[#C9A227]/30">
                     <Sparkles className="w-3 h-3 text-[#C9A227]" />
-                    <span>Variety: {product.grainSpecs.variety}</span>
+                    <span>{detailed ? `Variety: ${product.grainSpecs.variety}` : product.shortName}</span>
                   </span>
                 </div>
 
@@ -384,19 +394,21 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 { id: 'cooking', label: 'Cooking & Water', fullLabel: 'Cooking & Water Ratio' },
                 { id: 'nutrition', label: 'Nutrition', fullLabel: 'Nutritional Profile' },
                 { id: 'commercial', label: 'Wholesale & Pack', fullLabel: 'Packaging & Wholesale Availability' },
-              ].map((tab) => (
+              ]
+                .filter((tab) => detailed || tab.id === 'commercial')
+                .map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`pb-3 font-bold text-xs whitespace-nowrap transition-all cursor-pointer relative shrink-0 ${
-                    activeTab === tab.id
+                    currentTab === tab.id
                       ? 'text-[#174A32]'
                       : 'text-gray-400 hover:text-gray-800'
                   }`}
                 >
                   <span className="inline sm:hidden">{tab.label}</span>
                   <span className="hidden sm:inline">{tab.fullLabel}</span>
-                  {activeTab === tab.id && (
+                  {currentTab === tab.id && (
                     <span className="absolute bottom-0 inset-x-0 h-0.5 bg-[#C9A227]" />
                   )}
                 </button>
@@ -405,7 +417,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
           </div>
 
           {/* Tab Contents */}
-          {activeTab === 'specs' && (
+          {currentTab === 'specs' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
                 <span className="text-gray-500 uppercase text-xs font-bold block">Variety:</span>
@@ -442,7 +454,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
           )}
 
-          {activeTab === 'cooking' && (
+          {currentTab === 'cooking' && (
             <div className="space-y-4 text-xs sm:text-sm text-gray-700">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-xs">
@@ -479,7 +491,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
           )}
 
-          {activeTab === 'nutrition' && (
+          {currentTab === 'nutrition' && (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
               {Object.entries(product.nutritionalInfo).map(([key, val]) => (
                 <div key={key} className="p-3.5 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-xs">
@@ -490,7 +502,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
           )}
 
-          {activeTab === 'commercial' && (
+          {currentTab === 'commercial' && (
             <div className="space-y-4 text-xs sm:text-sm text-gray-700">
               <p className="text-[#5F806D]">
                 LG Gold rice is packaged in standardized 26kg heavy-duty PP bags to meet the requirements of retail consumers, retail store owners, commercial catering businesses, and international commodity importers.
@@ -515,7 +527,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
         </div>
 
         {/* Grain Variety Comparison */}
-        <GrainComparison onNavigate={onNavigate} />
+        {detailed && <GrainComparison onNavigate={onNavigate} />}
 
         {/* Linked Recipes Section ("Made with LG Gold [Product]") */}
         {linkedRecipes.length > 0 && (
