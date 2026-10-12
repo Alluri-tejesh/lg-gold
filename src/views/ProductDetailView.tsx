@@ -27,6 +27,7 @@ import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import { RecipeCard } from '../components/common/RecipeCard';
 import { GrainComparison } from '../components/common/GrainComparison';
 import { getProductWhatsAppMessage, createWhatsAppUrl } from '../config/brandConfig';
+import { priceInfo, formatPriceDate } from '../data/prices';
 
 interface ProductDetailViewProps {
   productSlug: string;
@@ -44,9 +45,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   const [isCopied, setIsCopied] = useState(false);
 
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
+  const priceDate = formatPriceDate(priceInfo.updated);
+  const outOfStock = !currentPack.inStock;
+  const detailed = product.detailed !== false; // false for products added from the catalog
+  const currentTab = detailed ? activeTab : 'commercial';
 
   // Linked recipes made with this rice
-  const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id);
+  const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id).slice(0, 3);
 
   const handleAddToCart = () => {
     addToCart(product, selectedPackSize, quantity);
@@ -58,7 +63,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   };
 
   const handleWhatsAppOrder = () => {
-    const msg = getProductWhatsAppMessage(product.name, `${quantity}x ${selectedPackSize}`);
+    const msg = outOfStock
+      ? `Hi LG Gold Team, ${product.name} (${selectedPackSize}) shows as out of stock on your website. Please let me know when it will be available again.`
+      : getProductWhatsAppMessage(product.name, `${quantity}x ${selectedPackSize}`);
     window.open(createWhatsAppUrl(msg), '_blank');
   };
 
@@ -98,18 +105,22 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               <img
                 src={product.images.gallery[activeImageIndex] || product.images.primary}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className={`w-full h-full ${
+                  activeImageIndex === 0 && product.images.primaryFit === 'contain' ? 'object-contain pt-11 pb-10' : 'object-cover'
+                }`}
                 referrerPolicy="no-referrer"
               />
 
               <div className="absolute top-4 left-4 bg-[#174A32] text-white px-2.5 py-0.5 text-xs font-bold border border-[#C9A227]/50 shadow-xs rounded-xs">
-                <span className="text-[#C9A227] font-serif-brand">LG GOLD</span> • {product.grainSpecs.aging}
+                <span className="text-[#C9A227] font-serif-brand">LG GOLD</span>{product.grainSpecs.aging ? ` • ${product.grainSpecs.aging}` : ''}
               </div>
 
-              <div className="absolute bottom-0 inset-x-0 bg-black/80 text-white px-3 py-2 text-xs flex items-center justify-between">
-                <span>100% Sortex Optical Checked</span>
-                <span className="text-[#E7D59A] font-bold uppercase tracking-wider text-[10px]">Grade A Quality</span>
-              </div>
+              {detailed && (
+                <div className="absolute bottom-0 inset-x-0 bg-black/80 text-white px-3 py-2 text-xs flex items-center justify-between">
+                  <span>100% Sortex Optical Checked</span>
+                  <span className="text-[#E7D59A] font-bold text-xs">Grade A Quality</span>
+                </div>
+              )}
             </div>
 
             {/* Thumbnail Row */}
@@ -135,15 +146,16 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
 
             {/* Commercial Verification Badges */}
+            {detailed && (
             <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-3">
               <div className="bg-[#F8F5EA]/80 border border-[#C9A227]/30 p-2.5 sm:p-3 rounded-xs text-center shadow-2xs flex flex-col items-center justify-center">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#174A32]/10 text-[#174A32] flex items-center justify-center mb-1.5 shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-[11px] sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
+                <span className="font-bold text-xs sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
                   &lt; 13% Moisture
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-[#5F806D] font-medium uppercase tracking-wider block mt-0.5 whitespace-nowrap">
+                <span className="text-xs sm:text-xs text-[#5F806D] font-medium block mt-0.5 whitespace-nowrap">
                   Export Standard
                 </span>
               </div>
@@ -152,10 +164,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C9A227]/20 text-[#916E14] flex items-center justify-center mb-1.5 shrink-0">
                   <Truck className="w-4 h-4 text-[#C9A227]" />
                 </div>
-                <span className="font-bold text-[11px] sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
+                <span className="font-bold text-xs sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
                   Direct Mill-Fresh
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-[#5F806D] font-medium uppercase tracking-wider block mt-0.5 whitespace-nowrap">
+                <span className="text-xs sm:text-xs text-[#5F806D] font-medium block mt-0.5 whitespace-nowrap">
                   Telangana Origin
                 </span>
               </div>
@@ -164,14 +176,15 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#174A32]/10 text-[#174A32] flex items-center justify-center mb-1.5 shrink-0">
                   <Globe className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-[11px] sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
+                <span className="font-bold text-xs sm:text-xs text-[#174A32] leading-tight block whitespace-nowrap">
                   Export Ready
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-[#5F806D] font-medium uppercase tracking-wider block mt-0.5 whitespace-nowrap">
+                <span className="text-xs sm:text-xs text-[#5F806D] font-medium block mt-0.5 whitespace-nowrap">
                   FOB &amp; CIF Orders
                 </span>
               </div>
             </div>
+            )}
           </div>
 
           {/* Right Column: Details & Ordering (6 Cols) */}
@@ -181,18 +194,22 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               {/* Top Meta Bar: Origin/Sortex Badge + Rating + Share */}
               <div className="flex items-center justify-between gap-2 pb-2 border-b border-gray-100">
                 <div className="flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/30 rounded-xs whitespace-nowrap">
-                    <Wheat className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-                    <span>100% Sortex Cleaned • Aged 12+ M</span>
-                  </span>
+                  {detailed && (
+                    <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/30 rounded-xs whitespace-nowrap">
+                      <Wheat className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
+                      <span>100% Sortex Cleaned • Aged 12+ M</span>
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="flex items-center gap-1 text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/20 rounded-xs whitespace-nowrap">
-                    <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
-                    <span>{product.rating}</span>
-                    <span className="text-gray-400 font-normal">({product.reviewCount})</span>
-                  </div>
+                  {product.reviewCount > 0 && (
+                    <div className="flex items-center gap-1 text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 border border-[#C9A227]/20 rounded-xs whitespace-nowrap">
+                      <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
+                      <span>{product.rating}</span>
+                      <span className="text-gray-400 font-normal">({product.reviewCount})</span>
+                    </div>
+                  )}
                   <button
                     onClick={handleShare}
                     aria-label="Share product"
@@ -201,21 +218,21 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                   >
                     <Share2 className="w-4 h-4" />
                   </button>
-                  {isCopied && <span className="text-[10px] text-[#174A32] font-bold">Copied!</span>}
+                  {isCopied && <span className="text-xs text-[#174A32] font-bold">Copied!</span>}
                 </div>
               </div>
 
               {/* Title & Variety Classification */}
               <div className="space-y-1.5">
-                <h1 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32] leading-tight">
+                <h1 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32] leading-tight">
                   {product.name}
                 </h1>
                 
                 {/* Variety Tag */}
                 <div className="flex items-center gap-2 flex-wrap pt-0.5">
-                  <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-[#916E14] bg-[#C9A227]/10 px-2.5 py-0.5 rounded-xs border border-[#C9A227]/30">
+                  <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-semibold text-[#916E14] bg-[#C9A227]/10 px-2.5 py-0.5 rounded-xs border border-[#C9A227]/30">
                     <Sparkles className="w-3 h-3 text-[#C9A227]" />
-                    <span>Variety: {product.grainSpecs.variety}</span>
+                    <span>{detailed ? `Variety: ${product.grainSpecs.variety}` : product.shortName}</span>
                   </span>
                 </div>
 
@@ -225,14 +242,14 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               </div>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-[#5F806D] leading-relaxed">
+              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
                 {product.longDescription}
               </p>
 
               {/* Pack Size Selector */}
               <div className="pt-2">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[#174A32] uppercase tracking-wider">Select Pack / Order Size:</span>
+                  <span className="text-xs font-bold text-[#174A32]">Select Pack / Order Size:</span>
                   <span className="text-xs font-medium text-[#5F806D]">{currentPack.packagingType}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
@@ -250,8 +267,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                         }`}
                       >
                         <span className="font-bold text-xs block truncate">{pack.size}</span>
-                        <span className={`text-[10px] block mt-0.5 ${isSelected ? 'text-[#E7D59A]' : 'text-gray-500'}`}>
-                          ₹{pack.retailPrice}
+                        <span className={`text-xs block mt-0.5 ${isSelected ? 'text-[#E7D59A]' : 'text-gray-500'}`}>
+                          {pack.inStock ? `₹${pack.retailPrice}` : 'Out of stock'}
                         </span>
                       </button>
                     );
@@ -262,7 +279,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               {/* Price Calculation & Quantity Counter */}
               <div className="pt-4 border-t border-[#C9A227]/20 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase tracking-widest text-gray-500 block font-bold">Retail Price</span>
+                  <span className="text-xs text-gray-500 block font-bold">
+                    Retail price{priceDate ? `, as of ${priceDate}` : ''}
+                  </span>
                   <div className="flex items-baseline gap-2.5">
                     <span className="font-serif-brand font-bold text-3xl text-[#174A32]">
                       ₹{(currentPack.retailPrice * quantity).toLocaleString('en-IN')}
@@ -295,12 +314,24 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 </div>
               </div>
 
+              {outOfStock && (
+                <p className="p-3 rounded-xs bg-[#FDECEC] border border-[#9B2C2C]/30 text-[#9B2C2C] text-sm leading-relaxed">
+                  This pack is out of stock right now. Message the mill on WhatsApp to be told when it is back, or choose
+                  another pack or variety.
+                </p>
+              )}
+
               {/* Primary Action Buttons */}
               <div className="space-y-2.5 pt-2">
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#174A32] text-white font-bold uppercase tracking-wider text-[11px] sm:text-xs shadow-xs hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-[#174A32] whitespace-nowrap"
+                    disabled={outOfStock}
+                    className={`w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs font-bold text-xs sm:text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap ${
+                      outOfStock
+                        ? 'bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed'
+                        : 'bg-[#174A32] text-white hover:bg-[#1a5a3d] cursor-pointer border-[#174A32]'
+                    }`}
                   >
                     <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227] shrink-0" />
                     <span className="truncate">Add to Cart</span>
@@ -308,7 +339,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
 
                   <button
                     onClick={handleBuyNow}
-                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#C9A227] text-[#174A32] font-bold uppercase tracking-wider text-[11px] sm:text-xs shadow-xs hover:bg-[#E7D59A] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
+                    disabled={outOfStock}
+                    className={`w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs font-bold text-xs sm:text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
+                      outOfStock
+                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        : 'bg-[#C9A227] text-[#174A32] hover:bg-[#E7D59A] cursor-pointer'
+                    }`}
                   >
                     <span className="truncate">Buy Now</span>
                   </button>
@@ -316,10 +352,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
 
                 <button
                   onClick={handleWhatsAppOrder}
-                  className="w-full py-3 px-3 rounded-xs bg-[#25D366] text-white font-bold uppercase tracking-wider text-[11px] sm:text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+                  className="w-full py-3 px-3 rounded-xs bg-[#25D366] text-white font-bold text-xs sm:text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <MessageCircle className="w-4 h-4 shrink-0" />
-                  <span>Order Directly on WhatsApp</span>
+                  <span>{outOfStock ? 'Ask when it is back in stock' : 'Order Directly on WhatsApp'}</span>
                 </button>
               </div>
 
@@ -327,14 +363,14 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
                 <button
                   onClick={() => onNavigate('wholesale')}
-                  className="font-bold uppercase tracking-wider text-[11px] text-[#174A32] hover:text-[#C9A227] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="font-bold text-xs text-[#174A32] hover:text-[#C9A227] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
                   <Boxes className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
                   <span>Wholesale Lots (26kg Multi-Bags)</span>
                 </button>
                 <button
                   onClick={() => onNavigate('export')}
-                  className="font-bold uppercase tracking-wider text-[11px] text-[#174A32] hover:text-[#C9A227] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="font-bold text-xs text-[#174A32] hover:text-[#C9A227] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
                   <Globe className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
                   <span>Container Export Quote</span>
@@ -358,19 +394,21 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 { id: 'cooking', label: 'Cooking & Water', fullLabel: 'Cooking & Water Ratio' },
                 { id: 'nutrition', label: 'Nutrition', fullLabel: 'Nutritional Profile' },
                 { id: 'commercial', label: 'Wholesale & Pack', fullLabel: 'Packaging & Wholesale Availability' },
-              ].map((tab) => (
+              ]
+                .filter((tab) => detailed || tab.id === 'commercial')
+                .map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`pb-3 font-bold uppercase tracking-wider text-xs whitespace-nowrap transition-all cursor-pointer relative shrink-0 ${
-                    activeTab === tab.id
+                  className={`pb-3 font-bold text-xs whitespace-nowrap transition-all cursor-pointer relative shrink-0 ${
+                    currentTab === tab.id
                       ? 'text-[#174A32]'
                       : 'text-gray-400 hover:text-gray-800'
                   }`}
                 >
                   <span className="inline sm:hidden">{tab.label}</span>
                   <span className="hidden sm:inline">{tab.fullLabel}</span>
-                  {activeTab === tab.id && (
+                  {currentTab === tab.id && (
                     <span className="absolute bottom-0 inset-x-0 h-0.5 bg-[#C9A227]" />
                   )}
                 </button>
@@ -379,44 +417,44 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
           </div>
 
           {/* Tab Contents */}
-          {activeTab === 'specs' && (
+          {currentTab === 'specs' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Variety:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Variety:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.variety}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Grain Length:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Grain Length:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.grainLength}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Aging:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Aging:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.aging}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Moisture Content:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Moisture Content:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.moistureContent}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Broken Grain:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Broken Grain:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.brokenGrainPercentage}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Color & Appearance:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Color & Appearance:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.color}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Milling Finish:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Milling Finish:</span>
                 <span className="font-bold text-[#174A32] text-sm">{product.grainSpecs.polish}</span>
               </div>
               <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/20 space-y-1">
-                <span className="text-gray-500 uppercase text-[10px] font-bold block">Sortex Cleaned:</span>
+                <span className="text-gray-500 uppercase text-xs font-bold block">Sortex Cleaned:</span>
                 <span className="font-bold text-[#174A32] text-sm">100% Optical Sorted ✓</span>
               </div>
             </div>
           )}
 
-          {activeTab === 'cooking' && (
+          {currentTab === 'cooking' && (
             <div className="space-y-4 text-xs sm:text-sm text-gray-700">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-xs">
@@ -434,14 +472,14 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               </div>
 
               <div className="p-4 bg-white rounded-xs border border-[#C9A227]/30 space-y-2">
-                <h4 className="font-bold text-[#174A32] text-sm flex items-center gap-1.5 uppercase tracking-wider">
+                <h4 className="font-bold text-[#174A32] text-sm flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-[#C9A227]" /> Chef's Tip for Ideal Fluffiness
                 </h4>
-                <p className="text-xs leading-relaxed text-[#5F806D]">{product.cookingGuide.tips}</p>
+                <p className="text-sm leading-relaxed text-[#5F806D]">{product.cookingGuide.tips}</p>
               </div>
 
               <div>
-                <span className="font-bold text-xs uppercase tracking-wider text-[#174A32] block mb-2">Recommended Dishes:</span>
+                <span className="font-bold text-xs text-[#174A32] block mb-2">Recommended Dishes:</span>
                 <div className="flex flex-wrap gap-2">
                   {product.cookingGuide.idealDishes.map((dish, i) => (
                     <span key={i} className="px-3 py-1 bg-[#F8F5EA] border border-[#C9A227]/30 text-xs font-bold text-[#174A32] rounded-xs">
@@ -453,18 +491,18 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
             </div>
           )}
 
-          {activeTab === 'nutrition' && (
+          {currentTab === 'nutrition' && (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
               {Object.entries(product.nutritionalInfo).map(([key, val]) => (
                 <div key={key} className="p-3.5 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-xs">
-                  <span className="text-gray-500 uppercase text-[10px] font-bold block mb-1">{key}</span>
+                  <span className="text-gray-500 uppercase text-xs font-bold block mb-1">{key}</span>
                   <span className="font-serif-brand font-bold text-[#174A32] text-base block">{val}</span>
                 </div>
               ))}
             </div>
           )}
 
-          {activeTab === 'commercial' && (
+          {currentTab === 'commercial' && (
             <div className="space-y-4 text-xs sm:text-sm text-gray-700">
               <p className="text-[#5F806D]">
                 LG Gold rice is packaged in standardized 26kg heavy-duty PP bags to meet the requirements of retail consumers, retail store owners, commercial catering businesses, and international commodity importers.
@@ -489,23 +527,23 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
         </div>
 
         {/* Grain Variety Comparison */}
-        <GrainComparison onNavigate={onNavigate} />
+        {detailed && <GrainComparison onNavigate={onNavigate} />}
 
         {/* Linked Recipes Section ("Made with LG Gold [Product]") */}
         {linkedRecipes.length > 0 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+                <span className="text-xs font-bold text-[#C9A227]">
                   From Our Kitchen
                 </span>
-                <h2 className="font-serif-brand font-light text-2xl sm:text-3xl text-[#174A32] mt-1">
+                <h2 className="font-serif-brand font-medium text-2xl sm:text-3xl text-[#174A32] mt-1">
                   Delicious Recipes Made with {product.shortName}
                 </h2>
               </div>
               <button
                 onClick={() => onNavigate('recipes')}
-                className="text-xs font-bold uppercase tracking-wider text-[#174A32] hover:text-[#C9A227] flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-[#174A32] hover:text-[#C9A227] flex items-center gap-1 cursor-pointer"
               >
                 <span>All Recipes</span>
                 <ArrowRight className="w-3.5 h-3.5" />

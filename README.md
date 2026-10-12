@@ -18,3 +18,8 @@ npm run preview  # serve the production build
 
 Every push to `main` runs `.github/workflows/deploy.yml`, which type-checks, builds and publishes `dist/` to GitHub Pages.
 In the repository, set **Settings → Pages → Source** to **GitHub Actions** (one-time).
+
+## Running the shop day to day
+
+- Prices and stock: `docs/updating-prices.md`
+- Adding products and changing pictures: `docs/products-and-photos.md`

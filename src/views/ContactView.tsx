@@ -47,15 +47,15 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Contact Us' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               Mill & Commercial Desk
             </span>
-            <h1 className="font-serif-brand font-light text-3xl sm:text-5xl text-white">
+            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
               Contact LG Gold
             </h1>
             <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
@@ -76,7 +76,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
               <MapPin className="w-5 h-5" />
             </div>
             <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Mill & Office Address</h3>
-            <p className="text-xs text-[#202522] leading-relaxed">
+            <p className="text-sm text-[#202522] leading-relaxed">
               <strong>{BRAND_CONFIG.parentCompany}</strong><br />
               {BRAND_CONFIG.location.address}, {BRAND_CONFIG.location.state}, {BRAND_CONFIG.location.country}<br />
               Plus Code: <strong className="text-[#C9A227]">{BRAND_CONFIG.location.plusCode}</strong>
@@ -85,7 +85,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
               href={BRAND_CONFIG.location.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#174A32] hover:text-[#C9A227] transition-colors pt-1"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#174A32] hover:text-[#C9A227] transition-colors pt-1"
             >
               <span>Open in Google Maps</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -104,7 +104,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
             </div>
             <button
               onClick={handleDirectWhatsApp}
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#128C7E] hover:underline pt-1 cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#128C7E] hover:underline pt-1 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 text-[#25D366]" />
               <span>Direct WhatsApp Desk</span>
@@ -141,8 +141,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
           {/* Contact Form (6 Cols) */}
           <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-5">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Direct Message</span>
-              <h2 className="font-serif-brand font-light text-2xl text-[#174A32]">
+              <span className="text-xs font-bold text-[#C9A227]">Direct Message</span>
+              <h2 className="font-serif-brand font-medium text-2xl text-[#174A32]">
                 Send Us a Message
               </h2>
               <p className="text-xs text-[#5F806D] mt-0.5">
@@ -159,7 +159,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
-                  className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold uppercase tracking-wider rounded-xs cursor-pointer"
+                  className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold rounded-xs cursor-pointer"
                 >
                   Send Another Inquiry
                 </button>
@@ -167,7 +167,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Your Full Name *</label>
+                  <label className="block text-xs font-bold text-[#174A32] mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
@@ -180,7 +180,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Phone / WhatsApp *</label>
+                    <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp *</label>
                     <input
                       type="tel"
                       required
@@ -192,7 +192,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Email Address</label>
+                    <label className="block text-xs font-bold text-[#174A32] mb-1">Email Address</label>
                     <input
                       type="email"
                       placeholder="name@domain.com"
@@ -204,7 +204,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Inquiry Purpose</label>
+                  <label className="block text-xs font-bold text-[#174A32] mb-1">Inquiry Purpose</label>
                   <select
                     value={form.inquiryType}
                     onChange={(e) => setForm({ ...form, inquiryType: e.target.value })}
@@ -219,7 +219,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Message</label>
+                  <label className="block text-xs font-bold text-[#174A32] mb-1">Message</label>
                   <textarea
                     rows={3}
                     placeholder="Tell us about your requirement..."
@@ -231,7 +231,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
+                  className="w-full py-3.5 bg-[#174A32] text-white font-bold text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>Submit Inquiry</span>
@@ -244,12 +244,12 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
           <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-4 flex flex-col justify-between">
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Location & Logistics Hub</span>
-                <span className="text-[10px] font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 rounded-xs border border-[#C9A227]/30">
+                <span className="text-xs font-bold text-[#C9A227]">Location & Logistics Hub</span>
+                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 rounded-xs border border-[#C9A227]/30">
                   Plus Code: VG3P+G6
                 </span>
               </div>
-              <h3 className="font-serif-brand font-light text-xl text-[#174A32]">
+              <h3 className="font-serif-brand font-medium text-xl text-[#174A32]">
                 Venkatadri Palem, Telangana, India
               </h3>
             </div>
@@ -273,7 +273,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
                 href={BRAND_CONFIG.location.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-2 bg-[#174A32] text-white rounded-xs font-bold uppercase tracking-wider text-[11px] hover:bg-[#1a5a3d] transition-colors shrink-0"
+                className="px-3.5 py-2 bg-[#174A32] text-white rounded-xs font-bold text-xs hover:bg-[#1a5a3d] transition-colors shrink-0"
               >
                 Get Directions
               </a>

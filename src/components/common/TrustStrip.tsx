@@ -54,7 +54,7 @@ export const TrustStrip: React.FC<TrustStripProps> = ({ onNavigate }) => {
                   <div className="w-9 h-9 bg-[#174A32] text-[#C9A227] flex items-center justify-center rounded-xs">
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/30">
+                  <span className="text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/30">
                     {item.badge}
                   </span>
                 </div>
@@ -63,7 +63,7 @@ export const TrustStrip: React.FC<TrustStripProps> = ({ onNavigate }) => {
                   <h3 className="font-serif-brand font-bold text-base text-[#174A32] group-hover:text-[#C9A227] transition-colors leading-snug">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-[#5F806D] mt-1 leading-relaxed">
+                  <p className="text-sm text-[#5F806D] mt-1 leading-relaxed">
                     {item.subtitle}
                   </p>
                 </div>

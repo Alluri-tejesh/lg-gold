@@ -1,0 +1,34 @@
+{
+  "updated": "2026-10-12",
+  "outOfStock": [],
+  "prices": {
+    "hmt-rice": {
+      "26kg Bag": {
+        "price": 1650,
+        "mrp": 1850
+      },
+      "26kg x 5 Bags (130kg)": {
+        "price": 8000,
+        "mrp": 9250
+      },
+      "26kg x 10 Bags (260kg)": {
+        "price": 15500,
+        "mrp": 18500
+      }
+    },
+    "jsr-rice": {
+      "26kg Bag": {
+        "price": 1820,
+        "mrp": 2050
+      },
+      "26kg x 5 Bags (130kg)": {
+        "price": 8850,
+        "mrp": 10250
+      },
+      "26kg x 10 Bags (260kg)": {
+        "price": 17200,
+        "mrp": 20500
+      }
+    }
+  }
+}

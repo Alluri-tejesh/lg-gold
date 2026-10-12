@@ -57,15 +57,15 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Bulk Rice Orders' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               Commercial Tonnage & Institutional Logistics
             </span>
-            <h1 className="font-serif-brand font-light text-3xl sm:text-5xl text-white">
+            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
               Bulk Rice Orders (Tons & Truckloads)
             </h1>
             <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
@@ -82,7 +82,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
           <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-2">
             <Truck className="w-8 h-8 text-[#174A32] mb-2" />
             <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Full Truck Loads (FTL)</h3>
-            <p className="text-xs text-[#5F806D] leading-relaxed">
+            <p className="text-sm text-[#5F806D] leading-relaxed">
               Direct lorry dispatches (10 MT to 26 MT) with certified weighbridge slips and tamper-evident tarpaulin strapping.
             </p>
           </div>
@@ -90,7 +90,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
           <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-2">
             <Boxes className="w-8 h-8 text-[#174A32] mb-2" />
             <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Standard 26kg Mill Bags</h3>
-            <p className="text-xs text-[#5F806D] leading-relaxed">
+            <p className="text-sm text-[#5F806D] leading-relaxed">
               Standardized moisture-barrier 26kg woven PP bags engineered for easy handling, stacking in godowns, and commercial kitchens.
             </p>
           </div>
@@ -98,7 +98,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
           <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-2">
             <ShieldCheck className="w-8 h-8 text-[#174A32] mb-2" />
             <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Quality Batch Guarantee</h3>
-            <p className="text-xs text-[#5F806D] leading-relaxed">
+            <p className="text-sm text-[#5F806D] leading-relaxed">
               Every truckload is 100% Sortex color-checked with consistent grain length, uniform polish, and strict moisture compliance (&lt;13%).
             </p>
           </div>
@@ -107,8 +107,8 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
         {/* Bulk Form */}
         <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean overflow-hidden max-w-3xl mx-auto">
           <div className="bg-[#174A32] text-white p-6 sm:p-8 border-b border-[#C9A227]/40">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Direct Dispatch Desk</span>
-            <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-white">
+            <span className="text-xs font-bold text-[#C9A227]">Direct Dispatch Desk</span>
+            <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
               Bulk Tonnage Dispatch Form
             </h3>
             <p className="text-xs text-[#F8F5EA]/80 mt-1">
@@ -119,7 +119,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
           <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Company / Organization *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Company / Organization *</label>
                 <input
                   type="text"
                   required
@@ -131,7 +131,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Contact Person *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Contact Person *</label>
                 <input
                   type="text"
                   required
@@ -143,7 +143,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Phone / WhatsApp *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp *</label>
                 <input
                   type="tel"
                   required
@@ -155,7 +155,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Delivery Destination Pin / City</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Delivery Destination Pin / City</label>
                 <input
                   type="text"
                   placeholder="e.g. Gachibowli, Hyderabad"
@@ -166,7 +166,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Required Volume</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Required Volume</label>
                 <select
                   value={form.tonnage}
                   onChange={(e) => setForm({ ...form, tonnage: e.target.value })}
@@ -179,7 +179,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Rice Variety</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Rice Variety</label>
                 <select
                   value={form.variety}
                   onChange={(e) => setForm({ ...form, variety: e.target.value })}
@@ -195,14 +195,14 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
             <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="px-6 py-3.5 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors border border-[#174A32] cursor-pointer"
+                className="px-6 py-3.5 bg-[#174A32] text-white font-bold text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors border border-[#174A32] cursor-pointer"
               >
                 Submit Bulk RFQ
               </button>
               <button
                 type="button"
                 onClick={handleWhatsApp}
-                className="px-6 py-3.5 bg-[#25D366] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 bg-[#25D366] text-white font-bold text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
                 <span>Chat with Mill Dispatch</span>

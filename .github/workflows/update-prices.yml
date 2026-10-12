@@ -1,0 +1,108 @@
+name: Update prices and stock
+
+# Run this by hand: GitHub, Actions tab, "Update prices and stock", Run workflow.
+# Fill in only what changed. It edits public/prices.json, commits it to main and redeploys the site.
+on:
+  workflow_dispatch:
+    inputs:
+      hmt_26kg:
+        description: "HMT, 26kg bag, price in rupees (blank = keep)"
+        required: false
+        type: string
+      hmt_5bags:
+        description: "HMT, 5 bags (130kg), price in rupees (blank = keep)"
+        required: false
+        type: string
+      hmt_10bags:
+        description: "HMT, 10 bags (260kg), price in rupees (blank = keep)"
+        required: false
+        type: string
+      jsr_26kg:
+        description: "JSR, 26kg bag, price in rupees (blank = keep)"
+        required: false
+        type: string
+      jsr_5bags:
+        description: "JSR, 5 bags (130kg), price in rupees (blank = keep)"
+        required: false
+        type: string
+      jsr_10bags:
+        description: "JSR, 10 bags (260kg), price in rupees (blank = keep)"
+        required: false
+        type: string
+      hmt_stock:
+        description: "HMT stock"
+        required: true
+        type: choice
+        default: "no change"
+        options:
+          - "no change"
+          - "in stock"
+          - "out of stock"
+      jsr_stock:
+        description: "JSR stock"
+        required: true
+        type: choice
+        default: "no change"
+        options:
+          - "no change"
+          - "in stock"
+          - "out of stock"
+
+permissions:
+  contents: write # commit the new prices
+  actions: write # start the deploy workflow
+
+# One price update at a time, so two quick runs cannot overwrite each other.
+concurrency:
+  group: update-prices
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Prices only ever change on main, which is the branch the live site is built from.
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Apply the new prices and stock
+        env:
+          HMT_26KG: ${{ inputs.hmt_26kg }}
+          HMT_5BAGS: ${{ inputs.hmt_5bags }}
+          HMT_10BAGS: ${{ inputs.hmt_10bags }}
+          JSR_26KG: ${{ inputs.jsr_26kg }}
+          JSR_5BAGS: ${{ inputs.jsr_5bags }}
+          JSR_10BAGS: ${{ inputs.jsr_10bags }}
+          HMT_STOCK: ${{ inputs.hmt_stock }}
+          JSR_STOCK: ${{ inputs.jsr_stock }}
+        run: node scripts/update-prices.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the change
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/prices.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "These values match what is already on the site, so nothing was changed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git commit -m "chore(prices): update rates and stock"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # A push made with the built-in token does not start other workflows, so start the deploy directly.
+      - name: Redeploy the site
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run deploy.yml --ref main
+          echo "The site is rebuilding. New prices are live in about 2 minutes." >> "$GITHUB_STEP_SUMMARY"

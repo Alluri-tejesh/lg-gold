@@ -20,8 +20,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-white">Export Quality Certified</h4>
-              <p className="text-[11px] text-[#E7D59A]/80">100% Sortex Optical Cleaned</p>
+              <h4 className="font-bold text-xs text-white">Export Quality Certified</h4>
+              <p className="text-xs text-[#E7D59A]/80">100% Sortex Optical Cleaned</p>
             </div>
           </div>
 
@@ -30,8 +30,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <Globe className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-white">Export Orders Accepted</h4>
-              <p className="text-[11px] text-[#E7D59A]/80">Global Container Logistics</p>
+              <h4 className="font-bold text-xs text-white">Export Orders Accepted</h4>
+              <p className="text-xs text-[#E7D59A]/80">Global Container Logistics</p>
             </div>
           </div>
 
@@ -40,8 +40,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               12+
             </div>
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-white">Naturally Aged Rice</h4>
-              <p className="text-[11px] text-[#E7D59A]/80">Fluffy & Non-Sticky Texture</p>
+              <h4 className="font-bold text-xs text-white">Naturally Aged Rice</h4>
+              <p className="text-xs text-[#E7D59A]/80">Fluffy & Non-Sticky Texture</p>
             </div>
           </div>
 
@@ -50,8 +50,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <MessageCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-white">Instant WhatsApp Orders</h4>
-              <p className="text-[11px] text-[#E7D59A]/80">Direct Mill Response</p>
+              <h4 className="font-bold text-xs text-white">Instant WhatsApp Orders</h4>
+              <p className="text-xs text-[#E7D59A]/80">Direct Mill Response</p>
             </div>
           </div>
         </div>
@@ -65,17 +65,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="font-serif-brand font-bold text-3xl text-white tracking-tight">
                 LG GOLD
               </span>
-              <span className="text-[10px] uppercase tracking-widest text-[#C9A227] font-semibold mt-0.5">
+              <span className="text-xs text-[#C9A227] font-semibold mt-0.5">
                 {BRAND_CONFIG.parentCompany}
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#F8F5EA]/80 leading-relaxed max-w-md">
+            <p className="text-sm sm:text-sm text-[#F8F5EA]/80 leading-relaxed max-w-md">
               A premium Indian rice brand producing single-origin aged HMT and JSR rice from Telangana. Supplying households, restaurants, supermarkets, and international container exports.
             </p>
 
             <div className="pt-2">
-              <span className="inline-block bg-white/10 text-[#E7D59A] border border-[#C9A227]/40 text-[11px] px-3 py-1 font-semibold uppercase tracking-wider rounded-xs">
+              <span className="inline-block bg-white/10 text-[#E7D59A] border border-[#C9A227]/40 text-xs px-3 py-1 font-semibold rounded-xs">
                 Direct Mill Dispatch • Venkatadri Palem
               </span>
             </div>

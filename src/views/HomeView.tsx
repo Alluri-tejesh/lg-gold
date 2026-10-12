@@ -34,8 +34,10 @@ import {
 import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
 import { ProductCard } from '../components/common/ProductCard';
 import { RecipeCard } from '../components/common/RecipeCard';
-import { TrustStrip } from '../components/common/TrustStrip';
-import { millPlantImage } from '../assets';
+import { millPlantImage, jsrBagImage } from '../assets';
+import { Reveal, CountUp } from '../components/common/motion';
+import { JourneyTimeline } from '../components/common/JourneyTimeline';
+import { WhyPillars } from '../components/common/WhyPillars';
 
 interface HomeViewProps {
   onNavigate: (route: string, param?: string) => void;
@@ -53,223 +55,134 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-0">
       
-      {/* 3. HERO SECTION (Clear 3-Pathway Architecture) */}
-      <section className="relative bg-[#F8F5EA] overflow-hidden pt-8 pb-14 lg:pt-14 lg:pb-20 border-b border-[#C9A227]/20">
-        
-        {/* Subtle Background Radial Dots Pattern */}
-        <div className="absolute inset-0 opacity-15 pointer-events-none bg-minimal-dots" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 space-y-10">
-          
-          {/* Top Intro Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* Left Main Copy (7 Cols) */}
-            <div className="lg:col-span-7 space-y-5 text-left">
-              
-              {/* Clean Accent Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#174A32]/10 border border-[#174A32]/20 rounded-xs">
-                <Wheat className="w-3.5 h-3.5 text-[#174A32]" />
-                <span className="text-[#174A32] font-bold uppercase tracking-widest text-[11px]">
-                  Sri Lakshmi Ganapathi Trading Company • Telangana Mill
-                </span>
-              </div>
-
-              {/* Main H1 */}
-              <div className="space-y-3">
-                <h1 className="font-serif-brand font-light text-3xl sm:text-5xl lg:text-6xl text-[#174A32] tracking-tight leading-[1.1]">
-                  Pure Telangana Rice.<br />
-                  <span className="font-medium text-[#174A32]">Direct from Our Mill.</span>
-                </h1>
-                <p className="text-sm sm:text-base text-[#5F806D] max-w-2xl leading-relaxed font-normal">
-                  LG Gold processes single-origin <strong className="text-[#174A32] font-semibold">HMT</strong> and <strong className="text-[#174A32] font-semibold">JSR (Sona Masoori)</strong> rice in Venkatadri Palem, Telangana. 100% optical Sortex cleaned, 12+ months aged, and packed with zero middleman adulteration.
-                </p>
-              </div>
-
-              {/* Quick Trust Highlights */}
-              <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-[#174A32] pt-1">
-                <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 border border-[#C9A227]/30 rounded-xs shadow-2xs">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227]" />
-                  <span>100% Optical Sortex Clean</span>
-                </span>
-                <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 border border-[#C9A227]/30 rounded-xs shadow-2xs">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227]" />
-                  <span>12+ Months Naturally Aged</span>
-                </span>
-                <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 border border-[#C9A227]/30 rounded-xs shadow-2xs">
-                  <Globe className="w-4 h-4 text-[#C9A227]" />
-                  <span>Export & Domestic Supply</span>
-                </span>
-              </div>
-
-            </div>
-
-            {/* Right Quick Showcase Card (5 Cols) */}
-            <div className="lg:col-span-5">
-              <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-5 sm:p-6 shadow-clean space-y-4">
-                <div className="flex items-center justify-between border-b border-[#C9A227]/20 pb-3">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">Featured Varieties</span>
-                    <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">LG Gold Premium Collection</h3>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#174A32] text-white px-2 py-0.5 rounded-xs">
-                    In Stock
-                  </span>
-                </div>
-
-                {/* 2 Quick Mini Products */}
-                <div className="space-y-3">
-                  {PRODUCTS.map((prod) => (
-                    <div
-                      key={prod.id}
-                      onClick={() => onNavigate('product-detail', prod.slug)}
-                      className="p-3.5 bg-[#F8F5EA]/60 hover:bg-[#F8F5EA] border border-[#C9A227]/25 hover:border-[#C9A227] transition-all rounded-xs cursor-pointer group shadow-2xs"
-                    >
-                      <div className="flex items-start sm:items-center gap-3">
-                        <img
-                          src={prod.images.primary}
-                          alt={prod.name}
-                          className="w-16 h-16 object-cover rounded-xs border border-[#C9A227]/30 shrink-0 bg-white"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <h4 className="font-serif-brand font-bold text-sm sm:text-base text-[#174A32] group-hover:text-[#C9A227] transition-colors truncate">
-                              {prod.name}
-                            </h4>
-                            <span className="font-serif-brand font-bold text-sm text-[#174A32] shrink-0">
-                              ₹{prod.packOptions[0]?.retailPrice}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                            <span className="text-[9px] font-bold uppercase tracking-wider bg-[#174A32]/10 text-[#174A32] px-1.5 py-0.5 rounded-2xs">
-                              {prod.shortName === 'HMT Rice' ? 'HMT • Medium Slender' : 'JSR • Super-Fine Grain'}
-                            </span>
-                            <span className="text-[10px] text-[#5F806D]">
-                              • {prod.grainSpecs.aging}
-                            </span>
-                          </div>
-
-                          <div className="mt-1.5 flex items-center justify-between text-[11px]">
-                            <span className="text-[#5F806D] text-[10px] sm:text-[11px]">Standard 26kg Bag</span>
-                            <span className="text-[#C9A227] font-bold flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform text-[11px]">
-                              <span>View Details</span>
-                              <ArrowRight className="w-3 h-3" />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[11px] text-[#5F806D] border-t border-[#C9A227]/20">
-                  <span>Fast Delivery Across Telangana & India</span>
-                  <button
-                    onClick={() => onNavigate('products')}
-                    className="text-[#174A32] font-bold hover:text-[#C9A227] transition-colors cursor-pointer"
-                  >
-                    View All 26kg Packs &rarr;
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* 3 Clear Segment Pathways: "What are you looking for?" */}
-          <div className="space-y-3 pt-4">
-            <div className="text-center sm:text-left">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Select Your Requirement</span>
-              <h2 className="font-serif-brand font-light text-xl sm:text-2xl text-[#174A32]">How Can We Serve You Today?</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              
-              {/* Pathway 1: Home Consumer */}
-              <div 
+      {/* HERO: one message, one real product shot, two clear actions */}
+      <section className="bg-[#F8F5EA] border-b border-[#C9A227]/20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="lg:col-span-7 space-y-6">
+            <p className="fade-up text-sm sm:text-base font-semibold text-[#8F6A0E]" style={{ ['--d' as string]: '0ms' }}>
+              Sri Lakshmi Ganapathi Trading Company, Telangana
+            </p>
+            <h1 className="fade-up font-serif-brand font-medium text-4xl sm:text-5xl lg:text-6xl text-[#174A32] tracking-tight leading-[1.08]" style={{ ['--d' as string]: '80ms' }}>
+              Pure Telangana rice,<br />straight from our mill.
+            </h1>
+            <p className="fade-up text-lg text-[#202522]/80 leading-relaxed max-w-xl" style={{ ['--d' as string]: '170ms' }}>
+              LG Gold mills single-origin HMT and JSR rice at Venkatadri Palem. Every grain is aged for 12 months or more
+              and sorted by optical cameras, then packed in 26kg bags for homes, wholesalers and export buyers.
+            </p>
+            <div className="fade-up flex flex-col sm:flex-row gap-3 pt-2" style={{ ['--d' as string]: '260ms' }}>
+              <button
                 onClick={() => onNavigate('products')}
-                className="p-6 bg-white border-t-4 border-[#174A32] border-x border-b border-[#C9A227]/20 rounded-sm shadow-clean hover:shadow-md hover:border-[#C9A227] transition-all cursor-pointer group flex flex-col justify-between"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
               >
-                <div className="space-y-3">
-                  <div className="w-10 h-10 bg-[#174A32]/10 text-[#174A32] rounded-xs flex items-center justify-center font-bold">
-                    <ShoppingBag className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">Home & Kitchen</span>
-                    <h3 className="font-serif-brand font-bold text-lg text-[#174A32] group-hover:text-[#C9A227] transition-colors">
-                      Standard 26kg Mill Bags
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#5F806D] leading-relaxed">
-                    Aged, aroma-rich rice for everyday meals, biryanis, and festive dining. Direct doorstep delivery in genuine 26kg sealed bags.
-                  </p>
-                </div>
-                <div className="mt-5 pt-3 border-t border-[#C9A227]/20 flex items-center justify-between text-xs font-bold text-[#174A32]">
-                  <span>Order 26kg Bag</span>
-                  <ArrowRight className="w-4 h-4 text-[#C9A227] group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
-              {/* Pathway 2: Wholesale B2B */}
-              <div 
+                Shop 26kg bags
+              </button>
+              <button
                 onClick={() => onNavigate('wholesale')}
-                className="p-6 bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 rounded-sm shadow-clean hover:shadow-md hover:border-[#C9A227] transition-all cursor-pointer group flex flex-col justify-between"
+                className="w-full sm:w-auto px-7 py-3.5 bg-transparent text-[#174A32] font-semibold border-2 border-[#174A32] rounded-sm hover:bg-[#174A32]/5 transition-colors cursor-pointer"
               >
-                <div className="space-y-3">
-                  <div className="w-10 h-10 bg-[#C9A227]/15 text-[#174A32] rounded-xs flex items-center justify-center font-bold">
-                    <Boxes className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">Commercial B2B</span>
-                    <h3 className="font-serif-brand font-bold text-lg text-[#174A32] group-hover:text-[#C9A227] transition-colors">
-                      Wholesale (5-10+ Bags of 26kg)
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#5F806D] leading-relaxed">
-                    Mill-direct multi-bag bundles and tonnage for supermarkets, caterers, restaurants, and regional mandis.
-                  </p>
-                </div>
-                <div className="mt-5 pt-3 border-t border-[#C9A227]/20 flex items-center justify-between text-xs font-bold text-[#174A32]">
-                  <span>Wholesale Price Calculator</span>
-                  <ArrowRight className="w-4 h-4 text-[#C9A227] group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
-              {/* Pathway 3: Global Export */}
-              <div 
-                onClick={() => onNavigate('export')}
-                className="p-6 bg-[#174A32] text-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 rounded-sm shadow-clean hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="w-10 h-10 bg-white/10 text-[#C9A227] rounded-xs flex items-center justify-center font-bold">
-                    <Globe className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">International Trade</span>
-                    <h3 className="font-serif-brand font-bold text-lg text-white group-hover:text-[#C9A227] transition-colors">
-                      Global Export (20ft / 40ft FCL)
-                    </h3>
-                  </div>
-                  <p className="text-xs text-[#F8F5EA]/85 leading-relaxed">
-                    Export Grade A optical Sortex rice, custom brand printing, phytosanitary certificates, and port logistics.
-                  </p>
-                </div>
-                <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-between text-xs font-bold text-[#C9A227]">
-                  <span>Export Desk & CIF/FOB</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
+                Get wholesale or export rates
+              </button>
             </div>
+            <ul className="fade-up flex flex-wrap gap-x-8 gap-y-2 pt-4 text-sm text-[#4C6358] font-medium" style={{ ['--d' as string]: '350ms' }}>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> 100% optical sorted</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> 12+ months aged</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> Ships across India and abroad</li>
+            </ul>
           </div>
 
+          <div className="lg:col-span-5">
+            <button
+              onClick={() => onNavigate('product-detail', 'jsr-rice')}
+              className="group relative block w-full max-w-md mx-auto rounded-2xl bg-gradient-to-b from-[#E7D59A]/60 to-[#F8F5EA] border border-[#C9A227]/25 pt-10 pb-6 px-6 cursor-pointer"
+              aria-label="View LG Gold JSR rice"
+            >
+              <img
+                src={jsrBagImage}
+                alt="LG Gold JSR Lachkari Kolam Rice, 26kg bag"
+                className="settle-in mx-auto h-[420px] sm:h-[480px] w-auto rounded-sm shadow-2xl -rotate-2 group-hover:rotate-0 transition-transform duration-300"
+              />
+              <span className="mt-8 flex items-center justify-between text-left">
+                <span>
+                  <span className="block font-serif-brand font-bold text-lg text-[#174A32]">JSR Lachkari Kolam Rice</span>
+                  <span className="block text-sm text-[#4C6358]">26kg bag, from ₹{PRODUCTS[1]?.packOptions[0]?.retailPrice}</span>
+                </span>
+                <span className="text-sm font-semibold text-[#174A32] flex items-center gap-1">
+                  View <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* 4. TRUST / COMMERCIAL CAPABILITY STRIP */}
-      <TrustStrip onNavigate={onNavigate} />
+      {/* NUMBERS: count up once when they scroll into view */}
+      <section className="bg-[#174A32] text-[#F8F5EA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
+          {[
+            { to: 12, suffix: '+', label: 'months of natural ageing' },
+            { to: 26, suffix: ' kg', label: 'in every standard bag' },
+            { to: 1000, suffix: '', label: 'bags fit in a 20ft container', format: (n: number) => n.toLocaleString('en-IN') },
+            { to: 100, suffix: '%', label: 'optical Sortex sorted' },
+          ].map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 110}>
+              <p className="font-serif-brand font-bold text-4xl sm:text-5xl text-[#C9A227]">
+                <CountUp to={stat.to} suffix={stat.suffix} format={stat.format} />
+              </p>
+              <p className="mt-1 text-[#F8F5EA]/80">{stat.label}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* WAYS TO BUY: three plain columns instead of three boxed cards */}
+      <section className="bg-white border-b border-[#C9A227]/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 sm:py-20">
+          <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32] max-w-2xl">
+            Buy a single bag, a pallet or a container
+          </h2>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 md:divide-x divide-[#C9A227]/30 border-t border-[#C9A227]/30">
+            {[
+              {
+                route: 'products',
+                icon: ShoppingBag,
+                title: 'Home and kitchen',
+                body: 'Aged, aromatic rice in sealed 26kg bags, delivered to your door. Order online or on WhatsApp.',
+                action: 'Shop 26kg bags',
+              },
+              {
+                route: 'wholesale',
+                icon: Boxes,
+                title: 'Wholesale',
+                body: 'Mill-direct lots from 500kg for supermarkets, caterers, restaurants and distributors.',
+                action: 'Get wholesale rates',
+              },
+              {
+                route: 'export',
+                icon: Globe,
+                title: 'Export',
+                body: '20ft and 40ft containers with private-label bags, phytosanitary certificates and port logistics.',
+                action: 'Request an export quote',
+              },
+            ].map((p, i) => (
+              <Reveal
+                key={p.route}
+                delay={i * 120}
+                className="md:px-8 first:md:pl-0 last:md:pr-0 border-b md:border-b-0 border-[#C9A227]/30 last:border-b-0"
+              >
+                <button onClick={() => onNavigate(p.route)} className="group text-left py-8 md:py-10 w-full cursor-pointer">
+                  <p.icon className="w-7 h-7 text-[#174A32]" />
+                  <h3 className="mt-4 font-serif-brand font-bold text-xl text-[#174A32]">{p.title}</h3>
+                  <p className="mt-2 text-[#4C6358] leading-relaxed">{p.body}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#174A32] group-hover:text-[#8F6A0E]">
+                    {p.action}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </button>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* 5. EXPLORE LG GOLD RICE (Product Discovery Cards) */}
       <section className="py-16 sm:py-24 bg-[#FFFFFF] border-b border-[#C9A227]/20">
@@ -277,12 +190,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
             <div className="inline-block">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] block">
+              <span className="text-xs font-bold text-[#C9A227] block">
                 Single-Origin Rice Varieties
               </span>
               <div className="h-px w-12 bg-[#C9A227] mx-auto mt-2" />
             </div>
-            <h2 className="font-serif-brand font-light text-3xl sm:text-4xl lg:text-5xl text-[#174A32] tracking-tight pt-1">
+            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl lg:text-5xl text-[#174A32] tracking-tight pt-1">
               Explore LG Gold Rice
             </h2>
             <p className="text-sm sm:text-base text-[#5F806D] leading-relaxed max-w-2xl mx-auto">
@@ -292,20 +205,21 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
           {/* 2 Featured Product Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
-            {PRODUCTS.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={(slug) => onNavigate('product-detail', slug)}
-                onSelectExportQuote={() => onNavigate('export')}
-              />
+            {PRODUCTS.map((product, i) => (
+              <Reveal key={product.id} delay={i * 140} className="h-full flex [&>*]:flex-1">
+                <ProductCard
+                  product={product}
+                  onViewDetails={(slug) => onNavigate('product-detail', slug)}
+                  onSelectExportQuote={() => onNavigate('export')}
+                />
+              </Reveal>
             ))}
           </div>
 
           <div className="mt-12 text-center">
             <button
               onClick={() => onNavigate('products')}
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-[#174A32] hover:text-[#C9A227] transition-colors group cursor-pointer border-b border-[#174A32] pb-1"
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#174A32] hover:text-[#C9A227] transition-colors group cursor-pointer border-b border-[#174A32] pb-1"
             >
               <span>Compare grain specifications, cooking ratios & wholesale packs</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -320,11 +234,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] block">
+            <span className="text-xs font-bold text-[#C9A227] block">
               Commitment to Excellence
             </span>
             <div className="h-px w-12 bg-[#C9A227] mx-auto my-2" />
-            <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
               Why LG Gold?
             </h2>
             <p className="text-sm text-[#5F806D]">
@@ -332,29 +246,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            {WHY_LG_GOLD_PILLARS.map((pillar, idx) => (
-              <div
-                key={pillar.id}
-                className="p-6 bg-white border border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] transition-all flex flex-col justify-between rounded-sm"
-              >
-                <div>
-                  <div className="text-2xl font-serif-brand font-bold text-[#174A32] mb-3 border-b border-[#F8F5EA] pb-2">
-                    0{idx + 1}
-                  </div>
-                  <h3 className="font-serif-brand font-bold text-base sm:text-lg text-[#174A32] mb-1">
-                    {pillar.title}
-                  </h3>
-                  <span className="text-[10px] font-bold text-[#C9A227] uppercase tracking-wider block mb-2">
-                    {pillar.subtitle}
-                  </span>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <WhyPillars pillars={WHY_LG_GOLD_PILLARS} onNavigate={(route) => onNavigate(route)} />
 
         </div>
       </section>
@@ -365,10 +257,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12 border-b border-[#C9A227]/20 pb-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227]">
+              <span className="text-xs font-bold text-[#C9A227]">
                 Authentic Processing Journey
               </span>
-              <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32] mt-1">
+              <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32] mt-1">
                 From Grain to Your Kitchen
               </h2>
             </div>
@@ -377,7 +269,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             <div className="flex items-center p-1 bg-[#F8F5EA] border border-[#C9A227]/30 rounded-sm">
               <button
                 onClick={() => setJourneyTab('domestic')}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-xs ${
+                className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer rounded-xs ${
                   journeyTab === 'domestic'
                     ? 'bg-[#174A32] text-white shadow-xs'
                     : 'text-[#174A32]/70 hover:text-[#174A32]'
@@ -387,7 +279,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               </button>
               <button
                 onClick={() => setJourneyTab('export')}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 rounded-xs ${
+                className={`px-4 py-2 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 rounded-xs ${
                   journeyTab === 'export'
                     ? 'bg-[#174A32] text-white shadow-xs'
                     : 'text-[#174A32]/70 hover:text-[#174A32]'
@@ -399,57 +291,29 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Steps Timeline Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 relative">
-            {(journeyTab === 'domestic' ? GRAIN_TO_KITCHEN_STEPS : EXPORT_JOURNEY_STEPS).map((step) => (
-              <div
-                key={step.step}
-                className="p-5 bg-[#F8F5EA]/60 border border-[#C9A227]/20 hover:bg-white hover:border-[#C9A227] transition-all flex flex-col justify-between relative group rounded-sm shadow-clean"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3 border-b border-[#E7D59A]/40 pb-2">
-                    <span className="w-6 h-6 bg-[#174A32] text-[#C9A227] text-xs font-bold flex items-center justify-center rounded-xs font-serif-brand">
-                      {step.step}
-                    </span>
-                    <span className="text-[10px] font-bold text-[#5F806D] uppercase tracking-widest">Step {step.step}</span>
-                  </div>
-
-                  <h3 className="font-serif-brand font-bold text-sm sm:text-base text-[#174A32] mb-1.5">
-                    {step.title}
-                  </h3>
-
-                  <p className="text-xs text-[#202522]/80 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-[#E7D59A]/40 text-[10px] uppercase font-bold tracking-wider text-[#C9A227]">
-                  Standard Verified ✓
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Steps on a line that draws itself when scrolled into view */}
+          <JourneyTimeline key={journeyTab} steps={journeyTab === 'domestic' ? GRAIN_TO_KITCHEN_STEPS : EXPORT_JOURNEY_STEPS} />
 
           {/* Modern Processing Line Spotlight Card */}
           <div className="mt-14 p-6 sm:p-8 bg-[#F8F5EA] border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 rounded-sm shadow-clean grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-6 space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1.5">
+              <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
                 <Factory className="w-4 h-4" />
                 Modern Milltec Milling Infrastructure
               </span>
-              <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-[#174A32]">
+              <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-[#174A32]">
                 Sri Lakshmi Ganapathi High-Speed Processing Facility
               </h3>
-              <p className="text-xs sm:text-sm text-[#202522] leading-relaxed">
+              <p className="text-sm sm:text-sm text-[#202522] leading-relaxed">
                 Operating in Venkatadri Palem, Telangana, our computerized Milltec milling units combine multi-stage de-husking, chilled-water polishing cylinders, and 100% Sortex CCD cameras to eliminate broken grains and foreign matter.
               </p>
               <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
                 <div className="p-3 bg-white border border-[#C9A227]/20 rounded-xs">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227] block">Standard Format:</span>
+                  <span className="text-xs font-bold text-[#C9A227] block">Standard Format:</span>
                   <strong className="text-[#174A32]">Standard 26kg Woven Bags</strong>
                 </div>
                 <div className="p-3 bg-white border border-[#C9A227]/20 rounded-xs">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227] block">Purity Standard:</span>
+                  <span className="text-xs font-bold text-[#C9A227] block">Purity Standard:</span>
                   <strong className="text-[#174A32]">100% Sortex Cleaned</strong>
                 </div>
               </div>
@@ -463,9 +327,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   className="w-full h-auto max-h-[320px] object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 text-white">
-                  <span className="text-[11px] font-bold block text-[#E7D59A]">Milltec Rice Milling Line (Units 12, 14, 15)</span>
-                  <span className="text-[10px] text-white/80">Sri Lakshmi Ganapathi Facility • Venkatadri Palem, Telangana</span>
+                <div className="bg-[#174A32] p-3 text-white">
+                  <span className="text-xs font-bold block text-[#E7D59A]">Milltec Rice Milling Line (Units 12, 14, 15)</span>
+                  <span className="text-xs text-white/80">Sri Lakshmi Ganapathi Facility • Venkatadri Palem, Telangana</span>
                 </div>
               </div>
             </div>
@@ -474,7 +338,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           <div className="mt-8 text-center">
             <button
               onClick={() => onNavigate('quality')}
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#174A32] hover:text-[#C9A227] transition-colors border-b border-[#174A32] pb-0.5"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#174A32] hover:text-[#C9A227] transition-colors border-b border-[#174A32] pb-0.5"
             >
               <span>Explore our full milling & optical sorting standards</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -497,16 +361,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             <div className="lg:col-span-7 space-y-6">
               
               <div className="inline-block border-l-4 border-[#C9A227] pl-3">
-                <span className="text-[#C9A227] text-xs font-bold uppercase tracking-widest">
+                <span className="text-[#C9A227] text-xs font-bold">
                   Global Commodity Supply • Telangana, India
                 </span>
               </div>
 
               <div className="space-y-4">
-                <h2 className="font-serif-brand font-light text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
+                <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
                   Export Quality Rice from India.
                 </h2>
-                <div className="inline-block bg-[#C9A227] text-[#174A32] font-black text-xs px-3.5 py-1 uppercase tracking-widest rounded-xs">
+                <div className="inline-block bg-[#C9A227] text-[#174A32] font-black text-xs px-3.5 py-1 rounded-xs">
                   Export Orders Accepted
                 </div>
                 <p className="text-base text-[#F8F5EA]/90 leading-relaxed pt-2 max-w-xl">
@@ -516,7 +380,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
               {/* Target B2B Audience Chips */}
               <div className="pt-2">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-[#E7D59A] block mb-3">
+                <span className="text-xs font-bold text-[#E7D59A] block mb-3">
                   Target Global Markets & Buyers:
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -544,7 +408,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
                 <button
                   onClick={() => onNavigate('export')}
-                  className="px-8 py-3.5 bg-[#C9A227] text-[#174A32] font-bold uppercase tracking-widest text-xs rounded-sm hover:bg-[#E7D59A] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  className="px-8 py-3.5 bg-[#C9A227] text-[#174A32] font-bold text-xs rounded-sm hover:bg-[#E7D59A] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                 >
                   <span>Request Export Quote</span>
                   <ArrowRight className="w-4 h-4" />
@@ -552,7 +416,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
                 <button
                   onClick={() => onNavigate('products')}
-                  className="px-8 py-3.5 bg-transparent text-white font-bold uppercase tracking-widest text-xs border border-white/40 hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer rounded-sm"
+                  className="px-8 py-3.5 bg-transparent text-white font-bold text-xs border border-white/40 hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer rounded-sm"
                 >
                   <span>View Export Specs</span>
                 </button>
@@ -568,7 +432,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                     <Container className="w-5 h-5" />
                     <span>Export Standard Capabilities</span>
                   </h3>
-                  <p className="text-[10px] text-white/60 uppercase tracking-widest mt-1">Direct Mill Port Logistics</p>
+                  <p className="text-xs text-white/60 mt-1">Direct Mill Port Logistics</p>
                 </div>
 
                 <div className="space-y-3.5 text-xs sm:text-sm">
@@ -616,11 +480,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             
             <div className="lg:col-span-6 space-y-5">
               <div className="inline-block border-l-4 border-[#C9A227] pl-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227]">
+                <span className="text-xs font-bold text-[#C9A227]">
                   Commercial Supply Chain
                 </span>
               </div>
-              <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+              <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
                 Wholesale & Bulk Rice Supplier
               </h2>
               <p className="text-sm sm:text-base text-[#5F806D] leading-relaxed">
@@ -631,26 +495,26 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                 <div className="p-4 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-sm">
                   <Boxes className="w-5 h-5 text-[#174A32] mb-1.5" />
                   <h4 className="font-bold text-sm text-[#174A32]">Wholesale Packs</h4>
-                  <p className="text-[11px] text-gray-600 mt-0.5">25kg & 50kg Bags from 500kg MOQ</p>
+                  <p className="text-xs text-gray-600 mt-0.5">25kg & 50kg Bags from 500kg MOQ</p>
                 </div>
 
                 <div className="p-4 bg-[#F8F5EA] border border-[#C9A227]/20 rounded-sm">
                   <Truck className="w-5 h-5 text-[#174A32] mb-1.5" />
                   <h4 className="font-bold text-sm text-[#174A32]">Bulk Tonnage</h4>
-                  <p className="text-[11px] text-gray-600 mt-0.5">Full truck loads & scheduled supply</p>
+                  <p className="text-xs text-gray-600 mt-0.5">Full truck loads & scheduled supply</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={() => onNavigate('wholesale')}
-                  className="px-6 py-3 bg-[#174A32] text-white text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-[#226444] transition-colors"
+                  className="px-6 py-3 bg-[#174A32] text-white text-xs font-bold rounded-sm hover:bg-[#226444] transition-colors"
                 >
                   Request Wholesale Quote
                 </button>
                 <button
                   onClick={() => onNavigate('bulk')}
-                  className="px-6 py-3 bg-transparent text-[#174A32] border-2 border-[#174A32] text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-[#F8F5EA] transition-colors"
+                  className="px-6 py-3 bg-transparent text-[#174A32] border-2 border-[#174A32] text-xs font-bold rounded-sm hover:bg-[#F8F5EA] transition-colors"
                 >
                   Bulk Rice Orders (Tons)
                 </button>
@@ -663,7 +527,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">
                     Quick Trade Inquiry Desk
                   </h3>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] bg-white px-2 py-0.5 border border-[#C9A227]/30">
+                  <span className="text-xs font-bold text-[#C9A227] bg-white px-2 py-0.5 border border-[#C9A227]/30">
                     Mill Direct
                   </span>
                 </div>
@@ -676,11 +540,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   <div className="p-4 bg-white border border-[#C9A227]/20 flex items-center justify-between rounded-sm">
                     <div>
                       <span className="font-bold text-[#174A32] block">Sri Lakshmi Ganapathi Trading Desk</span>
-                      <span className="text-gray-500 text-[11px]">Venkatadri Palem, Telangana</span>
+                      <span className="text-gray-500 text-xs">Venkatadri Palem, Telangana</span>
                     </div>
                     <a
                       href={`tel:${BRAND_CONFIG.contact.primaryPhone}`}
-                      className="px-3.5 py-1.5 bg-[#174A32] text-white rounded-sm font-bold uppercase tracking-wider text-[11px] hover:bg-[#226444]"
+                      className="px-3.5 py-1.5 bg-[#174A32] text-white rounded-sm font-bold text-xs hover:bg-[#226444]"
                     >
                       Call Now
                     </a>
@@ -690,7 +554,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                     href={createWhatsAppUrl('Hi LG Gold, I would like to request wholesale rates for HMT and JSR Rice.')}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3.5 bg-[#25D366] text-white rounded-sm font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors shadow-xs"
+                    className="w-full py-3.5 bg-[#25D366] text-white rounded-sm font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors shadow-xs"
                   >
                     <MessageCircle className="w-4 h-4 fill-white" />
                     <span>Inquire on WhatsApp</span>
@@ -709,11 +573,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] block">
+            <span className="text-xs font-bold text-[#C9A227] block">
               Culinary Inspiration
             </span>
             <div className="h-px w-12 bg-[#C9A227] mx-auto my-2" />
-            <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
               Cook Something Delicious
             </h2>
             <p className="text-sm text-[#5F806D]">
@@ -727,7 +591,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <button
                 key={cat}
                 onClick={() => setActiveRecipeCategory(cat)}
-                className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-sm ${
+                className={`px-4 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-sm ${
                   activeRecipeCategory === cat
                     ? 'bg-[#174A32] text-white shadow-xs'
                     : 'bg-white text-gray-700 border border-[#C9A227]/20 hover:border-[#C9A227]'
@@ -752,7 +616,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           <div className="mt-12 text-center">
             <button
               onClick={() => onNavigate('recipes')}
-              className="px-8 py-3 bg-[#174A32] text-white text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-[#226444] transition-colors shadow-xs cursor-pointer"
+              className="px-8 py-3 bg-[#174A32] text-white text-xs font-bold rounded-sm hover:bg-[#226444] transition-colors shadow-xs cursor-pointer"
             >
               Explore All Recipes & Cooking Guides
             </button>
@@ -777,7 +641,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent flex items-end p-6 text-white">
                   <div>
                     <span className="font-serif-brand font-bold text-xl text-[#C9A227]">Sri Lakshmi Ganapathi</span>
-                    <p className="text-xs text-[#E7D59A] uppercase tracking-wider mt-0.5 font-medium">Trading Company • Venkatadri Palem, Telangana</p>
+                    <p className="text-xs text-[#E7D59A] mt-0.5 font-medium">Trading Company • Venkatadri Palem, Telangana</p>
                   </div>
                 </div>
               </div>
@@ -785,24 +649,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
             <div className="lg:col-span-7 space-y-5">
               <div className="inline-block border-l-4 border-[#C9A227] pl-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227]">
+                <span className="text-xs font-bold text-[#C9A227]">
                   Agricultural Roots & Heritage
                 </span>
               </div>
-              <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+              <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
                 The Heritage Behind LG Gold
               </h2>
               <p className="text-sm sm:text-base text-[#202522]/85 leading-relaxed font-normal">
                 Sri Lakshmi Ganapathi Trading Company was founded on a simple, uncompromising principle: delivering pure, authentic, unadulterated Indian rice straight from the farmer's harvest to dining tables across the globe.
               </p>
-              <p className="text-xs sm:text-sm text-[#5F806D] leading-relaxed">
+              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
                 Situated at Venkatadri Palem in Telangana's prime paddy growing belt, our milling infrastructure combines traditional grain aging knowledge with modern Sortex optical cleaning technology. We serve daily households, regional supermarket chains, top catering masters, and international container buyers with equal dedication.
               </p>
 
               <div className="pt-2">
                 <button
                   onClick={() => onNavigate('about')}
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#174A32] hover:text-[#C9A227] transition-colors border-b border-[#174A32] pb-0.5 cursor-pointer"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#174A32] hover:text-[#C9A227] transition-colors border-b border-[#174A32] pb-0.5 cursor-pointer"
                 >
                   <span>Learn more about our mill, ethics & vision</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -821,14 +685,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-4">
-                <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold">
                   <MapPin className="w-4 h-4" />
                   <span>Mill & Trade Headquarters</span>
                 </div>
-                <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-white">
+                <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
                   Visit or Connect with Sri Lakshmi Ganapathi Trading Company
                 </h3>
-                <p className="text-xs sm:text-sm text-[#F8F5EA]/80 leading-relaxed max-w-xl">
+                <p className="text-sm sm:text-sm text-[#F8F5EA]/80 leading-relaxed max-w-xl">
                   <strong>Location Plus Code:</strong> VG3P+G6, Venkatadri Palem, Telangana, India. Direct road and freight connectivity for prompt dispatch.
                 </p>
                 <div className="flex flex-wrap gap-6 pt-2 text-xs font-semibold">
@@ -846,7 +710,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
                 <button
                   onClick={() => onNavigate('contact')}
-                  className="w-full py-3.5 px-6 bg-[#C9A227] text-[#174A32] font-bold uppercase tracking-widest text-xs hover:bg-[#E7D59A] transition-colors text-center shadow-xs cursor-pointer rounded-sm"
+                  className="w-full py-3.5 px-6 bg-[#C9A227] text-[#174A32] font-bold text-xs hover:bg-[#E7D59A] transition-colors text-center shadow-xs cursor-pointer rounded-sm"
                 >
                   View Interactive Map & Directions
                 </button>
@@ -854,7 +718,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   href={BRAND_CONFIG.location.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-6 bg-transparent text-white font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-colors text-center border border-white/30 rounded-sm"
+                  className="w-full py-3.5 px-6 bg-transparent text-white font-bold text-xs hover:bg-white/10 transition-colors text-center border border-white/30 rounded-sm"
                 >
                   Open in Google Maps
                 </a>
@@ -869,12 +733,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       <section className="py-20 sm:py-28 bg-[#FFFFFF] text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-6">
           <div className="inline-block">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] block">
+            <span className="text-xs font-bold text-[#C9A227] block">
               Experience Pure Telangana Rice
             </span>
             <div className="h-px w-12 bg-[#C9A227] mx-auto mt-2" />
           </div>
-          <h2 className="font-serif-brand font-light text-3xl sm:text-5xl text-[#174A32] tracking-tight">
+          <h2 className="font-serif-brand font-medium text-3xl sm:text-5xl text-[#174A32] tracking-tight">
             Looking for Quality Rice?
           </h2>
           <p className="text-base sm:text-lg text-[#5F806D] max-w-2xl mx-auto leading-relaxed">
@@ -884,14 +748,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={() => onNavigate('products')}
-              className="w-full sm:w-auto px-10 py-4 bg-[#174A32] text-white font-bold uppercase tracking-widest text-xs sm:text-sm shadow-xs hover:bg-[#226444] transition-all border-2 border-[#174A32] rounded-sm cursor-pointer"
+              className="w-full sm:w-auto px-10 py-4 bg-[#174A32] text-white font-bold text-xs sm:text-sm shadow-xs hover:bg-[#226444] transition-all border-2 border-[#174A32] rounded-sm cursor-pointer"
             >
               Shop Collection
             </button>
 
             <button
               onClick={() => onNavigate('export')}
-              className="w-full sm:w-auto px-10 py-4 bg-transparent text-[#C9A227] border-2 border-[#C9A227] font-bold uppercase tracking-widest text-xs sm:text-sm hover:bg-[#C9A227] hover:text-white transition-all shadow-xs cursor-pointer rounded-sm"
+              className="w-full sm:w-auto px-10 py-4 bg-transparent text-[#C9A227] border-2 border-[#C9A227] font-bold text-xs sm:text-sm hover:bg-[#C9A227] hover:text-white transition-all shadow-xs cursor-pointer rounded-sm"
             >
               Wholesale / Export Enquiry
             </button>

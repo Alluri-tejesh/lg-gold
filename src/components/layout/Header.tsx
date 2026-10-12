@@ -42,14 +42,14 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
               <span className="font-serif-brand font-bold text-2xl sm:text-3xl tracking-tighter text-[#174A32] group-hover:text-[#C9A227] transition-colors leading-none">
                 LG GOLD
               </span>
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#5F806D] font-semibold mt-1">
+              <span className="text-xs sm:text-xs text-[#5F806D] font-semibold mt-1">
                 Sri Lakshmi Ganapathi Trading Company
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[13px] font-semibold uppercase tracking-tight text-[#174A32]">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[13px] font-semibold text-[#174A32]">
             {navLinks.map((link) => {
               const isActive = currentRoute === link.route;
               return (
@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
             >
               <ShoppingBag className="w-5 h-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#C9A227] text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 bg-[#C9A227] text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
                   {totalItems}
                 </span>
               )}
@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
             {/* Primary CTA - Buy Rice */}
             <button
               onClick={() => handleNavClick('products')}
-              className="hidden sm:inline-flex items-center justify-center bg-[#174A32] text-white px-6 py-2.5 rounded-sm text-[13px] font-bold uppercase tracking-wider hover:bg-[#1a5a3d] transition-all cursor-pointer shadow-xs border border-[#174A32]"
+              className="hidden sm:inline-flex items-center justify-center bg-[#174A32] text-white px-6 py-2.5 rounded-sm text-[13px] font-bold hover:bg-[#1a5a3d] transition-all cursor-pointer shadow-xs border border-[#174A32]"
             >
               Buy Rice
             </button>
@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
                 <button
                   key={link.route}
                   onClick={() => handleNavClick(link.route)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold uppercase tracking-tight transition-colors text-left cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold transition-colors text-left cursor-pointer ${
                     isActive
                       ? 'text-[#174A32] border-l-3 border-[#C9A227] bg-[#F8F5EA] pl-4 font-bold'
                       : 'text-[#202522]/80 hover:text-[#174A32] hover:bg-[#F8F5EA]/50'
@@ -137,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
                     {link.label}
                   </span>
                   {link.isSpecial && (
-                    <span className="text-[10px] bg-[#C9A227] text-[#174A32] px-2 py-0.5 font-bold uppercase">
+                    <span className="text-xs bg-[#C9A227] text-[#174A32] px-2 py-0.5 font-bold uppercase">
                       Global
                     </span>
                   )}
@@ -149,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
           <div className="mt-4 pt-4 border-t border-[#C9A227]/20 flex flex-col gap-3">
             <button
               onClick={() => handleNavClick('products')}
-              className="w-full py-3 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs text-center shadow-xs cursor-pointer"
+              className="w-full py-3 bg-[#174A32] text-white font-bold text-xs text-center shadow-xs cursor-pointer"
             >
               Shop Rice Collection
             </button>
@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate, onOpen
                 <PhoneCall className="w-3.5 h-3.5 text-[#C9A227]" />
                 {BRAND_CONFIG.contact.primaryPhone}
               </span>
-              <span className="uppercase text-[10px] font-bold tracking-wider">{BRAND_CONFIG.location.city}, Telangana</span>
+              <span className="uppercase text-xs font-bold tracking-wider">{BRAND_CONFIG.location.city}, Telangana</span>
             </div>
           </div>
         </div>

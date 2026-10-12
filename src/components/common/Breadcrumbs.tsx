@@ -19,11 +19,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate, var
   return (
     <nav aria-label="Breadcrumb" className="inline-block">
       <ol
-        className={`inline-flex items-center flex-wrap gap-1 text-xs py-1.5 px-3 rounded-full border transition-all ${
-          isDark
-            ? 'bg-black/30 backdrop-blur-xs border-white/15 text-[#F8F5EA]/85 shadow-xs'
-            : 'bg-white/90 border-[#C9A227]/30 text-gray-700 shadow-xs'
-        }`}
+        className={`inline-flex items-center flex-wrap gap-1 text-sm ${isDark ? 'text-[#F8F5EA]/80' : 'text-[#5F806D]'}`}
       >
         <li className="inline-flex items-center">
           <button

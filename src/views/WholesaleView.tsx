@@ -71,15 +71,15 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Wholesale Supplier' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               B2B Merchant & Institutional Channel
             </span>
-            <h1 className="font-serif-brand font-light text-3xl sm:text-5xl text-white">
+            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
               Wholesale Rice Supplier
             </h1>
             <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
@@ -95,11 +95,11 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
         <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#C9A227]/20 pb-4">
             <div>
-              <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold">
                 <Calculator className="w-4 h-4" />
                 <span>B2B Commercial Estimator</span>
               </div>
-              <h2 className="font-serif-brand font-light text-2xl text-[#174A32] mt-0.5">
+              <h2 className="font-serif-brand font-medium text-2xl text-[#174A32] mt-0.5">
                 Calculate Approximate Wholesale Order
               </h2>
             </div>
@@ -113,7 +113,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               
               {/* Variety Select */}
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">1. Select Variety</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1.5">1. Select Variety</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -145,11 +145,11 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
               {/* Standard Packaging Spec */}
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">2. Standard Packaging Unit</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1.5">2. Standard Packaging Unit</label>
                 <div className="p-3 bg-[#F8F5EA] border border-[#C9A227]/40 rounded-xs flex items-center justify-between">
                   <div>
                     <span className="font-bold text-xs text-[#174A32] block">Standard 26kg Heavy-Duty Woven PP Bag</span>
-                    <span className="text-[11px] text-[#5F806D]">Tamper-evident machine stitched, 100% Sortex clean rice</span>
+                    <span className="text-xs text-[#5F806D]">Tamper-evident machine stitched, 100% Sortex clean rice</span>
                   </div>
                   <span className="text-xs font-bold bg-[#174A32] text-white px-2.5 py-1 rounded-xs">
                     26 KG / Bag
@@ -159,7 +159,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
               {/* Bag Quantity Stepper & Quick Presets */}
               <div>
-                <div className="flex justify-between text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1.5">
+                <div className="flex justify-between text-xs font-bold text-[#174A32] mb-1.5">
                   <span>3. Number of 26kg Bags:</span>
                   <span className="text-[#174A32]">{calcBags} Bags ({totalWeightKg.toLocaleString('en-IN')} kg / {(totalWeightKg / 1000).toFixed(2)} MT)</span>
                 </div>
@@ -176,7 +176,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                       key={preset.val}
                       type="button"
                       onClick={() => setCalcBags(preset.val)}
-                      className={`py-2 px-2 text-[10px] sm:text-[11px] font-bold rounded-xs border transition-all cursor-pointer whitespace-nowrap text-center ${
+                      className={`py-2 px-2 text-xs sm:text-xs font-bold rounded-xs border transition-all cursor-pointer whitespace-nowrap text-center ${
                         calcBags === preset.val
                           ? 'bg-[#174A32] text-white border-[#174A32]'
                           : 'bg-white text-gray-700 border-gray-200 hover:border-[#C9A227]'
@@ -196,7 +196,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                   onChange={(e) => setCalcBags(Number(e.target.value))}
                   className="w-full accent-[#174A32]"
                 />
-                <div className="flex justify-between text-[10px] text-gray-400 mt-1 uppercase font-bold">
+                <div className="flex justify-between text-xs text-gray-400 mt-1 uppercase font-bold">
                   <span>5 Bags (Min)</span>
                   <span>40 Bags (LCV)</span>
                   <span>100 Bags</span>
@@ -208,7 +208,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
             {/* Estimated Output Card */}
             <div className="lg:col-span-5 bg-[#F8F5EA] rounded-xs p-6 border border-[#C9A227]/30 space-y-4 text-xs sm:text-sm">
-              <span className="font-serif-brand font-light text-xl text-[#174A32] block">
+              <span className="font-serif-brand font-medium text-xl text-[#174A32] block">
                 Estimated Trade Valuation
               </span>
 
@@ -226,7 +226,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
                   <span className="font-medium">Venkatadri Palem, Telangana</span>
                 </div>
                 <div className="pt-3 border-t border-[#C9A227]/30 flex justify-between items-baseline">
-                  <span className="font-bold text-sm uppercase tracking-wider text-[#174A32]">Est. Value:</span>
+                  <span className="font-bold text-sm text-[#174A32]">Est. Value:</span>
                   <span className="font-serif-brand font-bold text-2xl text-[#174A32]">
                     ₹{estimatedCost.toLocaleString('en-IN')}
                   </span>
@@ -235,7 +235,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
 
               <button
                 onClick={handleWhatsAppQuote}
-                className="w-full py-3 bg-[#25D366] text-white rounded-xs font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
+                className="w-full py-3 bg-[#25D366] text-white rounded-xs font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
                 <span>Confirm Live Trade Price</span>
@@ -247,8 +247,8 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
         {/* Wholesale Form Section */}
         <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean overflow-hidden max-w-4xl mx-auto">
           <div className="bg-[#174A32] text-white p-6 sm:p-8 border-b border-[#C9A227]/40">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Direct RFQ</span>
-            <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-white">
+            <span className="text-xs font-bold text-[#C9A227]">Direct RFQ</span>
+            <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
               Request Official Wholesale Quotation
             </h3>
             <p className="text-xs text-[#F8F5EA]/80 mt-1">
@@ -259,7 +259,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
           <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Business / Firm Name *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Business / Firm Name *</label>
                 <input
                   type="text"
                   required
@@ -271,7 +271,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Contact Person *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Contact Person *</label>
                 <input
                   type="text"
                   required
@@ -283,7 +283,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Business Type</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Business Type</label>
                 <select
                   value={form.businessType}
                   onChange={(e) => setForm({ ...form, businessType: e.target.value as any })}
@@ -299,7 +299,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">City & State *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">City & State *</label>
                 <input
                   type="text"
                   required
@@ -311,7 +311,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Phone / WhatsApp *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp *</label>
                 <input
                   type="tel"
                   required
@@ -323,7 +323,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Email Address</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Email Address</label>
                 <input
                   type="email"
                   placeholder="purchase@business.com"
@@ -334,7 +334,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Preferred Variety</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Preferred Variety</label>
                 <select
                   value={form.riceVariety}
                   onChange={(e) => setForm({ ...form, riceVariety: e.target.value })}
@@ -347,7 +347,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Monthly Requirement</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Monthly Requirement</label>
                 <select
                   value={form.monthlyRequirement}
                   onChange={(e) => setForm({ ...form, monthlyRequirement: e.target.value })}
@@ -361,7 +361,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Message / Special Instructions</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Message / Special Instructions</label>
                 <textarea
                   rows={2}
                   placeholder="Need sample pouches, specific packaging, or payment credit terms?"
@@ -375,7 +375,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
             <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="px-8 py-3.5 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
+                className="px-8 py-3.5 bg-[#174A32] text-white font-bold text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
               >
                 <span>Request Wholesale Quote</span>
                 <ArrowRight className="w-4 h-4 text-[#C9A227]" />
@@ -383,7 +383,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate }) => {
               <button
                 type="button"
                 onClick={handleWhatsAppQuote}
-                className="px-6 py-3.5 bg-[#25D366] text-white font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-3.5 bg-[#25D366] text-white font-bold text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Instant WhatsApp Quote</span>

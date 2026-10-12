@@ -16,6 +16,7 @@ import { RECIPES, getRecipeBySlug } from '../data/recipes';
 import { PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { RecipeImage } from '../components/common/RecipeArt';
 
 interface RecipeDetailViewProps {
   recipeSlug: string;
@@ -49,7 +50,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
   };
 
   const handleAddToCart = () => {
-    addToCart(matchedProduct, '10kg', 1);
+    addToCart(matchedProduct, '26kg Bag', 1);
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 2000);
   };
@@ -130,7 +131,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Clock className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Prep Time</span>
+                <span className="text-gray-500 block text-xs">Prep Time</span>
                 <span className="font-bold text-[#174A32]">{recipe.prepTimeMinutes} mins</span>
               </div>
             </div>
@@ -138,7 +139,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Clock className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Cook Time</span>
+                <span className="text-gray-500 block text-xs">Cook Time</span>
                 <span className="font-bold text-[#174A32]">{recipe.cookTimeMinutes} mins</span>
               </div>
             </div>
@@ -146,7 +147,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Users className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Servings</span>
+                <span className="text-gray-500 block text-xs">Servings</span>
                 <span className="font-bold text-[#174A32]">{recipe.servings} People</span>
               </div>
             </div>
@@ -154,7 +155,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <ChefHat className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Difficulty</span>
+                <span className="text-gray-500 block text-xs">Difficulty</span>
                 <span className="font-bold text-[#174A32]">{recipe.difficulty}</span>
               </div>
             </div>
@@ -163,12 +164,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
 
         {/* Hero Recipe Image */}
         <div className="rounded-3xl overflow-hidden shadow-md border-4 border-white aspect-16/9 bg-[#F8F5EA] relative">
-          <img
-            src={recipe.image}
-            alt={recipe.title}
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
+          <RecipeImage recipe={recipe} className="w-full h-full object-cover" />
         </div>
 
         {/* "Made with LG Gold [Product] Rice" Conversion Box */}
@@ -183,7 +179,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">
+              <span className="text-xs font-bold text-[#C9A227] block">
                 Recommended Authentic Ingredient
               </span>
               <h3 className="font-serif-brand font-bold text-xl sm:text-2xl text-white">
@@ -212,7 +208,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Buy This Rice (10kg Pack)</span>
+                  <span>Buy This Rice (26kg Bag)</span>
                 </>
               )}
             </button>
@@ -239,7 +235,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               <span className="text-xs text-gray-500">{recipe.ingredients.length} items</span>
             </div>
 
-            <p className="text-[11px] text-gray-400">
+            <p className="text-xs text-gray-400">
               Tip: Click ingredients as you prep them!
             </p>
 
@@ -250,15 +246,27 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                   <div
                     key={idx}
                     onClick={() => toggleIngredient(idx)}
-                    className={`p-3 rounded-xl border text-xs flex items-center justify-between cursor-pointer transition-all ${
+                    className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
                       isChecked
-                        ? 'bg-gray-50 border-gray-200 text-gray-400 line-through'
+                        ? 'bg-gray-50 border-gray-200 text-gray-400'
                         : 'bg-[#F8F5EA]/50 border-[#E7D59A]/60 text-gray-800 hover:border-[#C9A227]'
                     }`}
                   >
-                    <span className="font-medium">{ing.item}</span>
-                    <span className="font-bold text-[#174A32] shrink-0 ml-2">
-                      {ing.amount}
+                    <span
+                      className={`mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center text-[11px] font-bold ${
+                        isChecked ? 'bg-[#174A32] border-[#174A32] text-[#C9A227]' : 'border-[#C9A227]/60 text-transparent'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      ✓
+                    </span>
+                    <span className="min-w-0">
+                      <span className={`block text-sm font-semibold ${isChecked ? 'line-through' : 'text-[#15231C]'}`}>
+                        {ing.item}
+                      </span>
+                      <span className={`block text-sm mt-0.5 ${isChecked ? 'line-through' : 'text-[#174A32]'}`}>
+                        {ing.amount}
+                      </span>
                     </span>
                   </div>
                 );
@@ -301,7 +309,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                       >
                         {isCompleted ? '✓' : step.stepNumber}
                       </span>
-                      <p className={`text-xs sm:text-sm leading-relaxed ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                      <p className={`text-sm sm:text-sm leading-relaxed ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
                         {step.instruction}
                       </p>
                     </div>
@@ -311,15 +319,17 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             </div>
 
             {/* Chef's Tips */}
-            {recipe.chefTips && (
+            {recipe.chefTips && recipe.chefTips.length > 0 && (
               <div className="p-4 rounded-2xl bg-[#F8F5EA] border border-[#E7D59A] space-y-1.5">
                 <div className="flex items-center gap-2 text-xs font-bold text-[#174A32]">
                   <Sparkles className="w-4 h-4 text-[#C9A227]" />
                   <span>Chef's Grain Secret</span>
                 </div>
-                <p className="text-xs text-gray-700 leading-relaxed">
-                  {recipe.chefTips}
-                </p>
+                <ul className="space-y-1.5 text-sm text-gray-700 leading-relaxed list-disc pl-5">
+                  {recipe.chefTips.map((tip, i) => (
+                    <li key={i}>{tip}</li>
+                  ))}
+                </ul>
               </div>
             )}
 

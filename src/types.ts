@@ -1,4 +1,5 @@
-export type PackSize = '26kg Bag' | '26kg x 5 Bags (130kg)' | '26kg x 10 Bags (260kg)' | '26 MT (1000 Bags)';
+// The built-in sizes, plus any size added from the catalog (for example "50kg Bag").
+export type PackSize = '26kg Bag' | '26kg x 5 Bags (130kg)' | '26kg x 10 Bags (260kg)' | '26 MT (1000 Bags)' | (string & {});
 
 export interface PackOption {
   size: PackSize;
@@ -8,7 +9,7 @@ export interface PackOption {
   wholesalePrice?: number;
   inStock: boolean;
   isPopular?: boolean;
-  packagingType: 'Heavy Duty PP Bag' | 'Non-Woven Handle Bag' | 'Laminated Jute Bag' | 'Container Export Pallet';
+  packagingType: 'Heavy Duty PP Bag' | 'Non-Woven Handle Bag' | 'Laminated Jute Bag' | 'Container Export Pallet' | (string & {});
 }
 
 export interface GrainSpecs {
@@ -32,6 +33,11 @@ export interface CookingGuide {
 
 export interface Product {
   id: string;
+  /**
+   * False for products added from the catalog without full grain, cooking and nutrition details.
+   * Pages then hide the sections that would otherwise be empty. Built-in products leave this unset.
+   */
+  detailed?: boolean;
   slug: string;
   name: string;
   shortName: string;
@@ -41,6 +47,8 @@ export interface Product {
   featured: boolean;
   images: {
     primary: string;
+    /** Use 'contain' for portrait pack shots so the bag is never cropped. */
+    primaryFit?: 'cover' | 'contain';
     packaging: string;
     rawGrain: string;
     cookedDish: string;
@@ -67,6 +75,14 @@ export interface Product {
   reviewCount: number;
 }
 
+export interface RecipeArtSpec {
+  kind: 'bowl' | 'plate' | 'pot' | 'leaf' | 'wok' | 'curd' | 'sweet' | 'porridge';
+  rice: 'white' | 'cream' | 'turmeric' | 'golden' | 'tomato' | 'green' | 'brown' | 'beet' | 'orange';
+  /** Colours of the toppings scattered on the rice. */
+  top?: string[];
+  steam?: boolean;
+}
+
 export interface RecipeIngredient {
   item: string;
   amount: string;
@@ -85,7 +101,9 @@ export interface Recipe {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  image: string;
+  /** Optional real photo. When absent, `art` is drawn instead. */
+  photo?: string;
+  art: RecipeArtSpec;
   prepTimeMinutes: number;
   cookTimeMinutes: number;
   totalTimeMinutes: number;

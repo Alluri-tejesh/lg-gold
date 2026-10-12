@@ -42,7 +42,7 @@ export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({
         {/* Header */}
         <div className="p-5 bg-[#174A32] text-white flex items-center justify-between border-b border-[#C9A227]">
           <div className="flex items-center gap-2.5">
-            <span className="font-serif-brand font-light text-lg text-[#C9A227]">{quoteType} Quote Request</span>
+            <span className="font-serif-brand font-medium text-lg text-[#C9A227]">{quoteType} Quote Request</span>
           </div>
           <button
             onClick={onClose}
@@ -59,7 +59,7 @@ export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({
           </div>
 
           <div>
-            <h3 className="font-serif-brand font-light text-2xl text-[#174A32]">
+            <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">
               Inquiry Received
             </h3>
             <p className="text-xs text-[#5F806D] mt-1">
@@ -67,7 +67,7 @@ export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({
             </p>
           </div>
 
-          <p className="text-xs sm:text-sm text-[#202522] leading-relaxed">
+          <p className="text-sm sm:text-sm text-[#202522] leading-relaxed">
             Our trade desk at Sri Lakshmi Ganapathi Trading Company in Telangana has received your inquiry. A commercial specialist will review your specifications and contact you with current mill pricing within <strong>2 to 4 business hours</strong>.
           </p>
 
@@ -79,20 +79,20 @@ export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({
           <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={handleWhatsAppFollowUp}
-              className="px-5 py-2.5 bg-[#25D366] text-white text-xs font-bold uppercase tracking-wider rounded-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
+              className="px-5 py-2.5 bg-[#25D366] text-white text-xs font-bold rounded-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
             >
               <MessageCircle className="w-4 h-4" />
               <span>Connect on WhatsApp</span>
             </button>
             <button
               onClick={onClose}
-              className="px-5 py-2.5 bg-[#174A32] text-white text-xs font-bold uppercase tracking-wider rounded-xs hover:bg-[#1a5a3d] transition-colors cursor-pointer border border-[#174A32]"
+              className="px-5 py-2.5 bg-[#174A32] text-white text-xs font-bold rounded-xs hover:bg-[#1a5a3d] transition-colors cursor-pointer border border-[#174A32]"
             >
               Done
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#5F806D] pt-2">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-[#5F806D] pt-2">
             <ShieldCheck className="w-3.5 h-3.5 text-[#C9A227]" />
             <span>Sri Lakshmi Ganapathi Trading Company Commercial Desk</span>
           </div>

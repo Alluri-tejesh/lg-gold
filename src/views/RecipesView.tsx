@@ -11,6 +11,7 @@ interface RecipesViewProps {
 export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
   
   // "What can I cook today" interactive tool state
   const [mealTimeFilter, setMealTimeFilter] = useState<'any' | 'quick' | 'special' | 'comfort'>('any');
@@ -26,7 +27,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
     if (mealTimeFilter === 'quick') {
       matchesMealTime = r.totalTimeMinutes <= 25;
     } else if (mealTimeFilter === 'special') {
-      matchesMealTime = r.categories.includes('Festive') || r.categories.includes('Biryani');
+      matchesMealTime = r.categories.includes('Festival') || r.categories.includes('Special Occasions') || r.categories.includes('Biryani');
     } else if (mealTimeFilter === 'comfort') {
       matchesMealTime = r.categories.includes('South Indian') || r.categories.includes('Everyday Meals');
     }
@@ -38,12 +39,12 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Recipes' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
               <ChefHat className="w-4 h-4" />
               LG Gold Culinary Kitchen
             </span>
@@ -106,7 +107,10 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
               type="text"
               placeholder="Search recipes by name, ingredient (e.g. biryani, ghee, lemon, curd)..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setVisibleCount(12);
+              }}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-[#174A32] outline-none"
             />
           </div>
@@ -117,7 +121,10 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
           {RECIPE_CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => {
+                setSelectedCategory(cat);
+                setVisibleCount(12);
+              }}
               className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-[#174A32] text-white shadow-sm'
@@ -131,14 +138,29 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
 
         {/* Recipes Grid */}
         {filteredRecipes.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRecipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                onViewRecipe={(slug) => onNavigate('recipe-detail', slug)}
-              />
-            ))}
+          <div className="space-y-8">
+            <p className="text-sm text-[#5F806D]" aria-live="polite">
+              Showing {Math.min(visibleCount, filteredRecipes.length)} of {filteredRecipes.length} recipes
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredRecipes.slice(0, visibleCount).map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onViewRecipe={(slug) => onNavigate('recipe-detail', slug)}
+                />
+              ))}
+            </div>
+            {visibleCount < filteredRecipes.length && (
+              <div className="text-center">
+                <button
+                  onClick={() => setVisibleCount((n) => n + 12)}
+                  className="px-8 py-3 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
+                >
+                  Show 12 more recipes
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-gray-300 space-y-3">

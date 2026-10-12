@@ -23,6 +23,12 @@ export const BRAND_CONFIG = {
     operatingHours: 'Mon - Sat: 8:00 AM – 7:30 PM IST',
   },
 
+  /**
+   * Optional: a Google Sheet published as CSV, so prices can change without a deploy.
+   * Leave empty to use public/prices.json. See docs/updating-prices.md.
+   */
+  pricesCsvUrl: '',
+
   announcement: {
     text: 'EXPORT QUALITY | EXPORT ORDERS ACCEPTED | WHOLESALE & BULK ORDERS',
     ctaLabel: 'Request Quote',

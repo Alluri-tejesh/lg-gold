@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { AnnouncementBar } from './components/layout/AnnouncementBar';
+import { ScrollProgress } from './components/common/motion';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
@@ -78,6 +79,8 @@ export function AppContent() {
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F5EA] text-[#202522] font-sans antialiased selection:bg-[#C9A227]/30 selection:text-[#174A32]">
       
+      <ScrollProgress />
+
       {/* Top Sticky & Announcement Bars */}
       <AnnouncementBar onNavigate={handleNavigate} />
       

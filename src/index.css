@@ -29,6 +29,7 @@
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #F8F5EA;
@@ -62,4 +63,68 @@
 
 .shadow-card {
   box-shadow: 0 10px 30px -5px rgba(23, 74, 50, 0.06), 0 4px 10px -2px rgba(23, 74, 50, 0.03);
+}
+
+/* Small gold labels were written for dark bands. On light surfaces that gold fails contrast,
+   so darken it there and keep the bright gold inside dark sections. */
+.text-\[\#C9A227\] { color: #8F6A0E; }
+[class~="bg-[#174A32]"] .text-\[\#C9A227\],
+[class~="bg-[#0f3322]"] .text-\[\#C9A227\],
+[class~="bg-[#174A32]"].text-\[\#C9A227\] { color: #C9A227; }
+
+/* ---- Gentle one-time motion (see components/common/motion.tsx) ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes settle-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.97) rotate(-2deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(-2deg); }
+}
+@keyframes node-pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.fade-up { animation: fade-up 0.7s ease backwards; animation-delay: var(--d, 0ms); }
+.settle-in { animation: settle-in 0.9s ease backwards; animation-delay: 250ms; }
+.node-pop { opacity: 0; }
+.node-pop.is-in { animation: node-pop 0.45s ease both; animation-delay: var(--d, 0ms); }
+.line-grow { transform: scaleX(0); transform-origin: left; transition: transform 1.6s ease-out; }
+.line-grow.is-in { transform: scaleX(1); }
+.line-grow-y { transform: scaleY(0); transform-origin: top; transition: transform 1.6s ease-out; }
+.line-grow-y.is-in { transform: scaleY(1); }
+
+.lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.lift:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -12px rgba(23, 74, 50, 0.25); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .line-grow, .line-grow-y { opacity: 1; transform: none; transition: none; }
+  .fade-up, .settle-in { animation: none; }
+  .settle-in { transform: rotate(-2deg); }
+  .node-pop { opacity: 1; }
+  .node-pop.is-in { animation: none; }
+  .lift:hover { transform: none; }
+}
+
+/* ---- "Why LG Gold" panels: open only on hover, focus or tap ---- */
+.why-grid { transition: grid-template-columns 0.5s ease; }
+.why-detail { max-height: 0; opacity: 0; margin-top: 0; transition: max-height 0.5s ease, opacity 0.35s ease, margin-top 0.4s ease; overflow: hidden; }
+.why-detail-open { max-height: 14rem; opacity: 1; margin-top: 0.75rem; transition-delay: 0s, 0.15s, 0s; }
+.why-acc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
+.why-acc-open { grid-template-rows: 1fr; }
+.why-acc > div { min-height: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .why-grid, .why-detail, .why-acc { transition: none; }
 }

@@ -1,4 +1,5 @@
 import { Product } from '../types';
+import { jsrBagImage } from '../assets';
 
 export const PRODUCTS: Product[] = [
   {
@@ -13,7 +14,7 @@ export const PRODUCTS: Product[] = [
     images: {
       primary: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1000&q=85',
       packaging: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80',
-      rawGrain: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=800&q=80',
+      rawGrain: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80',
       cookedDish: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
       gallery: [
         'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1000&q=85',
@@ -95,12 +96,13 @@ export const PRODUCTS: Product[] = [
     longDescription: 'Known for its signature fine grain morphology and tender mouthfeel, LG Gold JSR Rice is processed under state-of-the-art temperature and humidity controls at Sri Lakshmi Ganapathi Trading Company in Telangana. Its fine grains absorb curries and broths beautifully while remaining completely non-clumpy and delightfully light on the stomach. JSR rice is highly favored for traditional festive feasts, daily comforting meals, rasam sadam, and delicate pulaos.',
     featured: true,
     images: {
-      primary: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=1000&q=85',
-      packaging: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=800&q=80',
+      primary: jsrBagImage,
+      primaryFit: 'contain',
+      packaging: jsrBagImage,
       rawGrain: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80',
       cookedDish: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
       gallery: [
-        'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=1000&q=85',
+        jsrBagImage,
         'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80',
         'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
         'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80'
