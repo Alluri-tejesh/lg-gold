@@ -33,10 +33,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       const items: CartItem[] = saved ? JSON.parse(saved) : [];
       // Prices change daily, so a cart saved yesterday is re-priced with today's rates.
-      return items.map((item) => {
-        const pack = PRODUCTS.find((p) => p.id === item.productId)?.packOptions.find((o) => o.size === item.packSize);
-        return pack ? { ...item, price: pack.retailPrice, mrp: pack.mrp } : item;
-      });
+      return items
+        .map((item) => {
+          const pack = PRODUCTS.find((p) => p.id === item.productId)?.packOptions.find((o) => o.size === item.packSize);
+          return pack ? { ...item, price: pack.retailPrice, mrp: pack.mrp, inStock: pack.inStock } : { ...item, inStock: true };
+        })
+        .filter((item) => item.inStock)
+        .map(({ inStock: _inStock, ...item }) => item as CartItem);
     } catch {
       return [];
     }
@@ -63,6 +66,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (product: Product, packSize: PackSize, quantity = 1) => {
     const packOption = product.packOptions.find(p => p.size === packSize) || product.packOptions[0];
+    if (!packOption.inStock) {
+      showNotification(`${product.shortName} ${packOption.size} is out of stock right now.`);
+      return;
+    }
     const itemId = `${product.id}-${packSize}`;
 
     setCart(prevCart => {

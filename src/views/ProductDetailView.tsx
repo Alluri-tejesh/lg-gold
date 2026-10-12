@@ -46,6 +46,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
 
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
   const priceDate = formatPriceDate(priceInfo.updated);
+  const outOfStock = !currentPack.inStock;
 
   // Linked recipes made with this rice
   const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id).slice(0, 3);
@@ -60,7 +61,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   };
 
   const handleWhatsAppOrder = () => {
-    const msg = getProductWhatsAppMessage(product.name, `${quantity}x ${selectedPackSize}`);
+    const msg = outOfStock
+      ? `Hi LG Gold Team, ${product.name} (${selectedPackSize}) shows as out of stock on your website. Please let me know when it will be available again.`
+      : getProductWhatsAppMessage(product.name, `${quantity}x ${selectedPackSize}`);
     window.open(createWhatsAppUrl(msg), '_blank');
   };
 
@@ -255,7 +258,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                       >
                         <span className="font-bold text-xs block truncate">{pack.size}</span>
                         <span className={`text-xs block mt-0.5 ${isSelected ? 'text-[#E7D59A]' : 'text-gray-500'}`}>
-                          ₹{pack.retailPrice}
+                          {pack.inStock ? `₹${pack.retailPrice}` : 'Out of stock'}
                         </span>
                       </button>
                     );
@@ -301,12 +304,24 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                 </div>
               </div>
 
+              {outOfStock && (
+                <p className="p-3 rounded-xs bg-[#FDECEC] border border-[#9B2C2C]/30 text-[#9B2C2C] text-sm leading-relaxed">
+                  This pack is out of stock right now. Message the mill on WhatsApp to be told when it is back, or choose
+                  another pack or variety.
+                </p>
+              )}
+
               {/* Primary Action Buttons */}
               <div className="space-y-2.5 pt-2">
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#174A32] text-white font-bold text-xs sm:text-xs shadow-xs hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer border border-[#174A32] whitespace-nowrap"
+                    disabled={outOfStock}
+                    className={`w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs font-bold text-xs sm:text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap ${
+                      outOfStock
+                        ? 'bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed'
+                        : 'bg-[#174A32] text-white hover:bg-[#1a5a3d] cursor-pointer border-[#174A32]'
+                    }`}
                   >
                     <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227] shrink-0" />
                     <span className="truncate">Add to Cart</span>
@@ -314,7 +329,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
 
                   <button
                     onClick={handleBuyNow}
-                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#C9A227] text-[#174A32] font-bold text-xs sm:text-xs shadow-xs hover:bg-[#E7D59A] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
+                    disabled={outOfStock}
+                    className={`w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs font-bold text-xs sm:text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
+                      outOfStock
+                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        : 'bg-[#C9A227] text-[#174A32] hover:bg-[#E7D59A] cursor-pointer'
+                    }`}
                   >
                     <span className="truncate">Buy Now</span>
                   </button>
@@ -325,7 +345,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
                   className="w-full py-3 px-3 rounded-xs bg-[#25D366] text-white font-bold text-xs sm:text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <MessageCircle className="w-4 h-4 shrink-0" />
-                  <span>Order Directly on WhatsApp</span>
+                  <span>{outOfStock ? 'Ask when it is back in stock' : 'Order Directly on WhatsApp'}</span>
                 </button>
               </div>
 

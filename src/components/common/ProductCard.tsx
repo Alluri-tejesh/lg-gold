@@ -18,6 +18,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
 
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
   const priceDate = formatPriceDate(priceInfo.updated);
+  const outOfStock = !currentPack.inStock;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,7 +29,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
 
   const handleWhatsAppOrder = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const msg = getProductWhatsAppMessage(product.name, selectedPackSize);
+    const msg = outOfStock
+      ? `Hi LG Gold Team, ${product.name} (${selectedPackSize}) shows as out of stock on your website. Please let me know when it will be available again.`
+      : getProductWhatsAppMessage(product.name, selectedPackSize);
     window.open(createWhatsAppUrl(msg), '_blank');
   };
 
@@ -125,7 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
                 >
                   <span className="block truncate">{pack.size}</span>
                   <span className={`text-xs block mt-0.5 ${isSelected ? 'text-[#E7D59A]' : 'text-gray-500'}`}>
-                    ₹{pack.retailPrice}
+                    {pack.inStock ? `₹${pack.retailPrice}` : 'Out of stock'}
                   </span>
                 </button>
               );
@@ -154,8 +157,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
 
             <div className="text-right">
               <span className="text-xs text-[#5F806D] block font-bold">Mill Direct</span>
-              <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 border border-[#C9A227]/30 rounded-xs">
-                In Stock
+              <span
+                className={`text-xs font-bold px-2 py-0.5 border rounded-xs ${
+                  outOfStock
+                    ? 'text-[#9B2C2C] bg-[#FDECEC] border-[#9B2C2C]/30'
+                    : 'text-[#174A32] bg-[#F8F5EA] border-[#C9A227]/30'
+                }`}
+              >
+                {outOfStock ? 'Out of stock' : 'In Stock'}
               </span>
             </div>
           </div>
@@ -164,10 +173,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
           <div className="grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={handleAddToCart}
-              className={`w-full py-2.5 px-2 sm:px-3 rounded-xs font-bold text-xs sm:text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer whitespace-nowrap ${
-                isAdded
-                  ? 'bg-[#226444] text-white'
-                  : 'bg-[#174A32] text-white hover:bg-[#1a5a3d] border border-[#174A32]'
+              disabled={outOfStock}
+              className={`w-full py-2.5 px-2 sm:px-3 rounded-xs font-bold text-xs sm:text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs whitespace-nowrap ${
+                outOfStock
+                  ? 'bg-gray-200 text-gray-500 border border-gray-200 cursor-not-allowed'
+                  : isAdded
+                  ? 'bg-[#226444] text-white cursor-pointer'
+                  : 'bg-[#174A32] text-white hover:bg-[#1a5a3d] border border-[#174A32] cursor-pointer'
               }`}
             >
               {isAdded ? (
@@ -178,7 +190,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
               ) : (
                 <>
                   <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227] shrink-0" />
-                  <span className="truncate">Add to Cart</span>
+                  <span className="truncate">{outOfStock ? 'Out of stock' : 'Add to Cart'}</span>
                 </>
               )}
             </button>
@@ -188,7 +200,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
               className="w-full py-2.5 px-2 sm:px-3 rounded-xs bg-[#25D366]/15 hover:bg-[#25D366] text-[#128C7E] hover:text-white font-bold text-xs sm:text-xs flex items-center justify-center gap-1.5 border border-[#25D366]/40 transition-all cursor-pointer whitespace-nowrap"
             >
               <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="truncate">WhatsApp</span>
+              <span className="truncate">{outOfStock ? 'Ask when back' : 'WhatsApp'}</span>
             </button>
           </div>
 

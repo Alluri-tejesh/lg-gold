@@ -12,10 +12,14 @@ import { BRAND_CONFIG } from '../config/brandConfig';
 export interface PriceEntry {
   price: number;
   mrp: number;
+  /** Set to false to mark just this pack as out of stock. */
+  inStock?: boolean;
 }
 
 export interface PriceTable {
   updated?: string;
+  /** Product slugs that are out of stock in every pack, e.g. ["hmt-rice"]. */
+  outOfStock?: string[];
   prices: Record<string, Record<string, PriceEntry>>;
 }
 
@@ -34,23 +38,29 @@ export const formatPriceDate = (iso: string | null): string | null => {
 /** Writes the table's prices into the product catalogue. Ignores unknown products, packs and bad numbers. */
 export const applyPrices = (table: PriceTable): number => {
   let applied = 0;
+  const outOfStock = new Set(table.outOfStock ?? []);
   for (const product of PRODUCTS) {
-    const forProduct = table.prices[product.slug];
-    if (!forProduct) continue;
+    const forProduct = table.prices?.[product.slug];
     for (const pack of product.packOptions) {
-      const entry = forProduct[pack.size];
+      const entry = forProduct?.[pack.size];
       if (entry && isPositive(entry.price)) {
         pack.retailPrice = entry.price;
         pack.mrp = isPositive(entry.mrp) && entry.mrp >= entry.price ? entry.mrp : entry.price;
         applied++;
       }
+      // Stock: the whole product, or just this pack, can be switched off. Everything else is in stock.
+      pack.inStock = !(outOfStock.has(product.slug) || entry?.inStock === false);
     }
   }
-  if (applied > 0 && table.updated) priceInfo.updated = table.updated;
-  return applied;
+  if (table.updated) priceInfo.updated = table.updated;
+  return applied + outOfStock.size;
 };
 
-/** Parses a Google Sheet exported as CSV. Columns: slug, pack, price, mrp. A row "updated,2026-10-12" sets the date. */
+/**
+ * Parses a Google Sheet exported as CSV. Columns: slug, pack, price, mrp, stock.
+ * Put "out" in the stock column to mark one pack out of stock.
+ * Special rows: "updated,2026-10-12" sets the date, and "outofstock,hmt-rice" marks a whole product out of stock.
+ */
 export const parsePriceCsv = (csv: string): PriceTable => {
   const table: PriceTable = { prices: {} };
   for (const line of csv.split(/\r?\n/)) {
@@ -61,10 +71,19 @@ export const parsePriceCsv = (csv: string): PriceTable => {
       table.updated = pack;
       continue;
     }
-    const p = Number(price.replace(/[^0-9.]/g, ''));
+    if (slug.toLowerCase() === 'outofstock') {
+      (table.outOfStock ??= []).push(pack);
+      continue;
+    }
+    const p = Number((price ?? '').replace(/[^0-9.]/g, ''));
     const m = Number((mrp ?? '').replace(/[^0-9.]/g, ''));
     if (!slug || !pack || !isPositive(p)) continue;
-    (table.prices[slug] ??= {})[pack] = { price: p, mrp: isPositive(m) ? m : p };
+    const stock = (cells[4] ?? '').toLowerCase();
+    (table.prices[slug] ??= {})[pack] = {
+      price: p,
+      mrp: isPositive(m) ? m : p,
+      inStock: !['out', 'no', 'false', '0'].includes(stock),
+    };
   }
   return table;
 };
