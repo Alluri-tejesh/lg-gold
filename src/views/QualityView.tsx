@@ -57,16 +57,16 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Our Quality Standards' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4" />
               100% Sortex Optical Checked
             </span>
-            <h1 className="font-serif-brand font-light text-3xl sm:text-5xl text-white">
+            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
               The LG Gold Quality Promise
             </h1>
             <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
@@ -81,16 +81,16 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
         {/* Optical Sorting & Milling Infrastructure Spotlight */}
         <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-10 shadow-clean grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-6 space-y-4">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1">
+            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1">
               <Factory className="w-4 h-4" /> Computerized Milltec Processing Line
             </span>
-            <h2 className="font-serif-brand font-light text-2xl sm:text-3xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-2xl sm:text-3xl text-[#174A32]">
               Precision Milling & 100% Sortex Cleaning
             </h2>
-            <p className="text-xs sm:text-sm text-[#202522] leading-relaxed">
+            <p className="text-sm sm:text-sm text-[#202522] leading-relaxed">
               Our Venkatadri Palem facility features automated multi-cylinder Milltec milling systems equipped with digital control consoles, pneumatic bucket elevators, and high-speed optical sorters.
             </p>
-            <p className="text-xs sm:text-sm text-[#5F806D] leading-relaxed">
+            <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
               Multi-camera CCD color sorters photograph every single grain at 30,000 frames per second. High-speed pneumatic air injectors instantly eject discolored, chalky, or damaged grains, delivering pristine, pearlescent 26kg bags with zero stones.
             </p>
 
@@ -114,9 +114,9 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
                 className="w-full h-auto max-h-[380px] object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-3 text-white">
-                <span className="text-[11px] font-bold block text-[#E7D59A]">Milltec Automated Milling Units (12, 14, 15)</span>
-                <span className="text-[10px] text-white/80">Sri Lakshmi Ganapathi Facility • Venkatadri Palem, Telangana</span>
+              <div className="bg-[#174A32] p-3 text-white">
+                <span className="text-xs font-bold block text-[#E7D59A]">Milltec Automated Milling Units (12, 14, 15)</span>
+                <span className="text-xs text-white/80">Sri Lakshmi Ganapathi Facility • Venkatadri Palem, Telangana</span>
               </div>
             </div>
           </div>
@@ -125,10 +125,10 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
         {/* 6 Step Process */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               End-to-End Quality Architecture
             </span>
-            <h2 className="font-serif-brand font-light text-3xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-3xl text-[#174A32]">
               From Harvest to Sealed Pack
             </h2>
           </div>
@@ -145,7 +145,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
                 <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">
                   {step.title}
                 </h3>
-                <p className="text-xs text-[#5F806D] leading-relaxed">
+                <p className="text-sm text-[#5F806D] leading-relaxed">
                   {step.desc}
                 </p>
               </div>
@@ -156,7 +156,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
         {/* Commercial Quality CTA */}
         <div className="bg-[#174A32] text-white rounded-sm p-8 sm:p-10 border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="font-serif-brand font-light text-2xl text-white">
+            <h3 className="font-serif-brand font-medium text-2xl text-white">
               Need Certificate of Analysis (COA) or Lab Specs?
             </h3>
             <p className="text-xs text-[#F8F5EA]/80 mt-1 max-w-xl">
@@ -165,7 +165,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
           </div>
           <button
             onClick={() => onNavigate('export')}
-            className="px-6 py-3.5 bg-[#C9A227] text-[#174A32] font-bold uppercase tracking-wider text-xs rounded-xs hover:bg-[#E7D59A] transition-colors shrink-0 cursor-pointer shadow-xs"
+            className="px-6 py-3.5 bg-[#C9A227] text-[#174A32] font-bold text-xs rounded-xs hover:bg-[#E7D59A] transition-colors shrink-0 cursor-pointer shadow-xs"
           >
             Contact Quality Desk
           </button>

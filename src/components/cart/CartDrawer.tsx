@@ -47,7 +47,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
               <ShoppingBag className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-serif-brand font-light text-lg text-[#174A32]">Your Rice Cart</h3>
+              <h3 className="font-serif-brand font-medium text-lg text-[#174A32]">Your Rice Cart</h3>
               <p className="text-xs text-[#5F806D]">{totalItems} {totalItems === 1 ? 'pack' : 'packs'} selected</p>
             </div>
           </div>
@@ -88,7 +88,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
               <div className="w-16 h-16 bg-[#F8F5EA] rounded-full flex items-center justify-center mx-auto mb-4 text-[#5F806D] border border-[#C9A227]/30">
                 <ShoppingBag className="w-8 h-8" />
               </div>
-              <h4 className="font-serif-brand font-light text-lg text-[#174A32] mb-1">Your cart is empty</h4>
+              <h4 className="font-serif-brand font-medium text-lg text-[#174A32] mb-1">Your cart is empty</h4>
               <p className="text-xs text-[#5F806D] mb-6 max-w-xs mx-auto">
                 Explore our aged HMT and JSR rice varieties packed with authentic South Indian flavor.
               </p>
@@ -97,7 +97,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                   setIsCartOpen(false);
                   onNavigate('products');
                 }}
-                className="px-6 py-2.5 rounded-xs bg-[#174A32] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#1a5a3d] transition-colors cursor-pointer"
+                className="px-6 py-2.5 rounded-xs bg-[#174A32] text-white text-xs font-bold hover:bg-[#1a5a3d] transition-colors cursor-pointer"
               >
                 Browse LG Gold Rice
               </button>
@@ -129,7 +129,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#5F806D] bg-[#F8F5EA] px-2 py-0.5 rounded-xs mt-0.5 border border-[#C9A227]/20">
+                    <span className="inline-block text-xs font-bold text-[#5F806D] bg-[#F8F5EA] px-2 py-0.5 rounded-xs mt-0.5 border border-[#C9A227]/20">
                       Pack: {item.packSize}
                     </span>
                   </div>
@@ -140,7 +140,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                         ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                       </span>
                       {item.mrp > item.price && (
-                        <span className="text-[11px] text-gray-400 line-through">
+                        <span className="text-xs text-gray-400 line-through">
                           ₹{(item.mrp * item.quantity).toLocaleString('en-IN')}
                         </span>
                       )}
@@ -203,7 +203,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
             <div className="space-y-2 pt-1">
               <button
                 onClick={handleOpenCheckout}
-                className="w-full py-3 px-3 rounded-xs bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs shadow-sm hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#174A32] whitespace-nowrap"
+                className="w-full py-3 px-3 rounded-xs bg-[#174A32] text-white font-bold text-xs shadow-sm hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#174A32] whitespace-nowrap"
               >
                 <span>Proceed to Checkout</span>
                 <ArrowRight className="w-4 h-4 text-[#C9A227] shrink-0" />
@@ -211,14 +211,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
 
               <button
                 onClick={handleWhatsAppCheckout}
-                className="w-full py-2.5 px-3 rounded-xs bg-[#25D366] text-white font-bold uppercase tracking-wider text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+                className="w-full py-2.5 px-3 rounded-xs bg-[#25D366] text-white font-bold text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
               >
                 <MessageCircle className="w-4 h-4 fill-white shrink-0" />
                 <span>Instant Order on WhatsApp</span>
               </button>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-[10px] text-[#5F806D] pt-1">
+            <div className="flex items-center justify-center gap-2 text-xs text-[#5F806D] pt-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#C9A227]" />
               <span>Direct Mill Packing & Quality Guaranteed</span>
             </div>

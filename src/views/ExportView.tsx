@@ -68,18 +68,18 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Top Hero Banner in Deep Green & Gold */}
-      <div className="bg-[#174A32] text-white py-12 sm:py-16 border-b-4 border-[#C9A227] relative overflow-hidden">
+      <div className="bg-[#174A32] text-white py-10 sm:py-12 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 space-y-5">
           <Breadcrumbs items={[{ label: 'Export Desk' }]} onNavigate={onNavigate} variant="dark" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-[#E7D59A] border border-[#C9A227]/40 text-[11px] font-bold uppercase tracking-widest rounded-xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-[#E7D59A] border border-[#C9A227]/40 text-xs font-bold rounded-xs">
                 <Globe className="w-3.5 h-3.5 text-[#C9A227]" />
                 <span>Direct Agricultural Exports From Telangana, India</span>
               </div>
 
-              <h1 className="font-serif-brand font-light text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
+              <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
                 Export Quality Rice from India
               </h1>
 
@@ -93,7 +93,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             </div>
 
             <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-xs p-6 border border-white/20 text-xs space-y-3">
-              <span className="text-[#C9A227] font-bold text-xs uppercase tracking-wider block">Export Capabilities Summary</span>
+              <span className="text-[#C9A227] font-bold text-xs block">Export Capabilities Summary</span>
               <div className="space-y-2.5 text-[#F8F5EA]/90 text-[13px]">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0" />
@@ -122,10 +122,10 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
         {/* Section: Export Products */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               Certified Export Varieties
             </span>
-            <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
               Export Products
             </h2>
             <p className="text-xs sm:text-sm text-[#5F806D]">
@@ -133,18 +133,18 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* HMT Export Box */}
             <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-4 hover:border-[#C9A227] transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#5F806D]">Medium-Slender Grain</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
+                <span className="text-xs font-bold text-[#5F806D]">Medium-Slender Grain</span>
+                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
                   Export Grade A
                 </span>
               </div>
-              <h3 className="font-serif-brand font-light text-2xl text-[#174A32]">LG Gold HMT Rice</h3>
-              <p className="text-xs sm:text-sm text-[#5F806D] leading-relaxed">
+              <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">LG Gold HMT Rice</h3>
+              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
                 Celebrated for high elongation, distinct separate grains, and versatile culinary performance in biryanis, pilafs, and daily family dining.
               </p>
               <div className="space-y-1.5 text-xs text-[#202522] pt-2 border-t border-[#F8F5EA]">
@@ -158,13 +158,13 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             {/* JSR Export Box */}
             <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-4 hover:border-[#C9A227] transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#5F806D]">Super-Fine Grain</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
+                <span className="text-xs font-bold text-[#5F806D]">Super-Fine Grain</span>
+                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
                   Export Grade A+
                 </span>
               </div>
-              <h3 className="font-serif-brand font-light text-2xl text-[#174A32]">LG Gold JSR Rice</h3>
-              <p className="text-xs sm:text-sm text-[#5F806D] leading-relaxed">
+              <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">LG Gold JSR Rice</h3>
+              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
                 Super-fine slender morphology with exceptional tenderness, easy digestibility, and brilliant white polish for premium table rice markets.
               </p>
               <div className="space-y-1.5 text-xs text-[#202522] pt-2 border-t border-[#F8F5EA]">
@@ -181,10 +181,10 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
         {/* Section: Who We Supply */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">
+            <span className="text-xs font-bold text-[#C9A227]">
               Global Client Profiles
             </span>
-            <h2 className="font-serif-brand font-light text-3xl sm:text-4xl text-[#174A32]">
+            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
               Who We Supply
             </h2>
             <p className="text-xs sm:text-sm text-[#5F806D]">
@@ -260,8 +260,8 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
           <div className="bg-[#174A32] text-white p-6 sm:p-8 border-b border-[#C9A227]/40">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227]">Commercial RFQ</span>
-                <h3 className="font-serif-brand font-light text-2xl sm:text-3xl text-white">
+                <span className="text-xs font-bold text-[#C9A227]">Commercial RFQ</span>
+                <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
                   Request International Export Quote
                 </h3>
                 <p className="text-xs sm:text-sm text-[#F8F5EA]/80 mt-1">
@@ -278,7 +278,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Company Name *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Company Name *</label>
                 <input
                   type="text"
                   required
@@ -290,7 +290,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Contact Person *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Contact Person *</label>
                 <input
                   type="text"
                   required
@@ -302,7 +302,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Destination Country *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Destination Country *</label>
                 <input
                   type="text"
                   required
@@ -314,7 +314,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Destination Seaport / Airport</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Destination Seaport / Airport</label>
                 <input
                   type="text"
                   placeholder="e.g. Jebel Ali Port, Port of Singapore, Colombo"
@@ -325,7 +325,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Corporate Email Address *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Corporate Email Address *</label>
                 <input
                   type="email"
                   required
@@ -337,7 +337,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Phone / WhatsApp (with Country Code) *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp (with Country Code) *</label>
                 <input
                   type="text"
                   required
@@ -349,7 +349,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Rice Variety Required *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Rice Variety Required *</label>
                 <select
                   value={form.riceVariety}
                   onChange={(e) => setForm({ ...form, riceVariety: e.target.value })}
@@ -362,7 +362,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Required Quantity / Container Size *</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Required Quantity / Container Size *</label>
                 <select
                   value={form.requiredQuantity}
                   onChange={(e) => setForm({ ...form, requiredQuantity: e.target.value })}
@@ -376,7 +376,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Packaging Specification</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Packaging Specification</label>
                 <select
                   value={form.packagingRequirement}
                   onChange={(e) => setForm({ ...form, packagingRequirement: e.target.value })}
@@ -389,7 +389,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] uppercase tracking-wider mb-1">Additional Requirements / Notes</label>
+                <label className="block text-xs font-bold text-[#174A32] mb-1">Additional Requirements / Notes</label>
                 <textarea
                   rows={3}
                   placeholder="Target delivery dates, target price, incoterms (FOB / CIF / CFR), inspection agencies required..."
@@ -404,7 +404,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             <div className="pt-4 border-t border-[#C9A227]/20 flex flex-col sm:flex-row gap-4 items-center justify-between">
               <button
                 type="submit"
-                className="w-full sm:w-auto px-8 py-4 bg-[#174A32] text-white font-bold uppercase tracking-wider text-xs rounded-xs shadow-xs hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 bg-[#174A32] text-white font-bold text-xs rounded-xs shadow-xs hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
               >
                 <span>Request Export Quote</span>
                 <ArrowRight className="w-4 h-4 text-[#C9A227]" />
@@ -413,7 +413,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
               <button
                 type="button"
                 onClick={handleWhatsAppInquiry}
-                className="w-full sm:w-auto px-6 py-4 bg-[#25D366] text-white font-bold uppercase tracking-wider text-xs rounded-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-6 py-4 bg-[#25D366] text-white font-bold text-xs rounded-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
                 <span>Instant Inquiry via WhatsApp</span>

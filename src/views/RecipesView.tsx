@@ -38,12 +38,12 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F8F5EA] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-14 border-b-4 border-[#C9A227]">
+      <div className="bg-[#174A32] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Recipes' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A227] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
               <ChefHat className="w-4 h-4" />
               LG Gold Culinary Kitchen
             </span>

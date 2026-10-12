@@ -30,7 +30,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
       id: 'recipes',
       label: 'Recipes',
       icon: UtensilsCrossed,
-      action: () => onNavigate('recipes') || currentRoute === 'recipe-detail',
+      action: () => onNavigate('recipes'),
       isActive: currentRoute === 'recipes' || currentRoute === 'recipe-detail',
     },
     {
@@ -74,12 +74,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
               <div className="relative">
                 <Icon className={`w-5 h-5 ${item.isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
                 {item.badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2 bg-[#C9A227] text-[#174A32] font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  <span className="absolute -top-1.5 -right-2 bg-[#C9A227] text-[#174A32] font-extrabold text-xs w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                     {item.badge}
                   </span>
                 )}
               </div>
-              <span className="text-[10px] mt-1 tracking-tight truncate max-w-full">
+              <span className="text-xs mt-1 tracking-tight truncate max-w-full">
                 {item.label}
               </span>
               {item.isActive && (

@@ -11,7 +11,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end group">
+    <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 hidden lg:flex flex-col items-end group">
       {/* Floating Tooltip Message */}
       {isOpenTooltip && (
         <div className="mb-3 max-w-xs bg-white p-3.5 rounded-xs shadow-clean border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 animate-fadeIn text-xs relative">
@@ -25,7 +25,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
           <p className="text-[#5F806D] mb-2 leading-relaxed">Have a question about HMT/JSR rice, wholesale orders, or container export?</p>
           <button
             onClick={handleQuickChat}
-            className="w-full py-1.5 bg-[#25D366] text-white font-bold uppercase tracking-wider text-[11px] rounded-xs hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
+            className="w-full py-1.5 bg-[#25D366] text-white font-bold text-xs rounded-xs hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
           >
             Start WhatsApp Chat
           </button>

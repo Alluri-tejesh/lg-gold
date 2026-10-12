@@ -41,6 +41,8 @@ export interface Product {
   featured: boolean;
   images: {
     primary: string;
+    /** Use 'contain' for portrait pack shots so the bag is never cropped. */
+    primaryFit?: 'cover' | 'contain';
     packaging: string;
     rawGrain: string;
     cookedDish: string;

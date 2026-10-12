@@ -49,7 +49,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
   };
 
   const handleAddToCart = () => {
-    addToCart(matchedProduct, '10kg', 1);
+    addToCart(matchedProduct, '26kg Bag', 1);
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 2000);
   };
@@ -130,7 +130,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Clock className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Prep Time</span>
+                <span className="text-gray-500 block text-xs">Prep Time</span>
                 <span className="font-bold text-[#174A32]">{recipe.prepTimeMinutes} mins</span>
               </div>
             </div>
@@ -138,7 +138,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Clock className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Cook Time</span>
+                <span className="text-gray-500 block text-xs">Cook Time</span>
                 <span className="font-bold text-[#174A32]">{recipe.cookTimeMinutes} mins</span>
               </div>
             </div>
@@ -146,7 +146,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <Users className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Servings</span>
+                <span className="text-gray-500 block text-xs">Servings</span>
                 <span className="font-bold text-[#174A32]">{recipe.servings} People</span>
               </div>
             </div>
@@ -154,7 +154,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             <div className="p-3 bg-[#F8F5EA] rounded-xl border border-[#E7D59A]/60 flex items-center gap-2.5">
               <ChefHat className="w-4 h-4 text-[#174A32]" />
               <div>
-                <span className="text-gray-500 block text-[10px]">Difficulty</span>
+                <span className="text-gray-500 block text-xs">Difficulty</span>
                 <span className="font-bold text-[#174A32]">{recipe.difficulty}</span>
               </div>
             </div>
@@ -183,7 +183,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A227] block">
+              <span className="text-xs font-bold text-[#C9A227] block">
                 Recommended Authentic Ingredient
               </span>
               <h3 className="font-serif-brand font-bold text-xl sm:text-2xl text-white">
@@ -239,7 +239,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               <span className="text-xs text-gray-500">{recipe.ingredients.length} items</span>
             </div>
 
-            <p className="text-[11px] text-gray-400">
+            <p className="text-xs text-gray-400">
               Tip: Click ingredients as you prep them!
             </p>
 
@@ -301,7 +301,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                       >
                         {isCompleted ? '✓' : step.stepNumber}
                       </span>
-                      <p className={`text-xs sm:text-sm leading-relaxed ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                      <p className={`text-sm sm:text-sm leading-relaxed ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
                         {step.instruction}
                       </p>
                     </div>
@@ -317,7 +317,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                   <Sparkles className="w-4 h-4 text-[#C9A227]" />
                   <span>Chef's Grain Secret</span>
                 </div>
-                <p className="text-xs text-gray-700 leading-relaxed">
+                <p className="text-sm text-gray-700 leading-relaxed">
                   {recipe.chefTips}
                 </p>
               </div>

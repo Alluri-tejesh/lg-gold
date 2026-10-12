@@ -107,7 +107,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           {/* Products Results */}
           {filteredProducts.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#174A32] mb-3">
                 <Package className="w-4 h-4 text-[#C9A227]" />
                 <span>Rice Products ({filteredProducts.length})</span>
               </div>
@@ -143,7 +143,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           {/* Recipes Results */}
           {filteredRecipes.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#174A32] mb-3">
                 <Utensils className="w-4 h-4 text-[#C9A227]" />
                 <span>Recipes ({filteredRecipes.length})</span>
               </div>
@@ -165,7 +165,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                         {r.title}
                       </h4>
                       <p className="text-xs text-gray-500 truncate">{r.shortDescription}</p>
-                      <span className="text-[11px] text-[#5F806D] font-medium">
+                      <span className="text-xs text-[#5F806D] font-medium">
                         {r.totalTimeMinutes} mins • {r.difficulty}
                       </span>
                     </div>
@@ -178,7 +178,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
 
           {/* Commercial Inquiries Links */}
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#174A32] mb-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#174A32] mb-3">
               <Globe className="w-4 h-4 text-[#C9A227]" />
               <span>Commercial & Export Services</span>
             </div>
@@ -191,7 +191,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   <span className="font-bold text-xs sm:text-sm text-[#174A32] group-hover:text-white block">
                     Export Desk & Container Shipping
                   </span>
-                  <span className="text-[11px] text-gray-600 group-hover:text-[#E7D59A]">
+                  <span className="text-xs text-gray-600 group-hover:text-[#E7D59A]">
                     20ft/40ft FCL • Middle East & Global
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                   <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
                     Wholesale & Bulk Orders
                   </span>
-                  <span className="text-[11px] text-gray-700">
+                  <span className="text-xs text-gray-700">
                     50kg Bags • Supermarkets & Caterers
                   </span>
                 </div>

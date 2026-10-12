@@ -63,3 +63,10 @@
 .shadow-card {
   box-shadow: 0 10px 30px -5px rgba(23, 74, 50, 0.06), 0 4px 10px -2px rgba(23, 74, 50, 0.03);
 }
+
+/* Small gold labels were written for dark bands. On light surfaces that gold fails contrast,
+   so darken it there and keep the bright gold inside dark sections. */
+.text-\[\#C9A227\] { color: #8F6A0E; }
+[class~="bg-[#174A32]"] .text-\[\#C9A227\],
+[class~="bg-[#0f3322]"] .text-\[\#C9A227\],
+[class~="bg-[#174A32]"].text-\[\#C9A227\] { color: #C9A227; }

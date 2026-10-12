@@ -73,7 +73,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           )}
           <button
             onClick={onClose}
-            className="px-2.5 py-1 rounded-xs bg-[#174A32]/10 text-[#174A32] text-[10px] font-bold uppercase tracking-wider hover:bg-[#174A32]/20 transition-colors cursor-pointer"
+            className="px-2.5 py-1 rounded-xs bg-[#174A32]/10 text-[#174A32] text-xs font-bold hover:bg-[#174A32]/20 transition-colors cursor-pointer"
           >
             ESC
           </button>
@@ -84,7 +84,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
           {!query.trim() ? (
             <div className="space-y-4 text-xs">
               <div>
-                <span className="font-bold text-[#174A32] uppercase tracking-wider text-[10px] block mb-2">
+                <span className="font-bold text-[#174A32] text-xs block mb-2">
                   Popular Searches
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -101,7 +101,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#C9A227]/20 flex items-center justify-between text-[#5F806D] text-[11px]">
+              <div className="pt-2 border-t border-[#C9A227]/20 flex items-center justify-between text-[#5F806D] text-xs">
                 <span>Sri Lakshmi Ganapathi Trading Company • Telangana</span>
                 <span className="text-[#174A32] font-bold">100% Sortex Optical Checked</span>
               </div>
@@ -112,7 +112,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
               {/* Product Results */}
               {searchResults.products.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-[#174A32] uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#174A32] flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
                     Rice Varieties ({searchResults.products.length})
                   </span>
@@ -155,7 +155,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
               {/* Recipe Results */}
               {searchResults.recipes.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-[#174A32] uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#174A32] flex items-center gap-1.5">
                     <Utensils className="w-3.5 h-3.5 text-[#C9A227]" />
                     Recipes ({searchResults.recipes.length})
                   </span>
