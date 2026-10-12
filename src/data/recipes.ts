@@ -41,7 +41,6 @@ const CORE_RECIPES: Recipe[] = [
     title: 'Hyderabadi Dum Vegetable Biryani',
     shortDescription: 'Fragrant, slow-cooked layers of saffron-infused LG Gold HMT Rice and spiced seasonal vegetables.',
     fullDescription: 'Experience the royal flavors of Hyderabad prepared with the pristine, elongated grains of LG Gold HMT Rice. Naturally aged for over a year, each grain cooks separate and fluffy, trapping the rich steam of saffron, fried onions, mint, and whole aromatic spices during the traditional Dum sealing method.',
-    photo: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1000&q=85',
     art: { kind: 'pot', rice: 'golden', top: ['#7A3E22', '#2F7D4F', '#E0A21A'] },
     prepTimeMinutes: 25,
     cookTimeMinutes: 35,
