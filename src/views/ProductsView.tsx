@@ -22,12 +22,12 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
+      <div className="bg-[#0B3B2C] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Rice Products' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-2">
-            <span className="text-[11px] font-bold text-[#E0A21A] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#E0A21A] flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               100% Sortex Optical Checked
             </span>
@@ -105,7 +105,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
         {/* Commercial Inquiries CTA banner */}
         <div className="bg-[#0B3B2C] text-white p-8 sm:p-10 border-t-4 border-[#E0A21A] flex flex-col md:flex-row items-center justify-between gap-6 shadow-clean rounded-sm">
           <div className="space-y-2 text-center md:text-left">
-            <span className="text-[11px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               B2B Commercial Procurement
             </span>
             <h3 className="font-serif-brand font-bold text-2xl sm:text-3xl text-white">

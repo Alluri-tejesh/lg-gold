@@ -183,7 +183,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               />
             </div>
             <div>
-              <span className="text-[10px] font-bold text-[#E0A21A] block">
+              <span className="text-xs font-bold text-[#E0A21A] block">
                 Recommended Authentic Ingredient
               </span>
               <h3 className="font-serif-brand font-bold text-xl sm:text-2xl text-white">

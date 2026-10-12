@@ -68,13 +68,13 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Top Hero Banner in Deep Green & Gold */}
-      <div className="bg-[#0B3B2C] text-white py-12 sm:py-16 border-b-4 border-[#E0A21A] relative overflow-hidden">
+      <div className="bg-[#0B3B2C] text-white py-10 sm:py-12 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 space-y-5">
           <Breadcrumbs items={[{ label: 'Export Desk' }]} onNavigate={onNavigate} variant="dark" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-[#F0D890] border border-[#E0A21A]/40 text-[11px] font-bold rounded-xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-[#F0D890] border border-[#E0A21A]/40 text-xs font-bold rounded-xs">
                 <Globe className="w-3.5 h-3.5 text-[#E0A21A]" />
                 <span>Direct Agricultural Exports From Telangana, India</span>
               </div>
@@ -122,7 +122,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
         {/* Section: Export Products */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               Certified Export Varieties
             </span>
             <h2 className="font-serif-brand font-bold text-3xl sm:text-4xl text-[#0B3B2C]">
@@ -133,13 +133,13 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* HMT Export Box */}
             <div className="p-6 rounded-sm bg-white border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean space-y-4 hover:border-[#E0A21A] transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-[#4C6358]">Medium-Slender Grain</span>
-                <span className="text-[10px] font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 rounded-xs border border-[#E0A21A]/30">
+                <span className="text-xs font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 rounded-xs border border-[#E0A21A]/30">
                   Export Grade A
                 </span>
               </div>
@@ -159,7 +159,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             <div className="p-6 rounded-sm bg-white border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean space-y-4 hover:border-[#E0A21A] transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-[#4C6358]">Super-Fine Grain</span>
-                <span className="text-[10px] font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 rounded-xs border border-[#E0A21A]/30">
+                <span className="text-xs font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 rounded-xs border border-[#E0A21A]/30">
                   Export Grade A+
                 </span>
               </div>
@@ -181,7 +181,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
         {/* Section: Who We Supply */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               Global Client Profiles
             </span>
             <h2 className="font-serif-brand font-bold text-3xl sm:text-4xl text-[#0B3B2C]">
@@ -260,7 +260,7 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
           <div className="bg-[#0B3B2C] text-white p-6 sm:p-8 border-b border-[#E0A21A]/40">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <span className="text-[10px] font-bold text-[#E0A21A]">Commercial RFQ</span>
+                <span className="text-xs font-bold text-[#E0A21A]">Commercial RFQ</span>
                 <h3 className="font-serif-brand font-bold text-2xl sm:text-3xl text-white">
                   Request International Export Quote
                 </h3>

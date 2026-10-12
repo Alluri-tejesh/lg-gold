@@ -30,7 +30,7 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
       </div>
 
       {/* Modern Clean Comparison Table Layout */}
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full">
         
         {/* Table Column Headers */}
         <div className="grid grid-cols-12 items-end pb-3 sm:pb-4 border-b border-gray-200 gap-2">
@@ -228,11 +228,10 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           {/* Sub-item: Hyderabadi Dum Biryani */}
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-sm shrink-0">🍚</span>
               <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Biryani & Pulao</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-[10px] sm:text-xs font-bold text-[#0B3B2C]">Best Match ⭐</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#0B3B2C]">Best Match</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
@@ -242,35 +241,32 @@ export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) 
           {/* Sub-item: Traditional Andhra Thali / Sambar */}
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-sm shrink-0">🍛</span>
               <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Thali & Sambar</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-[10px] sm:text-xs font-bold text-[#916E14]">Best Match ⭐</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#916E14]">Best Match</span>
             </div>
           </div>
 
           {/* Sub-item: Rasam Rice & Curd Rice */}
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-sm shrink-0">🥣</span>
               <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Rasam & Curd</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
               <span className="text-[10px] sm:text-xs text-gray-500">Good</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-[10px] sm:text-xs font-bold text-[#916E14]">Best Match ⭐</span>
+              <span className="text-[10px] sm:text-xs font-bold text-[#916E14]">Best Match</span>
             </div>
           </div>
 
           {/* Sub-item: Daily Family Meals */}
           <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
             <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-sm shrink-0">🏠</span>
               <span className="text-[11px] sm:text-xs text-[#15231C] font-medium leading-tight">Daily Family Meals</span>
             </div>
             <div className="col-span-3 sm:col-span-3 text-center">

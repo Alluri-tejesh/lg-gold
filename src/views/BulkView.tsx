@@ -57,12 +57,12 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
+      <div className="bg-[#0B3B2C] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Bulk Rice Orders' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               Commercial Tonnage & Institutional Logistics
             </span>
             <h1 className="font-serif-brand font-bold text-3xl sm:text-5xl text-white">
@@ -107,7 +107,7 @@ export const BulkView: React.FC<BulkViewProps> = ({ onNavigate }) => {
         {/* Bulk Form */}
         <div className="bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean overflow-hidden max-w-3xl mx-auto">
           <div className="bg-[#0B3B2C] text-white p-6 sm:p-8 border-b border-[#E0A21A]/40">
-            <span className="text-[10px] font-bold text-[#E0A21A]">Direct Dispatch Desk</span>
+            <span className="text-xs font-bold text-[#E0A21A]">Direct Dispatch Desk</span>
             <h3 className="font-serif-brand font-bold text-2xl sm:text-3xl text-white">
               Bulk Tonnage Dispatch Form
             </h3>

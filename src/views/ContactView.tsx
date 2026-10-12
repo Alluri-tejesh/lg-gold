@@ -47,12 +47,12 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
+      <div className="bg-[#0B3B2C] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Contact Us' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               Mill & Commercial Desk
             </span>
             <h1 className="font-serif-brand font-bold text-3xl sm:text-5xl text-white">
@@ -141,7 +141,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
           {/* Contact Form (6 Cols) */}
           <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 p-6 sm:p-8 shadow-clean space-y-5">
             <div>
-              <span className="text-[10px] font-bold text-[#E0A21A]">Direct Message</span>
+              <span className="text-xs font-bold text-[#E0A21A]">Direct Message</span>
               <h2 className="font-serif-brand font-bold text-2xl text-[#0B3B2C]">
                 Send Us a Message
               </h2>
@@ -244,8 +244,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
           <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 p-6 sm:p-8 shadow-clean space-y-4 flex flex-col justify-between">
             <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-[#E0A21A]">Location & Logistics Hub</span>
-                <span className="text-[10px] font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2 py-0.5 rounded-xs border border-[#E0A21A]/30">
+                <span className="text-xs font-bold text-[#E0A21A]">Location & Logistics Hub</span>
+                <span className="text-xs font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2 py-0.5 rounded-xs border border-[#E0A21A]/30">
                   Plus Code: VG3P+G6
                 </span>
               </div>

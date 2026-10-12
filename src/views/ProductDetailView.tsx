@@ -46,7 +46,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
 
   // Linked recipes made with this rice
-  const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id);
+  const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id).slice(0, 3);
 
   const handleAddToCart = () => {
     addToCart(product, selectedPackSize, quantity);
@@ -181,7 +181,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               {/* Top Meta Bar: Origin/Sortex Badge + Rating + Share */}
               <div className="flex items-center justify-between gap-2 pb-2 border-b border-gray-100">
                 <div className="flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 border border-[#E0A21A]/30 rounded-xs whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-bold text-[#0B3B2C] bg-[#F3F4EC] px-2.5 py-1 border border-[#E0A21A]/30 rounded-xs whitespace-nowrap">
                     <Wheat className="w-3.5 h-3.5 text-[#E0A21A] shrink-0" />
                     <span>100% Sortex Cleaned • Aged 12+ M</span>
                   </span>
@@ -308,7 +308,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
 
                   <button
                     onClick={handleBuyNow}
-                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#E0A21A] text-[#0B3B2C] font-bold text-[11px] sm:text-xs shadow-xs hover:bg-[#F0D890] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
+                    className="w-full py-3 sm:py-3.5 px-2 sm:px-4 rounded-xs bg-[#E0A21A] text-[#0B3B2C] font-bold text-xs sm:text-xs shadow-xs hover:bg-[#F0D890] transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                   >
                     <span className="truncate">Buy Now</span>
                   </button>
@@ -327,14 +327,14 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               <div className="pt-3 border-t border-[#E0A21A]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
                 <button
                   onClick={() => onNavigate('wholesale')}
-                  className="font-bold text-[11px] text-[#0B3B2C] hover:text-[#E0A21A] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="font-bold text-xs text-[#0B3B2C] hover:text-[#E0A21A] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
                   <Boxes className="w-3.5 h-3.5 text-[#E0A21A] shrink-0" />
                   <span>Wholesale Lots (26kg Multi-Bags)</span>
                 </button>
                 <button
                   onClick={() => onNavigate('export')}
-                  className="font-bold text-[11px] text-[#0B3B2C] hover:text-[#E0A21A] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="font-bold text-xs text-[#0B3B2C] hover:text-[#E0A21A] flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
                 >
                   <Globe className="w-3.5 h-3.5 text-[#E0A21A] shrink-0" />
                   <span>Container Export Quote</span>
@@ -496,7 +496,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-[#E0A21A]">
+                <span className="text-xs font-bold text-[#E0A21A]">
                   From Our Kitchen
                 </span>
                 <h2 className="font-serif-brand font-bold text-2xl sm:text-3xl text-[#0B3B2C] mt-1">

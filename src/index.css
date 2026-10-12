@@ -85,3 +85,10 @@
   to { opacity: 1; transform: none; }
 }
 .animate-fadeIn { animation: fadeIn 160ms ease-out; }
+
+/* Small saffron labels were written for dark bands. On light surfaces that saffron
+   fails contrast, so darken it there and keep the bright saffron inside dark sections. */
+.text-\[\#E0A21A\] { color: #8F6A0E; }
+[class~="bg-[#0B3B2C]"] .text-\[\#E0A21A\],
+[class~="bg-[#072A1F]"] .text-\[\#E0A21A\],
+[class~="bg-[#0B3B2C]"].text-\[\#E0A21A\] { color: #E0A21A; }

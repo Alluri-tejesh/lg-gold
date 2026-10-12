@@ -57,12 +57,12 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
+      <div className="bg-[#0B3B2C] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'Our Quality Standards' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold text-[#E0A21A] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#E0A21A] flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4" />
               100% Sortex Optical Checked
             </span>
@@ -81,7 +81,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
         {/* Optical Sorting & Milling Infrastructure Spotlight */}
         <div className="bg-white rounded-sm border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 p-6 sm:p-10 shadow-clean grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-6 space-y-4">
-            <span className="text-[10px] font-bold text-[#E0A21A] flex items-center gap-1">
+            <span className="text-xs font-bold text-[#E0A21A] flex items-center gap-1">
               <Factory className="w-4 h-4" /> Computerized Milltec Processing Line
             </span>
             <h2 className="font-serif-brand font-bold text-2xl sm:text-3xl text-[#0B3B2C]">
@@ -114,7 +114,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
                 className="w-full h-auto max-h-[380px] object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-3 text-white">
+              <div className="bg-[#0B3B2C] p-3 text-white">
                 <span className="text-[11px] font-bold block text-[#F0D890]">Milltec Automated Milling Units (12, 14, 15)</span>
                 <span className="text-[10px] text-white/80">Sri Lakshmi Ganapathi Facility • Venkatadri Palem, Telangana</span>
               </div>
@@ -125,7 +125,7 @@ export const QualityView: React.FC<QualityViewProps> = ({ onNavigate }) => {
         {/* 6 Step Process */}
         <div className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               End-to-End Quality Architecture
             </span>
             <h2 className="font-serif-brand font-bold text-3xl text-[#0B3B2C]">

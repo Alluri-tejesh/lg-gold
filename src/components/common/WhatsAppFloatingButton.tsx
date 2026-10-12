@@ -11,7 +11,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end group">
+    <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-40 hidden lg:flex flex-col items-end group">
       {/* Floating Tooltip Message */}
       {isOpenTooltip && (
         <div className="mb-3 max-w-xs bg-white p-3.5 rounded-xs shadow-clean border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 animate-fadeIn text-xs relative">

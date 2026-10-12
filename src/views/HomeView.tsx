@@ -282,7 +282,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <caption className="sr-only">Grain specifications of LG Gold HMT and JSR rice</caption>
               <thead>
                 <tr className="align-bottom">
-                  <th scope="col" className="w-1/4 p-5">
+                  <th scope="col" className="w-28 sm:w-1/4 p-3 sm:p-5">
                     <span className="sr-only">Specification</span>
                   </th>
                   {PRODUCTS.map((p) => (

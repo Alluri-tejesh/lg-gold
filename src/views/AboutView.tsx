@@ -26,12 +26,12 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
     <div className="bg-[#F3F4EC] min-h-screen pb-24">
       
       {/* Header Banner */}
-      <div className="bg-[#0B3B2C] text-white py-10 sm:py-14 border-b-4 border-[#E0A21A]">
+      <div className="bg-[#0B3B2C] text-white py-8 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
           <Breadcrumbs items={[{ label: 'About Us' }]} onNavigate={onNavigate} variant="dark" />
           
           <div className="max-w-3xl space-y-3">
-            <span className="text-[10px] font-bold text-[#E0A21A]">
+            <span className="text-xs font-bold text-[#E0A21A]">
               Agricultural Roots & Milling Heritage
             </span>
             <h1 className="font-serif-brand font-bold text-3xl sm:text-5xl text-white">
@@ -85,7 +85,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
                 className="w-full h-auto max-h-[380px] object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 text-white">
+              <div className="bg-[#0B3B2C] p-3 text-white">
                 <span className="text-[11px] font-bold block text-[#F0D890]">Milltec Industrial Processing Unit</span>
                 <span className="text-[10px] text-white/80">Sri Lakshmi Ganapathi Mill Facility • Venkatadri Palem, Telangana</span>
               </div>
@@ -97,7 +97,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
         <div className="bg-[#0B3B2C] text-white rounded-sm p-6 sm:p-10 border-t-4 border-[#E0A21A] border-x border-b border-[#E0A21A]/20 shadow-clean space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E0A21A]/30 pb-4">
             <div>
-              <span className="text-[10px] font-bold text-[#E0A21A] flex items-center gap-1.5">
+              <span className="text-xs font-bold text-[#E0A21A] flex items-center gap-1.5">
                 <Cpu className="w-4 h-4" />
                 Milling Infrastructure & Technology
               </span>
