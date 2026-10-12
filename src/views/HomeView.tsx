@@ -35,6 +35,8 @@ import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
 import { ProductCard } from '../components/common/ProductCard';
 import { RecipeCard } from '../components/common/RecipeCard';
 import { millPlantImage, jsrBagImage } from '../assets';
+import { Reveal, CountUp } from '../components/common/motion';
+import { JourneyTimeline } from '../components/common/JourneyTimeline';
 
 interface HomeViewProps {
   onNavigate: (route: string, param?: string) => void;
@@ -56,17 +58,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       <section className="bg-[#F8F5EA] border-b border-[#C9A227]/20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-7 space-y-6">
-            <p className="text-sm sm:text-base font-semibold text-[#8F6A0E]">
+            <p className="fade-up text-sm sm:text-base font-semibold text-[#8F6A0E]" style={{ ['--d' as string]: '0ms' }}>
               Sri Lakshmi Ganapathi Trading Company, Telangana
             </p>
-            <h1 className="font-serif-brand font-medium text-4xl sm:text-5xl lg:text-6xl text-[#174A32] tracking-tight leading-[1.08]">
+            <h1 className="fade-up font-serif-brand font-medium text-4xl sm:text-5xl lg:text-6xl text-[#174A32] tracking-tight leading-[1.08]" style={{ ['--d' as string]: '80ms' }}>
               Pure Telangana rice,<br />straight from our mill.
             </h1>
-            <p className="text-lg text-[#202522]/80 leading-relaxed max-w-xl">
+            <p className="fade-up text-lg text-[#202522]/80 leading-relaxed max-w-xl" style={{ ['--d' as string]: '170ms' }}>
               LG Gold mills single-origin HMT and JSR rice at Venkatadri Palem. Every grain is aged for 12 months or more
               and sorted by optical cameras, then packed in 26kg bags for homes, wholesalers and export buyers.
             </p>
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="fade-up flex flex-wrap gap-3 pt-2" style={{ ['--d' as string]: '260ms' }}>
               <button
                 onClick={() => onNavigate('products')}
                 className="px-7 py-3.5 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
@@ -80,7 +82,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                 Get wholesale or export rates
               </button>
             </div>
-            <ul className="flex flex-wrap gap-x-8 gap-y-2 pt-4 text-sm text-[#4C6358] font-medium">
+            <ul className="fade-up flex flex-wrap gap-x-8 gap-y-2 pt-4 text-sm text-[#4C6358] font-medium" style={{ ['--d' as string]: '350ms' }}>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> 100% optical sorted</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> 12+ months aged</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#C9A227]" /> Ships across India and abroad</li>
@@ -96,7 +98,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <img
                 src={jsrBagImage}
                 alt="LG Gold JSR Lachkari Kolam Rice, 26kg bag"
-                className="mx-auto h-[420px] sm:h-[480px] w-auto rounded-sm shadow-2xl -rotate-2 group-hover:rotate-0 transition-transform duration-300"
+                className="settle-in mx-auto h-[420px] sm:h-[480px] w-auto rounded-sm shadow-2xl -rotate-2 group-hover:rotate-0 transition-transform duration-300"
               />
               <span className="mt-8 flex items-center justify-between text-left">
                 <span>
@@ -109,6 +111,25 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               </span>
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* NUMBERS: count up once when they scroll into view */}
+      <section className="bg-[#174A32] text-[#F8F5EA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-12 grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
+          {[
+            { to: 12, suffix: '+', label: 'months of natural ageing' },
+            { to: 26, suffix: ' kg', label: 'in every standard bag' },
+            { to: 1000, suffix: '', label: 'bags fit in a 20ft container', format: (n: number) => n.toLocaleString('en-IN') },
+            { to: 100, suffix: '%', label: 'optical Sortex sorted' },
+          ].map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 110}>
+              <p className="font-serif-brand font-bold text-4xl sm:text-5xl text-[#C9A227]">
+                <CountUp to={stat.to} suffix={stat.suffix} format={stat.format} />
+              </p>
+              <p className="mt-1 text-[#F8F5EA]/80">{stat.label}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -141,20 +162,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                 body: '20ft and 40ft containers with private-label bags, phytosanitary certificates and port logistics.',
                 action: 'Request an export quote',
               },
-            ].map((p) => (
-              <button
+            ].map((p, i) => (
+              <Reveal
                 key={p.route}
-                onClick={() => onNavigate(p.route)}
-                className="group text-left py-8 md:py-10 md:px-8 first:md:pl-0 last:md:pr-0 cursor-pointer border-b md:border-b-0 border-[#C9A227]/30 last:border-b-0"
+                delay={i * 120}
+                className="md:px-8 first:md:pl-0 last:md:pr-0 border-b md:border-b-0 border-[#C9A227]/30 last:border-b-0"
               >
-                <p.icon className="w-7 h-7 text-[#174A32]" />
-                <h3 className="mt-4 font-serif-brand font-bold text-xl text-[#174A32]">{p.title}</h3>
-                <p className="mt-2 text-[#4C6358] leading-relaxed">{p.body}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#174A32] group-hover:text-[#8F6A0E]">
-                  {p.action}
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
+                <button onClick={() => onNavigate(p.route)} className="group text-left py-8 md:py-10 w-full cursor-pointer">
+                  <p.icon className="w-7 h-7 text-[#174A32]" />
+                  <h3 className="mt-4 font-serif-brand font-bold text-xl text-[#174A32]">{p.title}</h3>
+                  <p className="mt-2 text-[#4C6358] leading-relaxed">{p.body}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#174A32] group-hover:text-[#8F6A0E]">
+                    {p.action}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </button>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -181,13 +204,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
           {/* 2 Featured Product Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
-            {PRODUCTS.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={(slug) => onNavigate('product-detail', slug)}
-                onSelectExportQuote={() => onNavigate('export')}
-              />
+            {PRODUCTS.map((product, i) => (
+              <Reveal key={product.id} delay={i * 140} className="h-full flex [&>*]:flex-1">
+                <ProductCard
+                  product={product}
+                  onViewDetails={(slug) => onNavigate('product-detail', slug)}
+                  onSelectExportQuote={() => onNavigate('export')}
+                />
+              </Reveal>
             ))}
           </div>
 
@@ -223,10 +247,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
             {WHY_LG_GOLD_PILLARS.map((pillar, idx) => (
-              <div
-                key={pillar.id}
-                className="p-6 bg-white border border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] transition-all flex flex-col justify-between rounded-sm"
-              >
+              <Reveal key={pillar.id} delay={idx * 90} className="h-full flex [&>*]:flex-1">
+              <div className="lift p-6 bg-white border border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] flex flex-col justify-between rounded-sm">
                 <div>
                   <div className="text-2xl font-serif-brand font-bold text-[#174A32] mb-3 border-b border-[#F8F5EA] pb-2">
                     0{idx + 1}
@@ -242,6 +264,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   </p>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
 
@@ -288,36 +311,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Steps Timeline Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 relative">
-            {(journeyTab === 'domestic' ? GRAIN_TO_KITCHEN_STEPS : EXPORT_JOURNEY_STEPS).map((step) => (
-              <div
-                key={step.step}
-                className="p-5 bg-[#F8F5EA]/60 border border-[#C9A227]/20 hover:bg-white hover:border-[#C9A227] transition-all flex flex-col justify-between relative group rounded-sm shadow-clean"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3 border-b border-[#E7D59A]/40 pb-2">
-                    <span className="w-6 h-6 bg-[#174A32] text-[#C9A227] text-xs font-bold flex items-center justify-center rounded-xs font-serif-brand">
-                      {step.step}
-                    </span>
-                    <span className="text-xs font-bold text-[#5F806D]">Step {step.step}</span>
-                  </div>
-
-                  <h3 className="font-serif-brand font-bold text-sm sm:text-base text-[#174A32] mb-1.5">
-                    {step.title}
-                  </h3>
-
-                  <p className="text-sm text-[#202522]/80 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-[#E7D59A]/40 text-xs uppercase font-bold tracking-wider text-[#C9A227]">
-                  Standard Verified ✓
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Steps on a line that draws itself when scrolled into view */}
+          <JourneyTimeline key={journeyTab} steps={journeyTab === 'domestic' ? GRAIN_TO_KITCHEN_STEPS : EXPORT_JOURNEY_STEPS} />
 
           {/* Modern Processing Line Spotlight Card */}
           <div className="mt-14 p-6 sm:p-8 bg-[#F8F5EA] border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 rounded-sm shadow-clean grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

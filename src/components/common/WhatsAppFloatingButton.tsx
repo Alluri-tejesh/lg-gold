@@ -39,7 +39,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
         aria-label="Chat on WhatsApp"
         className="w-14 h-14 bg-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-108 active:scale-95 transition-all duration-300 border-2 border-white cursor-pointer relative"
       >
-        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#C9A227] rounded-full border-2 border-white animate-ping" />
+        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#C9A227] rounded-full border-2 border-white" />
         <MessageCircle className="w-7 h-7 fill-white" />
       </button>
     </div>
