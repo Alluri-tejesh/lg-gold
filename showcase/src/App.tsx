@@ -63,7 +63,7 @@ export const App = () => {
 
   const goTo = (i: number) => {
     const el = document.querySelectorAll<HTMLElement>('[data-step]')[i];
-    if (el) window.scrollTo({ top: el.offsetTop, behavior: world.reduced ? 'auto' : 'smooth' });
+    if (el) window.scrollTo({ top: el.offsetTop, behavior: 'auto' });
   };
 
   const bags = Math.round(tonnes * BAGS_PER_TONNE);

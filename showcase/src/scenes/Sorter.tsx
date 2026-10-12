@@ -6,7 +6,7 @@ import { makeGrainGeometry } from '../grain';
 import { world } from '../store';
 
 const N = 110;
-const SPEED = 2.1;
+const SPEED = 1.1;
 const GATE = 0.4;
 
 interface G {
@@ -64,7 +64,7 @@ export const Sorter = () => {
     const m = mesh.current;
     if (!m) return;
     const d = Math.min(dt, 0.05);
-    const run = world.reduced ? 0 : 1;
+    const run = world.osReduced ? 0 : 1;
     grains.forEach((g, i) => {
       if (g.ej) {
         g.x += g.vx * d * run;
@@ -80,7 +80,7 @@ export const Sorter = () => {
         }
       } else {
         g.x += SPEED * d * run;
-        if (g.bad && g.x > GATE && g.x < GATE + 0.3 && !world.reduced) {
+        if (g.bad && g.x > GATE && g.x < GATE + 0.3 && !world.osReduced) {
           g.ej = true;
           g.vx = 0.9;
           g.vy = 4.2 + rnd(i) * 1.5;
@@ -101,7 +101,7 @@ export const Sorter = () => {
 
     if (beam.current) {
       const mat = beam.current.material as THREE.MeshBasicMaterial;
-      mat.opacity = 0.35 + (world.reduced ? 0.15 : Math.sin(clock.elapsedTime * 9) * 0.12);
+      mat.opacity = 0.45;
     }
   });
 

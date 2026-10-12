@@ -16,7 +16,7 @@ import { Port } from './scenes/Port';
 const Station = ({ index, children }: { index: number; children: ReactNode }) => {
   const ref = useRef<THREE.Group>(null);
   useFrame(() => {
-    if (ref.current) ref.current.visible = Math.abs(world.f - index) < 1.35;
+    if (ref.current) ref.current.visible = Math.abs(world.f - index) < 0.5;
   });
   return (
     <group ref={ref} position={[0, 0, STATION_Z[index]]}>

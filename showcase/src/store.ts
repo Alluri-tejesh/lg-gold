@@ -6,7 +6,14 @@ export const world = {
   tonnes: 26,
   /** Horizontal drag offset in radians, springs back to zero. */
   drag: 0,
-  reduced: typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  /**
+   * Ambient motion (swaying, bobbing, spinning, camera drift) is switched off for everyone: continuous
+   * movement made some visitors feel unwell. Only motion the visitor triggers, or that explains the
+   * product (the sorter belt, the bag filling), remains.
+   */
+  reduced: true,
+  /** The visitor's own OS setting. Explanatory motion also stops when this is on. */
+  osReduced: typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 };
 
 export const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));

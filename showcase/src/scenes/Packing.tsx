@@ -22,7 +22,7 @@ export const Packing = () => {
   useFrame(({ clock }, dt) => {
     const near = Math.abs(world.f - STATION) < 0.45;
     fill.current = clamp(fill.current + (near ? dt / 3.2 : -dt / 0.8));
-    if (world.reduced) fill.current = near ? 1 : 0;
+    if (world.osReduced) fill.current = near ? 1 : 0;
     const f = smooth(fill.current);
 
     if (bag.current) {
@@ -33,7 +33,7 @@ export const Packing = () => {
 
     const m = stream.current;
     if (!m) return;
-    const pouring = fill.current > 0.02 && fill.current < 0.98 && !world.reduced;
+    const pouring = fill.current > 0.02 && fill.current < 0.98 && !world.osReduced;
     seeds.forEach((s, i) => {
       const p = (s.p + clock.elapsedTime * 0.9) % 1;
       const y = lerp(3.5, BAG_Y + 1.1, p);

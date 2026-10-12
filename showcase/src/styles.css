@@ -13,7 +13,6 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -91,10 +90,9 @@ main { position: relative; z-index: 10; }
   margin: 0 auto;
   text-align: center;
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.5s ease;
 }
-.copy.in { opacity: 1; transform: none; }
+.copy.in { opacity: 1; }
 .tone-dark { color: #f5f5f7; }
 .tone-light { color: var(--ink); }
 .tone-dark .sub, .tone-dark .hint, .tone-dark .kicker { color: var(--night-dim); }
@@ -202,7 +200,6 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .copy { transition: none; transform: none; }
+  .copy { transition: none; }
   .pill, .nav { transition: none; }
 }
