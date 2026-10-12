@@ -49,7 +49,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Brand Stamp */}
         <div className="absolute top-3.5 left-3.5 bg-[#174A32] text-white px-2.5 py-0.5 border border-[#C9A227]/40 shadow-xs flex items-center gap-1.5 rounded-xs">
           <span className="font-serif-brand font-bold text-xs text-[#C9A227]">LG GOLD</span>
-          <span className="text-xs text-[#E7D59A]">• {product.grainSpecs.aging}</span>
+          <span className="hidden sm:inline text-xs text-[#E7D59A]">• {product.grainSpecs.aging}</span>
         </div>
 
         {/* Rating badge */}
@@ -70,7 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
       <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
         <div>
           {/* Variety & Title */}
-          <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 mb-1">
             <span className="text-xs font-bold text-[#5F806D]">
               {product.grainSpecs.variety}
             </span>
@@ -107,7 +107,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
             <span className="text-xs">Choose Quantity / Pack:</span>
             <span className="text-xs text-[#5F806D] font-medium lowercase">{currentPack.packagingType}</span>
           </div>
-          <div className="grid grid-cols-3 gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5" onClick={(e) => e.stopPropagation()}>
             {product.packOptions.map((pack) => {
               const isSelected = selectedPackSize === pack.size;
               return (

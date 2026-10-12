@@ -68,16 +68,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               LG Gold mills single-origin HMT and JSR rice at Venkatadri Palem. Every grain is aged for 12 months or more
               and sorted by optical cameras, then packed in 26kg bags for homes, wholesalers and export buyers.
             </p>
-            <div className="fade-up flex flex-wrap gap-3 pt-2" style={{ ['--d' as string]: '260ms' }}>
+            <div className="fade-up flex flex-col sm:flex-row gap-3 pt-2" style={{ ['--d' as string]: '260ms' }}>
               <button
                 onClick={() => onNavigate('products')}
-                className="px-7 py-3.5 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-7 py-3.5 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
               >
                 Shop 26kg bags
               </button>
               <button
                 onClick={() => onNavigate('wholesale')}
-                className="px-7 py-3.5 bg-transparent text-[#174A32] font-semibold border-2 border-[#174A32] rounded-sm hover:bg-[#174A32]/5 transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-7 py-3.5 bg-transparent text-[#174A32] font-semibold border-2 border-[#174A32] rounded-sm hover:bg-[#174A32]/5 transition-colors cursor-pointer"
               >
                 Get wholesale or export rates
               </button>
