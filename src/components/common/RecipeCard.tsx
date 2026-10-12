@@ -2,6 +2,7 @@ import React from 'react';
 import { Clock, ChefHat, ArrowRight, Utensils } from 'lucide-react';
 import { Recipe } from '../../types';
 import { PRODUCTS } from '../../data/products';
+import { RecipeImage } from './RecipeArt';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -18,11 +19,9 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onViewRecipe }) 
     >
       {/* Recipe Food Image */}
       <div className="relative aspect-16/10 bg-[#F8F5EA] overflow-hidden border-b border-[#C9A227]/20">
-        <img
-          src={recipe.image}
-          alt={recipe.title}
+        <RecipeImage
+          recipe={recipe}
           className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
-          referrerPolicy="no-referrer"
         />
 
         {/* Highlight Badge */}

@@ -1,25 +1,48 @@
 import { Recipe } from '../types';
+import { buildRecipe } from './recipeBuilder';
+import { BIRYANI } from './recipeSeeds/biryani';
+import { PULAO } from './recipeSeeds/pulao';
+import { VARIETY } from './recipeSeeds/variety';
+import { COMFORT } from './recipeSeeds/comfort';
+import { FRIED } from './recipeSeeds/fried';
+import { TRADITIONAL } from './recipeSeeds/traditional';
+import { SWEETS } from './recipeSeeds/sweets';
+import { BOWLS } from './recipeSeeds/bowls';
 
 export const RECIPE_CATEGORIES = [
   'All',
+  'Biryani',
+  'Pulao & One-Pot',
+  'Variety Rice',
+  'Fried Rice',
+  'Non-Vegetarian',
+  'Vegetarian',
+  'South Indian',
+  'Andhra & Telangana',
+  'Sweets',
+  'Festival',
+  'Kids & Lunchbox',
+  'Healthy',
+  'One-Pot',
+  'Traditional',
   'Quick & Easy',
   'Everyday Meals',
-  'Biryani',
-  'South Indian',
+  'Leftover Rice',
+  'Street Food',
+  'Breakfast',
   'Lunch',
   'Dinner',
-  'Traditional',
-  'Vegetarian'
 ];
 
-export const RECIPES: Recipe[] = [
+const CORE_RECIPES: Recipe[] = [
   {
     id: 'hmt-rice-biryani',
     slug: 'hmt-rice-biryani',
     title: 'Hyderabadi Dum Vegetable Biryani',
     shortDescription: 'Fragrant, slow-cooked layers of saffron-infused LG Gold HMT Rice and spiced seasonal vegetables.',
     fullDescription: 'Experience the royal flavors of Hyderabad prepared with the pristine, elongated grains of LG Gold HMT Rice. Naturally aged for over a year, each grain cooks separate and fluffy, trapping the rich steam of saffron, fried onions, mint, and whole aromatic spices during the traditional Dum sealing method.',
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1000&q=85',
+    photo: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'pot', rice: 'golden', top: ['#7A3E22', '#2F7D4F', '#E0A21A'] },
     prepTimeMinutes: 25,
     cookTimeMinutes: 35,
     totalTimeMinutes: 60,
@@ -76,7 +99,7 @@ export const RECIPES: Recipe[] = [
     title: 'Classic South Indian Lemon Rice (Chitranna)',
     shortDescription: 'Zesty, turmeric-tinted rice tempered with crunchy peanuts, mustard seeds, curry leaves, and fresh lime.',
     fullDescription: 'The quintessential South Indian comfort meal. LG Gold HMT Rice is steamed to delicate perfection, cooled slightly so each grain remains distinct, and tossed with fresh lemon juice, golden roasted peanuts, chana dal, curry leaves, and spicy green chilies.',
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'bowl', rice: 'turmeric', top: ['#2F7D4F', '#C58A4A', '#E0A21A'] },
     prepTimeMinutes: 10,
     cookTimeMinutes: 15,
     totalTimeMinutes: 25,
@@ -131,7 +154,7 @@ export const RECIPES: Recipe[] = [
     title: 'Soothing Temple Style Curd Rice (Thayir Sadam)',
     shortDescription: 'Velvety, cool curd rice made with tender LG Gold JSR Rice, tempered with ginger, mustard, and pomegranate.',
     fullDescription: 'The ultimate cooling dish for Indian summers. Made with soft-cooked LG Gold JSR Rice, fresh creamy homemade curd, a dash of warm milk to maintain freshness, and aromatic tempering of mustard, curry leaves, and ginger.',
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'curd', rice: 'cream', top: ['#C8283C', '#2F7D4F'] },
     prepTimeMinutes: 10,
     cookTimeMinutes: 15,
     totalTimeMinutes: 25,
@@ -181,7 +204,7 @@ export const RECIPES: Recipe[] = [
     title: 'Aromatic One-Pot Vegetable Pulao',
     shortDescription: 'Lightly spiced, ghee-roasted vegetable pulao featuring pristine LG Gold HMT long-slender grains.',
     fullDescription: 'A classic Sunday lunch favorite. Made with whole spices, sweet green peas, carrots, beans, and the exquisite non-sticky grains of LG Gold HMT Rice. Each bite offers warmth, sweetness, and garden-fresh flavor.',
-    image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'plate', rice: 'cream', top: ['#F2994A', '#8DBB45', '#E0A21A'] },
     prepTimeMinutes: 15,
     cookTimeMinutes: 20,
     totalTimeMinutes: 35,
@@ -230,7 +253,7 @@ export const RECIPES: Recipe[] = [
     title: 'Traditional Andhra Tamarind Pulihora',
     shortDescription: 'Tangy, spicy, and festive tamarind rice prepared with aged LG Gold HMT Rice and stone-ground spices.',
     fullDescription: 'The crown jewel of Andhra festive feasts and temple offerings. Rich tamarind pulp is simmered with jaggery, turmeric, green chilies, and sesame-fenugreek spice mix, then mixed into glistening grains of LG Gold HMT Rice.',
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'bowl', rice: 'turmeric', top: ['#7A3E22', '#2F7D4F', '#C8283C'] },
     prepTimeMinutes: 20,
     cookTimeMinutes: 25,
     totalTimeMinutes: 45,
@@ -278,7 +301,7 @@ export const RECIPES: Recipe[] = [
     title: 'Ghee-Loaded Authentic Ven Pongal',
     shortDescription: 'Comforting, peppery, creamy breakfast rice cooked with LG Gold JSR Rice, yellow moong dal, cashews, and cumin.',
     fullDescription: 'South India’s ultimate warm breakfast delicacy. The fine, tender grains of LG Gold JSR Rice blend harmoniously with roasted moong dal, crowned with a generous sizzle of golden cashews, crushed black peppercorns, cumin, and pure desi ghee.',
-    image: 'https://images.unsplash.com/photo-1546833998-877b37c2e5c6?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'bowl', rice: 'cream', top: ['#E0A21A', '#3A2A22', '#2F7D4F'] },
     prepTimeMinutes: 10,
     cookTimeMinutes: 20,
     totalTimeMinutes: 30,
@@ -325,7 +348,7 @@ export const RECIPES: Recipe[] = [
     title: 'Telangana Special Bagara Rice',
     shortDescription: 'Fragrant Telangana celebratory tempered rice cooked with whole spices, mint, coriander, and LG Gold JSR Rice.',
     fullDescription: 'The authentic flavor of Telangana festivities. Prepared by tempering whole garam masalas, onions, green chilies, mint, and coriander in ghee, then cooking fine LG Gold JSR Rice to fluffy perfection. Pairs with Mirchi ka Salan, Bagara Baingan, or rich curries.',
-    image: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'plate', rice: 'golden', top: ['#2F7D4F', '#7A3E22', '#E0A21A'] },
     prepTimeMinutes: 15,
     cookTimeMinutes: 20,
     totalTimeMinutes: 35,
@@ -372,7 +395,7 @@ export const RECIPES: Recipe[] = [
     title: 'Spiced Tomato & Mint Rice',
     shortDescription: 'Tangy, aromatic lunchbox favorite made with vine-ripened tomatoes, garden mint, and LG Gold HMT Rice.',
     fullDescription: 'A vibrant, savory rice dish made by simmering rich tomato masala with aromatic spices, tossed with the non-sticky, distinct grains of LG Gold HMT Rice.',
-    image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=1000&q=85',
+    art: { kind: 'bowl', rice: 'tomato', top: ['#2F7D4F', '#C8283C', '#E0A21A'] },
     prepTimeMinutes: 10,
     cookTimeMinutes: 20,
     totalTimeMinutes: 30,
@@ -412,3 +435,9 @@ export const RECIPES: Recipe[] = [
 export const getRecipeBySlug = (slug: string): Recipe | undefined => {
   return RECIPES.find(r => r.slug === slug || r.id === slug);
 };
+
+/** The 8 original recipes plus 92 more, built from the compact seed files in ./recipeSeeds. */
+export const RECIPES: Recipe[] = [
+  ...CORE_RECIPES,
+  ...[BIRYANI, PULAO, VARIETY, COMFORT, FRIED, TRADITIONAL, SWEETS, BOWLS].flat().map(buildRecipe),
+];

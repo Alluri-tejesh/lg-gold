@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, ArrowRight, Utensils, Package, Globe, Tag } from 'lucide-react';
 import { PRODUCTS } from '../../data/products';
 import { RECIPES } from '../../data/recipes';
+import { RecipeImage } from '../common/RecipeArt';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -154,11 +155,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                     onClick={() => handleSelect('recipe-detail', r.slug)}
                     className="p-3 rounded-xl border border-gray-200 hover:border-[#C9A227] hover:shadow-md transition-all flex items-center gap-3 cursor-pointer bg-white group"
                   >
-                    <img
-                      src={r.image}
-                      alt={r.title}
+                    <RecipeImage
+                      recipe={r}
                       className="w-14 h-14 rounded-lg object-cover border border-gray-100 group-hover:scale-105 transition-transform"
-                      referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-sm text-[#202522] truncate group-hover:text-[#174A32]">

@@ -69,6 +69,14 @@ export interface Product {
   reviewCount: number;
 }
 
+export interface RecipeArtSpec {
+  kind: 'bowl' | 'plate' | 'pot' | 'leaf' | 'wok' | 'curd' | 'sweet' | 'porridge';
+  rice: 'white' | 'cream' | 'turmeric' | 'golden' | 'tomato' | 'green' | 'brown' | 'beet' | 'orange';
+  /** Colours of the toppings scattered on the rice. */
+  top?: string[];
+  steam?: boolean;
+}
+
 export interface RecipeIngredient {
   item: string;
   amount: string;
@@ -87,7 +95,9 @@ export interface Recipe {
   title: string;
   shortDescription: string;
   fullDescription: string;
-  image: string;
+  /** Optional real photo. When absent, `art` is drawn instead. */
+  photo?: string;
+  art: RecipeArtSpec;
   prepTimeMinutes: number;
   cookTimeMinutes: number;
   totalTimeMinutes: number;

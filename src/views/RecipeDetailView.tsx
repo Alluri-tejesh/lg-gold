@@ -16,6 +16,7 @@ import { RECIPES, getRecipeBySlug } from '../data/recipes';
 import { PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { RecipeImage } from '../components/common/RecipeArt';
 
 interface RecipeDetailViewProps {
   recipeSlug: string;
@@ -163,12 +164,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
 
         {/* Hero Recipe Image */}
         <div className="rounded-3xl overflow-hidden shadow-md border-4 border-white aspect-16/9 bg-[#F8F5EA] relative">
-          <img
-            src={recipe.image}
-            alt={recipe.title}
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
+          <RecipeImage recipe={recipe} className="w-full h-full object-cover" />
         </div>
 
         {/* "Made with LG Gold [Product] Rice" Conversion Box */}
@@ -212,7 +208,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Buy This Rice (10kg Pack)</span>
+                  <span>Buy This Rice (26kg Bag)</span>
                 </>
               )}
             </button>

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, X, ArrowRight, Utensils, Sparkles, Tag } from 'lucide-react';
 import { PRODUCTS } from '../../data/products';
 import { RECIPES } from '../../data/recipes';
+import { RecipeImage } from './RecipeArt';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -167,11 +168,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onNav
                         className="p-3 rounded-xs bg-[#F8F5EA]/50 border border-[#C9A227]/30 hover:bg-white hover:border-[#C9A227] hover:shadow-xs transition-all flex items-center justify-between cursor-pointer group"
                       >
                         <div className="flex items-center gap-3">
-                          <img
-                            src={recipe.image}
-                            alt={recipe.title}
+                          <RecipeImage
+                            recipe={recipe}
                             className="w-12 h-12 rounded-xs object-cover border border-gray-100"
-                            referrerPolicy="no-referrer"
                           />
                           <div>
                             <h4 className="font-serif-brand font-bold text-sm text-[#202522] group-hover:text-[#174A32] transition-colors">
