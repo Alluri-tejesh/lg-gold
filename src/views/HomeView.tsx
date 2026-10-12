@@ -37,6 +37,7 @@ import { RecipeCard } from '../components/common/RecipeCard';
 import { millPlantImage, jsrBagImage } from '../assets';
 import { Reveal, CountUp } from '../components/common/motion';
 import { JourneyTimeline } from '../components/common/JourneyTimeline';
+import { WhyPillars } from '../components/common/WhyPillars';
 
 interface HomeViewProps {
   onNavigate: (route: string, param?: string) => void;
@@ -245,28 +246,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            {WHY_LG_GOLD_PILLARS.map((pillar, idx) => (
-              <Reveal key={pillar.id} delay={idx * 90} className="h-full flex [&>*]:flex-1">
-              <div className="lift p-6 bg-white border border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] flex flex-col justify-between rounded-sm">
-                <div>
-                  <div className="text-2xl font-serif-brand font-bold text-[#174A32] mb-3 border-b border-[#F8F5EA] pb-2">
-                    0{idx + 1}
-                  </div>
-                  <h3 className="font-serif-brand font-bold text-base sm:text-lg text-[#174A32] mb-1">
-                    {pillar.title}
-                  </h3>
-                  <span className="text-xs font-bold text-[#C9A227] block mb-2">
-                    {pillar.subtitle}
-                  </span>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
-              </div>
-              </Reveal>
-            ))}
-          </div>
+          <WhyPillars pillars={WHY_LG_GOLD_PILLARS} onNavigate={(route) => onNavigate(route)} />
 
         </div>
       </section>
