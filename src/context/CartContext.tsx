@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product, PackSize } from '../types';
 import { createWhatsAppUrl } from '../config/brandConfig';
+import { PRODUCTS } from '../data/products';
+import { priceInfo, formatPriceDate } from '../data/prices';
 
 interface CartContextType {
   cart: CartItem[];
@@ -29,7 +31,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      const items: CartItem[] = saved ? JSON.parse(saved) : [];
+      // Prices change daily, so a cart saved yesterday is re-priced with today's rates.
+      return items.map((item) => {
+        const pack = PRODUCTS.find((p) => p.id === item.productId)?.packOptions.find((o) => o.size === item.packSize);
+        return pack ? { ...item, price: pack.retailPrice, mrp: pack.mrp } : item;
+      });
     } catch {
       return [];
     }
@@ -132,7 +139,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       message += `Address: ${customerDetails.address}\n\n`;
     }
 
-    message += `Please confirm my order and share delivery / payment details. Thank you!`;
+    const asOf = formatPriceDate(priceInfo.updated);
+    message += `Prices shown are${asOf ? ` as of ${asOf}` : ' indicative'}. Please confirm today's rate, delivery charges and dispatch time. Thank you!`;
     return createWhatsAppUrl(message);
   };
 

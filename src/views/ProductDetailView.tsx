@@ -27,6 +27,7 @@ import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import { RecipeCard } from '../components/common/RecipeCard';
 import { GrainComparison } from '../components/common/GrainComparison';
 import { getProductWhatsAppMessage, createWhatsAppUrl } from '../config/brandConfig';
+import { priceInfo, formatPriceDate } from '../data/prices';
 
 interface ProductDetailViewProps {
   productSlug: string;
@@ -44,6 +45,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
   const [isCopied, setIsCopied] = useState(false);
 
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
+  const priceDate = formatPriceDate(priceInfo.updated);
 
   // Linked recipes made with this rice
   const linkedRecipes = RECIPES.filter(r => r.recommendedProductId === product.id).slice(0, 3);
@@ -264,7 +266,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ productSlu
               {/* Price Calculation & Quantity Counter */}
               <div className="pt-4 border-t border-[#C9A227]/20 flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-gray-500 block font-bold">Retail Price</span>
+                  <span className="text-xs text-gray-500 block font-bold">
+                    Retail price{priceDate ? `, as of ${priceDate}` : ''}
+                  </span>
                   <div className="flex items-baseline gap-2.5">
                     <span className="font-serif-brand font-bold text-3xl text-[#174A32]">
                       ₹{(currentPack.retailPrice * quantity).toLocaleString('en-IN')}

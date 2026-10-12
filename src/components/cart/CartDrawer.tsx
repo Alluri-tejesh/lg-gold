@@ -205,7 +205,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                 onClick={handleOpenCheckout}
                 className="w-full py-3 px-3 rounded-xs bg-[#174A32] text-white font-bold text-xs shadow-sm hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#174A32] whitespace-nowrap"
               >
-                <span>Proceed to Checkout</span>
+                <span>Add delivery details</span>
                 <ArrowRight className="w-4 h-4 text-[#C9A227] shrink-0" />
               </button>
 
@@ -214,7 +214,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                 className="w-full py-2.5 px-3 rounded-xs bg-[#25D366] text-white font-bold text-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
               >
                 <MessageCircle className="w-4 h-4 fill-white shrink-0" />
-                <span>Instant Order on WhatsApp</span>
+                <span>Quick order on WhatsApp</span>
               </button>
             </div>
 

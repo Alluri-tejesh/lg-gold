@@ -3,6 +3,7 @@ import { ShoppingBag, ArrowRight, Star, Globe, Boxes, MessageCircle, Check } fro
 import { Product, PackSize } from '../../types';
 import { useCart } from '../../context/CartContext';
 import { getProductWhatsAppMessage, createWhatsAppUrl } from '../../config/brandConfig';
+import { priceInfo, formatPriceDate } from '../../data/prices';
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +17,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
   const [isAdded, setIsAdded] = useState(false);
 
   const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
+  const priceDate = formatPriceDate(priceInfo.updated);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -135,7 +137,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col gap-3">
           <div className="flex items-baseline justify-between">
             <div>
-              <span className="text-xs text-[#5F806D] font-bold block">Retail Price</span>
+              <span className="text-xs text-[#5F806D] font-bold block">
+                Retail price{priceDate ? `, ${priceDate}` : ''}
+              </span>
               <div className="flex items-baseline gap-2">
                 <span className="font-serif-brand font-bold text-2xl text-[#174A32]">
                   ₹{currentPack.retailPrice.toLocaleString('en-IN')}
