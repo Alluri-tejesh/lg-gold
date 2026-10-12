@@ -18,3 +18,17 @@ npm run preview  # serve the production build
 
 Every push to `main` runs `.github/workflows/deploy.yml`, which type-checks, builds and publishes `dist/` to GitHub Pages.
 In the repository, set **Settings → Pages → Source** to **GitHub Actions** (one-time).
+
+## 3D product showcase
+
+`showcase/` is a separate Vite + React Three Fiber app: a scroll-driven 3D journey from paddy field to port, built around the
+real LG Gold JSR Lachkari Kolam bag artwork.
+
+```bash
+cd showcase
+npm install
+npm run dev     # http://localhost:5174
+npm run build
+```
+
+The GitHub Pages workflow builds it and publishes it under `/showcase/`. Bag textures live in `showcase/public/textures/`.

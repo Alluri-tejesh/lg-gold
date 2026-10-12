@@ -30,7 +30,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, 
       id: 'recipes',
       label: 'Recipes',
       icon: UtensilsCrossed,
-      action: () => onNavigate('recipes') || currentRoute === 'recipe-detail',
+      action: () => onNavigate('recipes'),
       isActive: currentRoute === 'recipes' || currentRoute === 'recipe-detail',
     },
     {

@@ -26,6 +26,14 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      # 3D product showcase: its own app, published under /showcase/
+      - run: npm ci
+        working-directory: showcase
+      - run: npm run lint
+        working-directory: showcase
+      - run: npm run build
+        working-directory: showcase
+      - run: mv showcase/dist dist/showcase
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

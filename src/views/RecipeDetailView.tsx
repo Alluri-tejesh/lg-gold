@@ -49,7 +49,7 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
   };
 
   const handleAddToCart = () => {
-    addToCart(matchedProduct, '10kg', 1);
+    addToCart(matchedProduct, '26kg Bag', 1);
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 2000);
   };
