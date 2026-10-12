@@ -246,15 +246,27 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
                   <div
                     key={idx}
                     onClick={() => toggleIngredient(idx)}
-                    className={`p-3 rounded-xl border text-xs flex items-center justify-between cursor-pointer transition-all ${
+                    className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
                       isChecked
-                        ? 'bg-gray-50 border-gray-200 text-gray-400 line-through'
+                        ? 'bg-gray-50 border-gray-200 text-gray-400'
                         : 'bg-[#F8F5EA]/50 border-[#E7D59A]/60 text-gray-800 hover:border-[#C9A227]'
                     }`}
                   >
-                    <span className="font-medium">{ing.item}</span>
-                    <span className="font-bold text-[#174A32] shrink-0 ml-2">
-                      {ing.amount}
+                    <span
+                      className={`mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center text-[11px] font-bold ${
+                        isChecked ? 'bg-[#174A32] border-[#174A32] text-[#C9A227]' : 'border-[#C9A227]/60 text-transparent'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      ✓
+                    </span>
+                    <span className="min-w-0">
+                      <span className={`block text-sm font-semibold ${isChecked ? 'line-through' : 'text-[#15231C]'}`}>
+                        {ing.item}
+                      </span>
+                      <span className={`block text-sm mt-0.5 ${isChecked ? 'line-through' : 'text-[#174A32]'}`}>
+                        {ing.amount}
+                      </span>
                     </span>
                   </div>
                 );
@@ -307,15 +319,17 @@ export const RecipeDetailView: React.FC<RecipeDetailViewProps> = ({ recipeSlug, 
             </div>
 
             {/* Chef's Tips */}
-            {recipe.chefTips && (
+            {recipe.chefTips && recipe.chefTips.length > 0 && (
               <div className="p-4 rounded-2xl bg-[#F8F5EA] border border-[#E7D59A] space-y-1.5">
                 <div className="flex items-center gap-2 text-xs font-bold text-[#174A32]">
                   <Sparkles className="w-4 h-4 text-[#C9A227]" />
                   <span>Chef's Grain Secret</span>
                 </div>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {recipe.chefTips}
-                </p>
+                <ul className="space-y-1.5 text-sm text-gray-700 leading-relaxed list-disc pl-5">
+                  {recipe.chefTips.map((tip, i) => (
+                    <li key={i}>{tip}</li>
+                  ))}
+                </ul>
               </div>
             )}
 
