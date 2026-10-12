@@ -5,7 +5,25 @@ The date you set is shown next to the price ("Retail price, 12 Oct 2026") and is
 
 Customers order only on WhatsApp, and the mill confirms the final rate there, so these prices are what visitors see first.
 
-## Option 1: edit one file (works today)
+## Easiest: the "Update prices and stock" button (no file editing)
+
+You fill in a short form on GitHub. It edits the price file, saves it and redeploys the site for you.
+
+1. Open the repository on github.com and click the **Actions** tab.
+2. In the list on the left choose **Update prices and stock**.
+3. Click **Run workflow** (on the right). Make sure the branch says `main`.
+4. Fill in only what changed:
+   - Type a new price in rupees for any pack, for example `1725`. Leave a box empty to keep its current price.
+   - Set **HMT stock** or **JSR stock** to `out of stock` or `in stock`. `no change` leaves it as it is.
+5. Click the green **Run workflow** button. After about 2 minutes the new prices are live.
+
+The run page shows a table of what changed (before and after). A price below ₹100 or a value that is not a number is rejected, so a typo cannot go live. If you enter the same values that are already live, nothing changes.
+
+The date shown next to prices is set automatically to today (India time).
+
+You can also run it from a phone browser: open github.com, go to the repository, then Actions.
+
+## Option 1: edit one file by hand
 
 1. Open `public/prices.json` in GitHub (Code tab, `public` folder, pencil icon).
 2. Change the numbers and the `updated` date. Keep the quotes and commas exactly as they are:
