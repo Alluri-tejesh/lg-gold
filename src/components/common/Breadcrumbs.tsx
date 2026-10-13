@@ -1,5 +1,6 @@
 import React from 'react';
-import { ChevronRight, Home } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { routeHref } from '../../router';
 
 interface BreadcrumbItem {
   label: string;
@@ -13,52 +14,34 @@ interface BreadcrumbsProps {
   variant?: 'light' | 'dark';
 }
 
+/** Home › Section › Page. Real links, so they can be opened in a new tab. */
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate, variant = 'light' }) => {
-  const isDark = variant === 'dark';
-
+  const dark = variant === 'dark';
+  const all = [{ label: 'Home', route: 'home' } as BreadcrumbItem, ...items];
   return (
-    <nav aria-label="Breadcrumb" className="inline-block">
-      <ol
-        className={`inline-flex items-center flex-wrap gap-1 text-sm ${isDark ? 'text-[#F8F5EA]/80' : 'text-[#5F806D]'}`}
-      >
-        <li className="inline-flex items-center">
-          <button
-            type="button"
-            onClick={() => onNavigate('home')}
-            className={`inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer ${
-              isDark ? 'text-[#F8F5EA]/90 hover:text-white' : 'text-[#174A32] hover:text-[#C9A227]'
-            }`}
-          >
-            <Home className={`w-3.5 h-3.5 ${isDark ? 'text-[#C9A227]' : 'text-[#174A32]'}`} />
-            <span>Home</span>
-          </button>
-        </li>
-
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
+    <nav aria-label="Breadcrumb">
+      <ol className={`flex flex-wrap items-center gap-1 text-sm ${dark ? 'text-cream/70' : 'text-muted'}`}>
+        {all.map((item, i) => {
+          const last = i === all.length - 1;
           return (
-            <li key={index} className="inline-flex items-center">
-              <ChevronRight
-                className={`w-3 h-3 mx-1 shrink-0 ${isDark ? 'text-[#C9A227]' : 'text-[#C9A227]'}`}
-              />
-              {isLast || !item.route ? (
-                <span
-                  className={`font-bold truncate max-w-xs ${
-                    isDark ? 'text-[#E7D59A]' : 'text-[#174A32]'
-                  }`}
-                >
+            <li key={`${item.label}-${i}`} className="inline-flex items-center gap-1 min-w-0">
+              {i > 0 && <ChevronRight className={`h-3.5 w-3.5 shrink-0 ${dark ? 'text-gold-400' : 'text-gold-600'}`} aria-hidden="true" />}
+              {last || !item.route ? (
+                <span aria-current={last ? 'page' : undefined} className={`truncate font-semibold ${dark ? 'text-cream' : 'text-forest-800'}`}>
                   {item.label}
                 </span>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => onNavigate(item.route!, item.param)}
-                  className={`transition-colors cursor-pointer font-medium ${
-                    isDark ? 'text-[#F8F5EA]/90 hover:text-[#E7D59A]' : 'text-gray-600 hover:text-[#174A32]'
-                  }`}
+                <a
+                  href={routeHref(item.route, item.param)}
+                  onClick={(e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+                    e.preventDefault();
+                    onNavigate(item.route!, item.param);
+                  }}
+                  className={`rounded px-0.5 font-medium underline-offset-4 hover:underline ${dark ? 'hover:text-white' : 'hover:text-forest-800'}`}
                 >
                   {item.label}
-                </button>
+                </a>
               )}
             </li>
           );
@@ -67,4 +50,3 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate, var
     </nav>
   );
 };
-

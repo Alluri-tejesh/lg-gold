@@ -1,28 +1,25 @@
 import React, { useState } from 'react';
-import {
-  Globe,
-  Container,
-  ShieldCheck,
-  PackageCheck,
-  CheckCircle2,
-  Building2,
-  Boxes,
-  Store,
-  ChefHat,
-  MessageCircle,
-  Phone,
-  FileCheck,
-  ArrowRight,
-  Sparkles,
-} from 'lucide-react';
+import { Globe2, Boxes, Store, ChefHat, Building2, Tag, MessageCircle, CheckCircle2, FlaskConical, FileCheck2, Ship } from 'lucide-react';
 import { ExportEnquiryForm } from '../types';
-import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
-import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { createEnquiryWhatsAppUrl, createWhatsAppUrl, openWhatsApp, fssaiLabel } from '../config/brandConfig';
+import { getProductBySlug } from '../data/products';
+import { EXPORT_JOURNEY_STEPS, WHO_WE_SUPPLY_TARGETS, FAQS } from '../data/trustPoints';
 import { QuoteSuccessModal } from '../components/common/QuoteSuccessModal';
+import { JourneyTimeline } from '../components/common/JourneyTimeline';
+import { Reveal } from '../components/common/motion';
+import { PageHero } from '../components/ui/PageHero';
+import { Container, Section, SectionHeader, Badge } from '../components/ui/Section';
+import { Button } from '../components/ui/Button';
+import { SelectField, TextAreaField, TextField } from '../components/ui/Field';
+import { Faq } from '../components/ui/Faq';
+import { scrollToId } from '../router';
+import { Spotlight } from '../components/fx/Spotlight';
 
 interface ExportViewProps {
   onNavigate: (route: string, param?: string) => void;
 }
+
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = { Globe2, Boxes, Store, ChefHat, Building2, Tag };
 
 export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
   const [form, setForm] = useState<ExportEnquiryForm>({
@@ -31,407 +28,253 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
     country: '',
     email: '',
     phoneWhatsapp: '',
-    riceVariety: 'LG Gold HMT Rice & JSR Rice Mix',
-    requiredQuantity: '1 x 20ft FCL (1,000 Bags of 26kg = 26 MT)',
+    // Defaults must match an <option> value below, or the message sends a value the buyer never saw.
+    riceVariety: 'LG Gold HMT Rice',
+    requiredQuantity: '1 x 20ft FCL (approx 26 MT)',
     packagingRequirement: 'Standard 26kg Heavy-Duty Export PP Bags',
     destinationPort: '',
     message: '',
   });
+  const set = (k: keyof ExportEnquiryForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setForm({ ...form, [k]: e.target.value });
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [refId, setRefId] = useState('');
-
+  // The browser checks the required fields before this runs.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.companyName || !form.contactPerson || !form.email || !form.country) {
-      alert('Please fill in all mandatory fields to submit your export quote request.');
-      return;
-    }
-
-    const generatedId = `EXP-${Math.floor(100000 + Math.random() * 900000)}`;
-    setRefId(generatedId);
-    setIsSuccessOpen(true);
+    const url = createEnquiryWhatsAppUrl(
+      'we would like an export quote for LG Gold rice.',
+      [
+        ['Company', form.companyName],
+        ['Contact person', form.contactPerson],
+        ['Country', form.country],
+        ['Destination port', form.destinationPort],
+        ['Email', form.email],
+        ['Phone / WhatsApp', form.phoneWhatsapp],
+        ['Variety', form.riceVariety],
+        ['Quantity', form.requiredQuantity],
+        ['Packaging', form.packagingRequirement],
+        ['Notes', form.message],
+      ],
+      'Please share FOB/CIF rates and the specification sheet.',
+    );
+    openWhatsApp(url);
+    setWhatsappUrl(url);
   };
 
-  const handleWhatsAppInquiry = () => {
-    const msg = `*INTERNATIONAL EXPORT INQUIRY - LG GOLD RICE*\n` +
-      `Company: ${form.companyName || 'International Buyer'}\n` +
-      `Country: ${form.country || 'Global'}\n` +
-      `Variety: ${form.riceVariety}\n` +
-      `Quantity: ${form.requiredQuantity}\n` +
-      `Port: ${form.destinationPort || 'Major Seaport'}\n` +
-      `Please share FOB/CIF rates and specification sheet.`;
-    window.open(createWhatsAppUrl(msg), '_blank');
-  };
+  const requestSample = () =>
+    openWhatsApp(
+      createWhatsAppUrl(
+        'Hello LG Gold export desk, we would like to request samples of your HMT and JSR rice for evaluation, with the specification sheet. Our company and shipping address:',
+      ),
+    );
+
+  const products = (['hmt-rice', 'jsr-rice'] as const).map((s) => getProductBySlug(s)).filter(Boolean);
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
-      
-      {/* Top Hero Banner in Deep Green & Gold */}
-      <div className="bg-[#174A32] text-white py-10 sm:py-12 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 space-y-5">
-          <Breadcrumbs items={[{ label: 'Export Desk' }]} onNavigate={onNavigate} variant="dark" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-[#E7D59A] border border-[#C9A227]/40 text-xs font-bold rounded-xs">
-                <Globe className="w-3.5 h-3.5 text-[#C9A227]" />
-                <span>Direct Agricultural Exports From Telangana, India</span>
-              </div>
-
-              <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
-                Export Quality Rice from India
-              </h1>
-
-              <div className="inline-block bg-[#C9A227] text-[#174A32] font-black text-xs px-3.5 py-1.5 rounded-xs tracking-widest uppercase shadow-xs">
-                EXPORT ORDERS ACCEPTED
-              </div>
-
-              <p className="text-base sm:text-lg text-[#F8F5EA]/90 leading-relaxed max-w-2xl">
-                LG Gold by Sri Lakshmi Ganapathi Trading Company supplies quality rice for international buyers, importers, distributors, wholesalers and institutional customers across the Middle East, Southeast Asia, Europe, and Africa.
-              </p>
-            </div>
-
-            <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-xs p-6 border border-white/20 text-xs space-y-3">
-              <span className="text-[#C9A227] font-bold text-xs block">Export Capabilities Summary</span>
-              <div className="space-y-2.5 text-[#F8F5EA]/90 text-[13px]">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0" />
-                  <span>20ft & 40ft Full Container Loads (FCL)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0" />
-                  <span>100% Sortex Optical Color Sorted</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0" />
-                  <span>Moisture Controlled Strictly &lt; 13%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0" />
-                  <span>Phytosanitary & Fumigation Compliance</span>
-                </div>
-              </div>
-            </div>
+    <>
+      <PageHero
+        crumbs={[{ label: 'Export' }]}
+        onNavigate={onNavigate}
+        eyebrow="Export orders accepted"
+        title="Indian rice for importers worldwide"
+        intro="Aged, Sortex-cleaned HMT and JSR rice from our own mill in Telangana, shipped in 20ft and 40ft containers to the Middle East, South-East Asia, Africa and beyond."
+        actions={
+          <>
+            <Button variant="gold" size="lg" icon={<Ship className="h-5 w-5" />} onClick={() => scrollToId('export-form')}>
+              Request a container quote
+            </Button>
+            <Button variant="outline-light" size="lg" icon={<FlaskConical className="h-5 w-5" />} onClick={requestSample}>
+              Request samples
+            </Button>
+          </>
+        }
+        aside={
+          <div className="rounded-3xl bg-white/8 p-6 ring-1 ring-white/15 backdrop-blur">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-400">At a glance</p>
+            <ul className="mt-4 space-y-3 text-cream/90">
+              {[
+                '1,000 bags of 26kg (26 MT) per 20ft FCL',
+                'PP, laminated or private-label bags',
+                'Moisture under 13%, 100% Sortex sorted',
+                'Phytosanitary and fumigation certificates',
+                'FOB or CIF terms',
+              ].map((t) => (
+                <li key={t} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" aria-hidden="true" /> {t}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-12 space-y-16">
-        
-        {/* Section: Export Products */}
-        <div className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-[#C9A227]">
-              Certified Export Varieties
-            </span>
-            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
-              Export Products
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5F806D]">
-              Single-origin Telangana paddy, milled and sorted to international commercial standards.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            {/* HMT Export Box */}
-            <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-4 hover:border-[#C9A227] transition-all">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#5F806D]">Medium-Slender Grain</span>
-                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
-                  Export Grade A
-                </span>
-              </div>
-              <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">LG Gold HMT Rice</h3>
-              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
-                Celebrated for high elongation, distinct separate grains, and versatile culinary performance in biryanis, pilafs, and daily family dining.
-              </p>
-              <div className="space-y-1.5 text-xs text-[#202522] pt-2 border-t border-[#F8F5EA]">
-                <div className="flex justify-between"><span>Grain Length:</span><span className="font-bold">5.2 – 5.6 mm</span></div>
-                <div className="flex justify-between"><span>Moisture:</span><span className="font-bold">&lt; 13.0%</span></div>
-                <div className="flex justify-between"><span>Broken Ratio:</span><span className="font-bold">&lt; 2.0% (Sortex)</span></div>
-                <div className="flex justify-between"><span>Standard Packaging:</span><span className="font-bold">25kg / 50kg PP, Jute, BOPP</span></div>
-              </div>
-            </div>
-
-            {/* JSR Export Box */}
-            <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-4 hover:border-[#C9A227] transition-all">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#5F806D]">Super-Fine Grain</span>
-                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2.5 py-1 rounded-xs border border-[#C9A227]/30">
-                  Export Grade A+
-                </span>
-              </div>
-              <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">LG Gold JSR Rice</h3>
-              <p className="text-sm sm:text-sm text-[#5F806D] leading-relaxed">
-                Super-fine slender morphology with exceptional tenderness, easy digestibility, and brilliant white polish for premium table rice markets.
-              </p>
-              <div className="space-y-1.5 text-xs text-[#202522] pt-2 border-t border-[#F8F5EA]">
-                <div className="flex justify-between"><span>Grain Length:</span><span className="font-bold">4.8 – 5.2 mm</span></div>
-                <div className="flex justify-between"><span>Moisture:</span><span className="font-bold">&lt; 12.8%</span></div>
-                <div className="flex justify-between"><span>Broken Ratio:</span><span className="font-bold">&lt; 1.8% (Sortex)</span></div>
-                <div className="flex justify-between"><span>Standard Packaging:</span><span className="font-bold">5kg, 10kg, 25kg, 50kg</span></div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Section: Who We Supply */}
-        <div className="space-y-6">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-[#C9A227]">
-              Global Client Profiles
-            </span>
-            <h2 className="font-serif-brand font-medium text-3xl sm:text-4xl text-[#174A32]">
-              Who We Supply
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5F806D]">
-              Trusted by international food importers, retail conglomerates, and institutional food buyers.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <Globe className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">Importers & Traders</h4>
-                <p className="text-xs text-[#5F806D] mt-1">Full container load contracts, custom ocean freight documents, and regular monthly allocations.</p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <Boxes className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">International Distributors</h4>
-                <p className="text-xs text-[#5F806D] mt-1">Reliable palletized shipments, multi-pack size consolidation, and brand marketing support.</p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <Store className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">Supermarket Retailers</h4>
-                <p className="text-xs text-[#5F806D] mt-1">Shelf-ready 5kg and 10kg consumer packaging with international barcode standards.</p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <ChefHat className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">Hotels & Restaurants</h4>
-                <p className="text-xs text-[#5F806D] mt-1">High cooking yield, uniform grain consistency, and minimal wastage for culinary operations.</p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">Institutional Buyers</h4>
-                <p className="text-xs text-[#5F806D] mt-1">Cost-effective 50kg bags for government, educational, and corporate meal programs.</p>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-sm bg-white border border-[#C9A227]/20 shadow-clean flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xs bg-[#174A32] text-[#C9A227] flex items-center justify-center shrink-0">
-                <PackageCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-serif-brand font-bold text-base text-[#174A32]">Private Label Partners</h4>
-                <p className="text-xs text-[#5F806D] mt-1">Customized bag printing with buyer’s brand name, artwork, and localized nutrition facts.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Section: B2B Export Enquiry Form */}
-        <div className="bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean overflow-hidden max-w-4xl mx-auto">
-          <div className="bg-[#174A32] text-white p-6 sm:p-8 border-b border-[#C9A227]/40">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-bold text-[#C9A227]">Commercial RFQ</span>
-                <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
-                  Request International Export Quote
-                </h3>
-                <p className="text-xs sm:text-sm text-[#F8F5EA]/80 mt-1">
-                  Fill out your container requirements. Our international trade specialists will reply with formal FOB/CIF quotation within 4 business hours.
-                </p>
-              </div>
-              <div className="hidden sm:block">
-                <Globe className="w-12 h-12 text-[#C9A227]/70" />
-              </div>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Company Name *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Al-Madina Food Trading LLC"
-                  value={form.companyName}
-                  onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Contact Person *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Tariq Mansoor"
-                  value={form.contactPerson}
-                  onChange={(e) => setForm({ ...form, contactPerson: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Destination Country *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. United Arab Emirates, Singapore, USA, UK"
-                  value={form.country}
-                  onChange={(e) => setForm({ ...form, country: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Destination Seaport / Airport</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Jebel Ali Port, Port of Singapore, Colombo"
-                  value={form.destinationPort}
-                  onChange={(e) => setForm({ ...form, destinationPort: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Corporate Email Address *</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="procurement@company.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp (with Country Code) *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. +971 50 123 4567"
-                  value={form.phoneWhatsapp}
-                  onChange={(e) => setForm({ ...form, phoneWhatsapp: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Rice Variety Required *</label>
-                <select
-                  value={form.riceVariety}
-                  onChange={(e) => setForm({ ...form, riceVariety: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
-                >
-                  <option value="LG Gold HMT Rice">LG Gold HMT Rice (Medium-Slender)</option>
-                  <option value="LG Gold JSR Rice">LG Gold JSR Rice (Super-Fine Slender)</option>
-                  <option value="LG Gold HMT & JSR Combined Load">Both HMT and JSR (Mixed FCL)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Required Quantity / Container Size *</label>
-                <select
-                  value={form.requiredQuantity}
-                  onChange={(e) => setForm({ ...form, requiredQuantity: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
-                >
-                  <option value="1 x 20ft FCL (approx 26 MT)">1 x 20ft FCL Container (26 Metric Tons)</option>
-                  <option value="2-5 x 20ft FCL Containers">2 to 5 Containers (50 - 130 MT)</option>
-                  <option value="10+ Containers (Monthly Regular Contract)">10+ Containers (Annual Contract)</option>
-                  <option value="Sample Pallet (Trial 1-2 Tons)">Trial Sample Pallet (1 - 2 Tons)</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Packaging Specification</label>
-                <select
-                  value={form.packagingRequirement}
-                  onChange={(e) => setForm({ ...form, packagingRequirement: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
-                >
-                  <option value="Standard 26kg Heavy-Duty Export PP Bags">Standard 26kg Heavy-Duty Woven PP Bags (1,000 Bags / 20ft FCL)</option>
-                  <option value="26kg Laminated Export Bags with Inner Liner">26kg Laminated Export Bags with Moisture-Barrier Liner</option>
-                  <option value="Custom Private Label 26kg Bags">Custom Private Label Printed 26kg Bags</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-[#174A32] mb-1">Additional Requirements / Notes</label>
-                <textarea
-                  rows={3}
-                  placeholder="Target delivery dates, target price, incoterms (FOB / CIF / CFR), inspection agencies required..."
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none resize-none"
-                />
-              </div>
-
-            </div>
-
-            <div className="pt-4 border-t border-[#C9A227]/20 flex flex-col sm:flex-row gap-4 items-center justify-between">
-              <button
-                type="submit"
-                className="w-full sm:w-auto px-8 py-4 bg-[#174A32] text-white font-bold text-xs rounded-xs shadow-xs hover:bg-[#1a5a3d] transition-all flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
-              >
-                <span>Request Export Quote</span>
-                <ArrowRight className="w-4 h-4 text-[#C9A227]" />
-              </button>
-
-              <button
-                type="button"
-                onClick={handleWhatsAppInquiry}
-                className="w-full sm:w-auto px-6 py-4 bg-[#25D366] text-white font-bold text-xs rounded-xs shadow-xs hover:bg-[#1ebd5a] transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <MessageCircle className="w-4 h-4 fill-white" />
-                <span>Instant Inquiry via WhatsApp</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-      </div>
-
-      <QuoteSuccessModal
-        isOpen={isSuccessOpen}
-        onClose={() => setIsSuccessOpen(false)}
-        quoteType="Export"
-        referenceId={refId}
-        data={form}
+        }
       />
 
-    </div>
+      {/* Products with export specs */}
+      <Section tone="paper">
+        <Container>
+          <SectionHeader eyebrow="Export varieties" title="Specifications" intro="Typical values for every lot. A certificate of analysis is available with each shipment on request." />
+          <div className="grid gap-6 lg:grid-cols-2">
+            {products.map((p, i) =>
+              p ? (
+                <Reveal key={p.slug} delay={i * 120} className="h-full">
+                  <article className="h-full rounded-3xl bg-white p-6 ring-1 ring-line shadow-soft sm:p-8">
+                    <div className="flex items-center gap-4">
+                      <img src={p.images.primary} alt="" className={`h-20 w-20 rounded-2xl bg-cream ${p.images.primaryFit === 'contain' ? 'object-contain p-1' : 'object-cover'}`} referrerPolicy="no-referrer" />
+                      <div>
+                        <h3 className="font-display text-3xl text-forest-800">{p.name}</h3>
+                        <p className="text-muted">{p.grainSpecs.variety}</p>
+                      </div>
+                    </div>
+                    <dl className="mt-6 divide-y divide-line">
+                      {[
+                        ['Grain length', p.grainSpecs.grainLength],
+                        ['Ageing', p.grainSpecs.aging],
+                        ['Moisture', p.grainSpecs.moistureContent],
+                        ['Broken grains', p.grainSpecs.brokenGrainPercentage],
+                        ['Colour', p.grainSpecs.color],
+                        ['Packing', '26kg PP, laminated or private label'],
+                      ].map(([k, v]) => (
+                        <div key={k} className="flex justify-between gap-4 py-3 text-[15px]">
+                          <dt className="text-muted">{k}</dt>
+                          <dd className="text-right font-semibold text-forest-800">{v}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </article>
+                </Reveal>
+              ) : null,
+            )}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Badge tone="gold" icon={<FileCheck2 className="h-3.5 w-3.5" />}>
+              {fssaiLabel()}
+            </Badge>
+            <Badge tone="cream">Phytosanitary certificate</Badge>
+            <Badge tone="cream">Fumigation certificate</Badge>
+            <Badge tone="cream">Certificate of analysis on request</Badge>
+          </div>
+        </Container>
+      </Section>
+
+      {/* How it ships */}
+      <Section tone="cream">
+        <Container>
+          <SectionHeader eyebrow="From our mill to your port" title="How an export order ships" />
+          <JourneyTimeline steps={EXPORT_JOURNEY_STEPS} />
+        </Container>
+      </Section>
+
+      {/* Who we supply */}
+      <Section tone="forest-deep" grain>
+        <Spotlight>
+        <Container>
+          <SectionHeader dark eyebrow="Who we supply" title="Built for trade buyers" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {WHO_WE_SUPPLY_TARGETS.map((t, i) => {
+              const Icon = ICONS[t.icon] ?? Globe2;
+              return (
+                <Reveal key={t.title} delay={i * 70} className="h-full">
+                  <div className="spot-border h-full rounded-3xl bg-white/5 p-6 ring-1 ring-white/10">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gold-500 text-forest-900">
+                      <Icon className="h-6 w-6" />
+                    </span>
+                    <h3 className="mt-4 font-display text-xl text-white">{t.title}</h3>
+                    <p className="mt-1.5 text-[15px] leading-relaxed text-cream/75">{t.desc}</p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Container>
+        </Spotlight>
+      </Section>
+
+      {/* Enquiry form */}
+      <Section tone="paper" id="export-form">
+        <Container narrow>
+          <SectionHeader eyebrow="Container quote" title="Request an export quote" intro="Your enquiry opens in WhatsApp, already written. Press Send and our export desk replies with FOB/CIF rates." />
+          <form onSubmit={handleSubmit} className="rounded-3xl bg-white p-6 ring-1 ring-line shadow-soft sm:p-8">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <TextField label="Company name" required placeholder="e.g. Al-Madina Food Trading LLC" value={form.companyName} onChange={set('companyName')} autoComplete="organization" />
+              <TextField label="Contact person" required value={form.contactPerson} onChange={set('contactPerson')} autoComplete="name" />
+              <TextField label="Destination country" required placeholder="e.g. United Arab Emirates" value={form.country} onChange={set('country')} autoComplete="country-name" />
+              <TextField label="Destination port" placeholder="e.g. Jebel Ali" value={form.destinationPort} onChange={set('destinationPort')} />
+              <TextField label="Business email" required type="email" placeholder="procurement@company.com" value={form.email} onChange={set('email')} autoComplete="email" />
+              <TextField
+                label="Phone / WhatsApp with country code"
+                required
+                type="tel"
+                inputMode="tel"
+                placeholder="+971 50 123 4567"
+                value={form.phoneWhatsapp}
+                onChange={set('phoneWhatsapp')}
+                autoComplete="tel"
+              />
+              <SelectField
+                label="Rice"
+                value={form.riceVariety}
+                onChange={set('riceVariety')}
+                options={[
+                  { value: 'LG Gold HMT Rice', label: 'LG Gold HMT Rice' },
+                  { value: 'LG Gold JSR Rice', label: 'LG Gold JSR Rice' },
+                  { value: 'LG Gold HMT & JSR Combined Load', label: 'Both (mixed container)' },
+                ]}
+              />
+              <SelectField
+                label="Quantity"
+                value={form.requiredQuantity}
+                onChange={set('requiredQuantity')}
+                options={[
+                  { value: 'Sample Pallet (Trial 1-2 Tons)', label: 'Trial pallet (1–2 tonnes)' },
+                  { value: '1 x 20ft FCL (approx 26 MT)', label: '1 × 20ft container (26 tonnes)' },
+                  { value: '2-5 x 20ft FCL Containers', label: '2 to 5 containers' },
+                  { value: '10+ Containers (Monthly Regular Contract)', label: '10+ containers (regular contract)' },
+                ]}
+              />
+              <SelectField
+                label="Packaging"
+                value={form.packagingRequirement}
+                onChange={set('packagingRequirement')}
+                wrapperClassName="sm:col-span-2"
+                options={[
+                  { value: 'Standard 26kg Heavy-Duty Export PP Bags', label: 'Standard 26kg woven PP bags' },
+                  { value: '26kg Laminated Export Bags with Inner Liner', label: '26kg laminated bags with moisture liner' },
+                  { value: 'Custom Private Label 26kg Bags', label: 'Private label 26kg bags (your brand)' },
+                ]}
+              />
+              <TextAreaField
+                label="Notes"
+                rows={3}
+                placeholder="Target price, delivery month, incoterms, inspection agency…"
+                value={form.message}
+                onChange={set('message')}
+                wrapperClassName="sm:col-span-2"
+              />
+            </div>
+            <div className="mt-6 flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <Button type="submit" variant="whatsapp" size="lg" icon={<MessageCircle className="h-5 w-5" />}>
+                Send Export Enquiry on WhatsApp
+              </Button>
+              <p className="text-sm text-muted">Opens WhatsApp with your details filled in. Press Send there.</p>
+            </div>
+          </form>
+        </Container>
+      </Section>
+
+      <Section tone="cream" tight>
+        <Container narrow>
+          <SectionHeader eyebrow="Questions" title="Export FAQ" />
+          <Faq
+            items={[
+              ...FAQS.filter((f) => /Export|Storage|Products/.test(f.category)),
+              { question: 'Can I get samples first?', answer: 'Yes. Use “Request samples” at the top of this page, or WhatsApp the export desk with your shipping address.' },
+              { question: 'Can you pack under our brand?', answer: 'Yes. We pack private-label 26kg bags with your artwork and language. Share your design and quantity in the enquiry.' },
+            ]}
+          />
+        </Container>
+      </Section>
+
+      <QuoteSuccessModal isOpen={whatsappUrl !== ''} onClose={() => setWhatsappUrl('')} quoteType="Export" whatsappUrl={whatsappUrl} />
+    </>
   );
 };

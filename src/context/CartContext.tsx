@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product, PackSize } from '../types';
-import { createWhatsAppUrl } from '../config/brandConfig';
+import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
 import { PRODUCTS } from '../data/products';
-import { priceInfo, formatPriceDate } from '../data/prices';
+import { buildOrderMessage } from '../data/order';
+import { toast } from '../components/ui/Toast';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, packSize: PackSize, quantity?: number) => void;
+  /** Adds a pack. Shows a "View cart" toast unless `quiet` (Buy Now goes straight to checkout instead). */
+  addToCart: (product: Product, packSize: PackSize, quantity?: number, options?: { quiet?: boolean }) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   removeFromCart: (itemId: string) => void;
   clearCart: () => void;
@@ -14,72 +16,74 @@ interface CartContextType {
   totalAmount: number;
   totalMrp: number;
   totalSavings: number;
+  isFreeDelivery: boolean;
+  /** 0 when delivery is free or the cart is empty. */
+  deliveryCharge: number;
+  /** How much more rice (in rupees) unlocks free delivery; 0 once it is free. */
+  amountForFreeDelivery: number;
+  /** Rice plus delivery. */
+  grandTotal: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
-  isCheckoutOpen: boolean;
-  setIsCheckoutOpen: (open: boolean) => void;
-  notification: string | null;
-  showNotification: (msg: string) => void;
-  getWhatsAppOrderUrl: (customerDetails?: { name: string; address: string; phone: string }) => string;
+  /** A WhatsApp link for a quick order of the current cart, without delivery details. */
+  getQuickOrderUrl: () => string;
+  /** The last order sent on WhatsApp, re-priced with today's rates, for one-tap re-ordering. */
+  lastOrder: CartItem[];
+  /** Remembers the current cart as "last order" and empties the cart. */
+  completeOrder: () => void;
+  reorder: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'lg_gold_cart_v1';
+const LAST_ORDER_KEY = 'lg_gold_last_order_v1';
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
-      const items: CartItem[] = saved ? JSON.parse(saved) : [];
-      // Prices change daily, so a cart saved yesterday is re-priced with today's rates.
-      return items
-        .map((item) => {
-          const pack = PRODUCTS.find((p) => p.id === item.productId)?.packOptions.find((o) => o.size === item.packSize);
-          return pack ? { ...item, price: pack.retailPrice, mrp: pack.mrp, inStock: pack.inStock } : { ...item, inStock: true };
-        })
-        .filter((item) => item.inStock)
-        .map(({ inStock: _inStock, ...item }) => item as CartItem);
-    } catch {
-      return [];
-    }
+/** Prices change daily, so anything saved earlier is re-priced with today's rates. Packs no longer sold are dropped. */
+const reprice = (items: CartItem[]): CartItem[] =>
+  items.flatMap((item) => {
+    const product = PRODUCTS.find((p) => p.id === item.productId);
+    const pack = product?.packOptions.find((o) => o.size === item.packSize);
+    if (!pack) return product ? [] : [item];
+    return pack.inStock ? [{ ...item, price: pack.retailPrice, mrp: pack.mrp }] : [];
   });
 
+const load = (key: string): CartItem[] => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? reprice(JSON.parse(saved)) : [];
+  } catch {
+    return [];
+  }
+};
+
+const save = (key: string, items: CartItem[]) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(items));
+  } catch {
+    /* private mode or storage full: the cart still works for this visit */
+  }
+};
+
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cart, setCart] = useState<CartItem[]>(() => load(CART_STORAGE_KEY));
+  const [lastOrder, setLastOrder] = useState<CartItem[]>(() => load(LAST_ORDER_KEY));
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [notification, setNotification] = useState<string | null>(null);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    } catch (e) {
-      console.error('Failed to save cart to localStorage', e);
-    }
-  }, [cart]);
+  useEffect(() => save(CART_STORAGE_KEY, cart), [cart]);
 
-  const showNotification = (msg: string) => {
-    setNotification(msg);
-    setTimeout(() => {
-      setNotification(prev => (prev === msg ? null : prev));
-    }, 3500);
-  };
-
-  const addToCart = (product: Product, packSize: PackSize, quantity = 1) => {
-    const packOption = product.packOptions.find(p => p.size === packSize) || product.packOptions[0];
+  const addToCart = (product: Product, packSize: PackSize, quantity = 1, { quiet = false }: { quiet?: boolean } = {}) => {
+    const packOption = product.packOptions.find((p) => p.size === packSize) || product.packOptions[0];
     if (!packOption.inStock) {
-      showNotification(`${product.shortName} ${packOption.size} is out of stock right now.`);
+      toast({ message: `${product.shortName} ${packOption.size} is out of stock right now.`, tone: 'error' });
       return;
     }
     const itemId = `${product.id}-${packSize}`;
 
-    setCart(prevCart => {
-      const existing = prevCart.find(item => item.id === itemId);
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.id === itemId);
       if (existing) {
-        return prevCart.map(item =>
-          item.id === itemId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
+        return prevCart.map((item) => (item.id === itemId ? { ...item, quantity: item.quantity + quantity } : item));
       }
       return [
         ...prevCart,
@@ -89,16 +93,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           productSlug: product.slug,
           productName: product.name,
           image: product.images.primary,
-          packSize: packSize,
+          packSize,
           price: packOption.retailPrice,
           mrp: packOption.mrp,
-          quantity: quantity,
-        }
+          quantity,
+        },
       ];
     });
 
-    showNotification(`Added ${product.shortName} (${packSize}) to your cart.`);
-    setIsCartOpen(true);
+    if (!quiet) {
+      toast({
+        message: `${quantity > 1 ? `${quantity} × ` : ''}${product.shortName}, ${packSize} added to your cart.`,
+        action: { label: 'View cart', onClick: () => setIsCartOpen(true) },
+      });
+    }
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
@@ -106,18 +114,42 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeFromCart(itemId);
       return;
     }
-    setCart(prev =>
-      prev.map(item => (item.id === itemId ? { ...item, quantity } : item))
-    );
+    setCart((prev) => prev.map((item) => (item.id === itemId ? { ...item, quantity: Math.min(quantity, 999) } : item)));
   };
 
   const removeFromCart = (itemId: string) => {
-    setCart(prev => prev.filter(item => item.id !== itemId));
-    showNotification('Item removed from cart');
+    const removed = cart.find((item) => item.id === itemId);
+    const index = cart.findIndex((item) => item.id === itemId);
+    setCart((prev) => prev.filter((item) => item.id !== itemId));
+    if (removed) {
+      toast({
+        message: `${removed.productName} (${removed.packSize}) removed.`,
+        tone: 'info',
+        action: {
+          label: 'Undo',
+          onClick: () =>
+            setCart((prev) => (prev.some((i) => i.id === removed.id) ? prev : [...prev.slice(0, index), removed, ...prev.slice(index)])),
+        },
+      });
+    }
   };
 
-  const clearCart = () => {
+  const clearCart = () => setCart([]);
+
+  const completeOrder = () => {
+    setLastOrder(cart);
+    save(LAST_ORDER_KEY, cart);
     setCart([]);
+  };
+
+  const reorder = () => {
+    const items = reprice(lastOrder);
+    if (items.length === 0) {
+      toast({ message: 'The packs from your last order are not available right now.', tone: 'error' });
+      return;
+    }
+    setCart(items);
+    toast({ message: 'Your last order is back in the cart, at today’s prices.' });
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -125,31 +157,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const totalMrp = cart.reduce((sum, item) => sum + item.mrp * item.quantity, 0);
   const totalSavings = Math.max(0, totalMrp - totalAmount);
 
-  const getWhatsAppOrderUrl = (customerDetails?: { name: string; address: string; phone: string }) => {
-    if (cart.length === 0) {
-      return createWhatsAppUrl('Hi LG Gold Team, I would like to inquire about ordering rice.');
-    }
+  // Free delivery once the order reaches the threshold in BRAND_CONFIG.delivery.
+  const { freeFromOrderValue, charge } = BRAND_CONFIG.delivery;
+  const isFreeDelivery = cart.length > 0 && totalAmount >= freeFromOrderValue;
+  const deliveryCharge = cart.length === 0 || isFreeDelivery ? 0 : charge;
+  const amountForFreeDelivery = isFreeDelivery ? 0 : Math.max(0, freeFromOrderValue - totalAmount);
+  const grandTotal = totalAmount + deliveryCharge;
 
-    let message = `*NEW ORDER - LG GOLD RICE*\n`;
-    message += `-------------------------\n`;
-    cart.forEach((item, idx) => {
-      message += `${idx + 1}. ${item.productName} (${item.packSize}) x ${item.quantity} = ₹${(item.price * item.quantity).toLocaleString('en-IN')}\n`;
-    });
-    message += `-------------------------\n`;
-    message += `*Total Items:* ${totalItems}\n`;
-    message += `*Total Order Value:* ₹${totalAmount.toLocaleString('en-IN')}\n\n`;
-
-    if (customerDetails && customerDetails.name) {
-      message += `*Delivery Details:*\n`;
-      message += `Name: ${customerDetails.name}\n`;
-      message += `Phone: ${customerDetails.phone}\n`;
-      message += `Address: ${customerDetails.address}\n\n`;
-    }
-
-    const asOf = formatPriceDate(priceInfo.updated);
-    message += `Prices shown are${asOf ? ` as of ${asOf}` : ' indicative'}. Please confirm today's rate, delivery charges and dispatch time. Thank you!`;
-    return createWhatsAppUrl(message);
-  };
+  const getQuickOrderUrl = () =>
+    createWhatsAppUrl(
+      cart.length === 0
+        ? 'Hello LG Gold, I would like to order rice.'
+        : buildOrderMessage({ items: cart, totals: { rice: totalAmount, delivery: deliveryCharge, total: grandTotal } }),
+    );
 
   return (
     <CartContext.Provider
@@ -163,13 +183,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalAmount,
         totalMrp,
         totalSavings,
+        isFreeDelivery,
+        deliveryCharge,
+        amountForFreeDelivery,
+        grandTotal,
         isCartOpen,
         setIsCartOpen,
-        isCheckoutOpen,
-        setIsCheckoutOpen,
-        notification,
-        showNotification,
-        getWhatsAppOrderUrl,
+        getQuickOrderUrl,
+        lastOrder,
+        completeOrder,
+        reorder,
       }}
     >
       {children}

@@ -103,14 +103,14 @@ export const loadPrices = async (): Promise<void> => {
   const csvUrl = BRAND_CONFIG.pricesCsvUrl;
   if (csvUrl) {
     try {
-      const res = await fetchWithTimeout(csvUrl, 2500);
+      const res = await fetchWithTimeout(csvUrl, 1500);
       if (res.ok && applyPrices(parsePriceCsv(await res.text())) > 0) return;
     } catch {
       /* fall through to prices.json */
     }
   }
   try {
-    const res = await fetchWithTimeout(`${import.meta.env.BASE_URL}prices.json?t=${Date.now()}`, 2500);
+    const res = await fetchWithTimeout(`${import.meta.env.BASE_URL}prices.json?t=${Date.now()}`, 1500);
     if (res.ok) applyPrices((await res.json()) as PriceTable);
   } catch {
     /* keep the prices written in products.ts */

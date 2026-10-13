@@ -1,7 +1,8 @@
 name: Add or update product
 
 # Run this by hand: GitHub, Actions tab, "Add or update product", Run workflow.
-# It adds a new product with its picture, changes a product's picture or text, or removes a product you added.
+# It adds a new product with its picture, adds or removes a pack size (also on HMT and JSR),
+# changes a product's picture or text, or removes a product you added.
 # The change is committed to main and the site is redeployed.
 on:
   workflow_dispatch:
@@ -13,6 +14,7 @@ on:
         default: "add or update product"
         options:
           - "add or update product"
+          - "remove pack size"
           - "remove product"
       slug:
         description: "Product id: lowercase and dashes, e.g. basmati-rice. Use hmt-rice or jsr-rice to change those."
@@ -47,7 +49,19 @@ on:
           - "contain"
           - "cover"
       pack_size:
-        description: "Pack size, e.g. 26kg Bag or 50kg Bag (used with the price)"
+        description: "Pack size to add, change or remove (used with the price below)"
+        required: true
+        type: choice
+        default: "none"
+        options:
+          - "none"
+          - "5kg Bag"
+          - "10kg Bag"
+          - "26kg Bag"
+          - "50kg Bag"
+          - "other (type below)"
+      custom_pack_size:
+        description: "Other pack size, only if you chose 'other' above, e.g. 25kg Bag or 1kg Pouch"
         required: false
         type: string
       price:
@@ -100,6 +114,7 @@ jobs:
           IMAGE: ${{ inputs.image }}
           IMAGE_FIT: ${{ inputs.image_fit }}
           PACK_SIZE: ${{ inputs.pack_size }}
+          CUSTOM_PACK_SIZE: ${{ inputs.custom_pack_size }}
           PRICE: ${{ inputs.price }}
           MRP: ${{ inputs.mrp }}
           STOCK: ${{ inputs.stock }}

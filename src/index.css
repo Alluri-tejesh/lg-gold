@@ -1,82 +1,227 @@
 @import "tailwindcss";
 
+/* Customer space: mill-green ink, warm paper, and a quiet orbit of rice grains. */
+.account-panel { border-radius: 28px; background: white; padding: 28px; border: 1px solid var(--color-line); box-shadow: 0 4px 24px -18px rgb(15 51 34 / .16); }
+.account-section { background-image: radial-gradient(ellipse at 85% 0%, rgb(201 162 39 / .06), transparent 45%); }
+.account-content { animation: account-arrive .5s cubic-bezier(.2,.8,.2,1) both; }
+.account-nav { display: flex; gap: 6px; overflow-x: auto; padding: 6px; border-radius: 22px; background: #fff; border: 1px solid var(--color-line); scrollbar-width: thin; }
+.account-nav-link { display: flex; align-items: center; gap: 10px; min-height: 46px; flex-shrink: 0; padding: 10px 14px; border-radius: 16px; color: var(--color-muted); font-size: 14px; font-weight: 600; transition: background .2s, color .2s, transform .2s; }
+.account-nav-link:hover { background: var(--color-cream); color: var(--color-forest-800); }
+.account-nav-link.is-active { background: var(--color-forest-800); color: white; box-shadow: 0 8px 16px -12px rgb(23 74 50 / .5); }
+.account-nav-link:focus-visible, .order-card:focus-visible { outline: 2px solid var(--color-forest-700); outline-offset: 3px; }
+.account-stat { border-radius: 24px; padding: 24px; background: #fff; border: 1px solid var(--color-line); animation: account-arrive .6s both; }
+.order-card { display: block; border-radius: 26px; background: #fff; border: 1px solid var(--color-line); padding: 24px; transition: transform .25s, box-shadow .25s, border-color .25s; }
+@media (hover:hover) { .order-card:hover { transform: translateY(-3px); border-color: var(--color-gold-400); box-shadow: 0 16px 35px -24px rgb(23 74 50 / .35); } }
+.address-card { position: relative; overflow: hidden; }
+.address-card.is-default { border-color: var(--color-forest-200); }
+.address-card.is-default::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--color-gold-500); }
+.order-journey { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin-top: 32px; padding-top: 8px; }
+.journey-stop { position: relative; text-align: center; color: var(--color-muted); }
+.journey-stop::after { content: ''; position: absolute; height: 2px; top: 18px; left: calc(50% + 20px); width: calc(100% - 40px); background: var(--color-line); transform-origin: left; }
+.journey-stop:last-child::after { display: none; }
+.journey-stop.is-complete:not(.is-current)::after { background: var(--color-gold-500); animation: journey-line .7s ease-out both; }
+.journey-node { position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; margin: auto; border-radius: 50%; background: var(--color-cream); border: 1px solid var(--color-line); font-size: 13px; font-weight: 600; }
+.journey-stop.is-complete { color: var(--color-forest-800); }
+.journey-stop.is-complete .journey-node { background: var(--color-forest-800); color: #fff; border-color: var(--color-forest-800); }
+.journey-stop.is-current .journey-node { color: var(--color-forest-900); background: var(--color-gold-300); border-color: var(--color-gold-500); box-shadow: 0 0 0 5px var(--color-gold-50); animation: grain-settle .65s cubic-bezier(.2,.8,.2,1) both; }
+.auth-story { min-height: 700px; }
+.auth-story::before, .account-welcome::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-radial-gradient(ellipse at 100% 0%, transparent 0 30px, rgb(255 255 255 / .03) 31px 32px, transparent 33px 58px); }
+.auth-form-panel { position: relative; z-index: 2; animation: account-arrive .6s both; }
+.rice-orbit { position: absolute; width: 340px; height: 340px; top: 180px; right: -30px; color: var(--color-gold-300); opacity: .55; pointer-events: none; }
+.account-welcome .rice-orbit { top: -30px; right: -15px; opacity: .3; }
+.rice-orbit-ring { position: absolute; inset: 0; border: 1px solid rgb(224 194 101 / .24); border-radius: 50%; transform: rotate(-24deg) scaleY(.7); }
+.rice-orbit-ring.ring-two { inset: 26px; transform: rotate(30deg) scaleX(.75); }
+.rice-orbit-ring.ring-three { inset: 55px; border-style: dashed; opacity: .55; animation: orbit-turn 40s linear infinite; }
+.rice-orbit-art { position: absolute; inset: 42px; width: calc(100% - 84px); height: calc(100% - 84px); animation: rice-breathe 9s ease-in-out infinite; }
+.orbit-grain { position: absolute; width: 11px; height: 27px; border-radius: 70% 30% 65% 35%; background: currentColor; box-shadow: inset 2px 0 rgb(255 255 255 / .3); }
+.grain-one { top: 80px; left: 40px; transform: rotate(30deg); animation: rice-drift 8s ease-in-out infinite; }
+.grain-two { top: 240px; right: 45px; transform: rotate(-35deg); animation: rice-drift 10s 1s ease-in-out infinite; }
+.grain-three { top: 30px; left: 170px; transform: rotate(65deg); animation: rice-drift 12s 2s ease-in-out infinite; }
+.otp-input { text-align: center; letter-spacing: .55em; font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; padding-left: 1.5em; min-height: 76px; background: var(--color-cream); }
+@keyframes account-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes journey-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes grain-settle { from { transform: scale(.7); } to { transform: scale(1); } }
+@keyframes orbit-turn { to { transform: rotate(360deg); } }
+@keyframes rice-breathe { 50% { transform: translateY(-8px) rotate(2deg); } }
+@keyframes rice-drift { 50% { translate: 0 -12px; } }
+@media (min-width: 1024px) { .account-nav { position: sticky; top: 105px; flex-direction: column; padding: 16px 10px; } }
+@media (max-width: 639px) { .account-panel, .order-card { padding: 20px; border-radius: 24px; } .account-stat { padding: 18px 13px; } .account-welcome .rice-orbit { right: -125px; opacity: .13; } .journey-node { width: 32px; height: 32px; } .journey-stop::after { top: 16px; left: calc(50% + 17px); width: calc(100% - 34px); } }
+@media (prefers-reduced-motion: reduce) { .account-content, .account-stat, .auth-form-panel, .rice-orbit-art, .orbit-grain, .rice-orbit-ring, .journey-stop::after, .journey-node { animation: none !important; } .order-card { transition: none; } .order-card:hover { transform: none; } }
+@media print { .account-nav, .account-content button, .account-content a, .account-welcome, .rice-orbit { display: none !important; } .account-panel { box-shadow: none; break-inside: avoid; } .account-section { padding: 0; } }
+
+/*
+ * LG Gold design tokens. Every colour, font and shadow the site uses lives here, so classes read as
+ * bg-forest-800, text-gold-700, border-line ... instead of raw hex codes.
+ */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Inter right after Playfair supplies the ₹ sign, which Playfair does not have */
+  --font-display: 'Playfair Display', 'Inter', Georgia, 'Times New Roman', serif;
+
+  /* Deep paddy green: the brand colour */
+  --color-forest-950: #0a2417;
+  --color-forest-900: #0f3322;
+  --color-forest-800: #174a32;
+  --color-forest-700: #226444;
+  --color-forest-600: #2e7a55;
+  --color-forest-200: #c6dccd;
+  --color-forest-100: #e3ede6;
+  --color-forest-50: #f1f6f2;
+
+  /* Harvest gold: accents. gold-700 is the only gold dark enough for text on light backgrounds */
+  --color-gold-700: #8a650c;
+  --color-gold-600: #a4811b;
+  --color-gold-500: #c9a227;
+  --color-gold-400: #dcbb4f;
+  --color-gold-300: #e7d59a;
+  --color-gold-100: #f6edcf;
+  --color-gold-50: #fbf7e9;
+
+  /* Rice cream and paper surfaces */
+  --color-cream: #f8f5ea;
+  --color-cream-deep: #f0e9d5;
+  --color-paper: #fffdf8;
+  --color-line: #e7dfc6;
+  --color-line-strong: #d6caa3;
+
+  /* Text */
+  --color-ink: #18201b;
+  --color-ink-soft: #364239;
+  --color-muted: #52665a;
+
+  /* A deeper WhatsApp green: white text on it passes WCAG AA contrast (5.4:1); the bright #25D366 does not. */
+  --color-whatsapp: #157a42;
+  --color-whatsapp-ink: #0b6e50;
+  --color-danger: #b42318;
+  --color-danger-50: #fdecec;
+
+  --shadow-soft: 0 1px 2px rgb(23 74 50 / 0.06), 0 4px 16px -4px rgb(23 74 50 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(23 74 50 / 0.06), 0 18px 40px -12px rgb(23 74 50 / 0.22);
+  --shadow-glow: 0 0 0 1px rgb(201 162 39 / 0.35), 0 12px 32px -8px rgb(201 162 39 / 0.35);
+
+  --animate-fade-in: fade-in 0.25s ease both;
+  --animate-pop-in: pop-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  --animate-slide-in-right: slide-in-right 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-slide-up: slide-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to { transform: none; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+}
+
 @layer base {
-  :root {
-    --color-primary: #174A32;
-    --color-primary-dark: #0f3322;
-    --color-primary-light: #226444;
-    --color-gold: #C9A227;
-    --color-gold-light: #E7D59A;
-    --color-gold-dark: #A4811B;
-    --color-cream: #F8F5EA;
-    --color-cream-card: #FFFFFF;
-    --color-charcoal: #202522;
-    --color-muted-green: #5F806D;
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem; /* anchors land below the sticky header */
   }
 
   body {
-    font-family: 'Inter', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F8F5EA;
-    color: #202522;
+    @apply bg-cream font-sans text-ink antialiased;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, .font-serif-brand {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display);
+  }
+
+  ::selection {
+    background: rgb(201 162 39 / 0.3);
+    color: var(--color-forest-900);
+  }
+
+  /* One clear keyboard focus ring everywhere, shown only for keyboard users */
+  :focus-visible {
+    outline: 3px solid var(--color-gold-500);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  input, select, textarea, button {
+    font: inherit;
+  }
+
+  /* Number inputs without spinner arrows (prices are typed, not nudged) */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #F8F5EA;
-}
-::-webkit-scrollbar-thumb {
-  background: #C9A227;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #174A32;
+/* ---------- Utilities ---------- */
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-/* Clean Minimalism Texture & Geometric Helpers */
+/* Keeps fixed bars clear of the iPhone home indicator */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Prices and counts: straight (lining) digits of equal width, so columns line up and nothing dips below the line */
+@utility tabular {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Signature texture: scattered rice grains, drawn as an inline SVG so it costs no request */
+@utility bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23C9A227' fill-opacity='0.16'%3E%3Cellipse cx='14' cy='18' rx='5' ry='1.8' transform='rotate(32 14 18)'/%3E%3Cellipse cx='62' cy='10' rx='5' ry='1.8' transform='rotate(-20 62 10)'/%3E%3Cellipse cx='98' cy='34' rx='5' ry='1.8' transform='rotate(70 98 34)'/%3E%3Cellipse cx='36' cy='56' rx='5' ry='1.8' transform='rotate(-48 36 56)'/%3E%3Cellipse cx='82' cy='74' rx='5' ry='1.8' transform='rotate(12 82 74)'/%3E%3Cellipse cx='18' cy='96' rx='5' ry='1.8' transform='rotate(84 18 96)'/%3E%3Cellipse cx='58' cy='104' rx='5' ry='1.8' transform='rotate(-66 58 104)'/%3E%3Cellipse cx='108' cy='100' rx='5' ry='1.8' transform='rotate(40 108 100)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+@utility bg-grain-light {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.07'%3E%3Cellipse cx='14' cy='18' rx='5' ry='1.8' transform='rotate(32 14 18)'/%3E%3Cellipse cx='62' cy='10' rx='5' ry='1.8' transform='rotate(-20 62 10)'/%3E%3Cellipse cx='98' cy='34' rx='5' ry='1.8' transform='rotate(70 98 34)'/%3E%3Cellipse cx='36' cy='56' rx='5' ry='1.8' transform='rotate(-48 36 56)'/%3E%3Cellipse cx='82' cy='74' rx='5' ry='1.8' transform='rotate(12 82 74)'/%3E%3Cellipse cx='18' cy='96' rx='5' ry='1.8' transform='rotate(84 18 96)'/%3E%3Cellipse cx='58' cy='104' rx='5' ry='1.8' transform='rotate(-66 58 104)'/%3E%3Cellipse cx='108' cy='100' rx='5' ry='1.8' transform='rotate(40 108 100)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+/* Loading placeholder */
+@utility skeleton {
+  background: linear-gradient(90deg, var(--color-cream-deep) 25%, var(--color-paper) 50%, var(--color-cream-deep) 75%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+  border-radius: 8px;
+}
+
+/* ---------- Legacy helpers, still used by a few illustrations ---------- */
 .bg-minimal-dots {
-  background-image: radial-gradient(#C9A227 0.6px, transparent 0.6px);
+  background-image: radial-gradient(#c9a227 0.6px, transparent 0.6px);
   background-size: 24px 24px;
 }
-
-.bg-cream-pattern {
-  background-color: #F8F5EA;
-  background-image: radial-gradient(#174A32 0.4px, transparent 0.4px);
-  background-size: 24px 24px;
-}
-
-.border-minimal {
-  border-color: rgba(201, 162, 39, 0.2);
-}
-
 .shadow-clean {
-  box-shadow: 0 1px 3px 0 rgba(23, 74, 50, 0.05), 0 1px 2px -1px rgba(23, 74, 50, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 
-.shadow-card {
-  box-shadow: 0 10px 30px -5px rgba(23, 74, 50, 0.06), 0 4px 10px -2px rgba(23, 74, 50, 0.03);
-}
-
-/* Small gold labels were written for dark bands. On light surfaces that gold fails contrast,
-   so darken it there and keep the bright gold inside dark sections. */
-.text-\[\#C9A227\] { color: #8F6A0E; }
-[class~="bg-[#174A32]"] .text-\[\#C9A227\],
-[class~="bg-[#0f3322]"] .text-\[\#C9A227\],
-[class~="bg-[#174A32]"].text-\[\#C9A227\] { color: #C9A227; }
-
-/* ---- Gentle one-time motion (see components/common/motion.tsx) ---- */
+/* ---------- Gentle one-time motion (see components/common/motion.tsx) ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
   transition-delay: var(--d, 0ms);
 }
 .reveal.is-in {
@@ -85,19 +230,45 @@
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: none; }
 }
 @keyframes settle-in {
-  from { opacity: 0; transform: translateY(18px) scale(0.97) rotate(-2deg); }
-  to { opacity: 1; transform: translateY(0) scale(1) rotate(-2deg); }
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
 }
 @keyframes node-pop {
   0% { opacity: 0; transform: scale(0.6); }
   100% { opacity: 1; transform: scale(1); }
 }
-.fade-up { animation: fade-up 0.7s ease backwards; animation-delay: var(--d, 0ms); }
-.settle-in { animation: settle-in 0.9s ease backwards; animation-delay: 250ms; }
+@keyframes grain-fall {
+  0% { opacity: 0; transform: translateY(-40px) rotate(var(--r0, 0deg)) scale(var(--s, 1)); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) rotate(var(--r1, 30deg)) scale(var(--s, 1)); }
+}
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes ring-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(37 211 102 / 0.45); }
+  100% { box-shadow: 0 0 0 14px rgb(37 211 102 / 0); }
+}
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+.fade-up { animation: fade-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; animation-delay: var(--d, 0ms); }
+.settle-in { animation: settle-in 1s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; animation-delay: 250ms; }
+.grain-fall { animation: grain-fall 1.4s cubic-bezier(0.3, 0.7, 0.3, 1) backwards; animation-delay: var(--d, 0ms); }
+.float-soft { animation: float-soft 5s ease-in-out infinite; }
+.ring-pulse { animation: ring-pulse 1.8s ease-out 3; }
+.bump { animation: bump 0.45s ease; }
 .node-pop { opacity: 0; }
 .node-pop.is-in { animation: node-pop 0.45s ease both; animation-delay: var(--d, 0ms); }
 .line-grow { transform: scaleX(0); transform-origin: left; transition: transform 1.6s ease-out; }
@@ -105,26 +276,107 @@
 .line-grow-y { transform: scaleY(0); transform-origin: top; transition: transform 1.6s ease-out; }
 .line-grow-y.is-in { transform: scaleY(1); }
 
-.lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-.lift:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -12px rgba(23, 74, 50, 0.25); }
+.lift { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease; }
+.lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+/* Page changes cross-fade where the browser supports view transitions */
+::view-transition-old(root) { animation: 0.18s ease both fade-out-vt; }
+::view-transition-new(root) { animation: 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both fade-in-vt; }
+@keyframes fade-out-vt { to { opacity: 0; } }
+@keyframes fade-in-vt { from { opacity: 0; transform: translateY(8px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .line-grow, .line-grow-y { opacity: 1; transform: none; transition: none; }
-  .fade-up, .settle-in { animation: none; }
-  .settle-in { transform: rotate(-2deg); }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .line-grow, .line-grow-y { opacity: 1; transform: none; }
   .node-pop { opacity: 1; }
-  .node-pop.is-in { animation: none; }
   .lift:hover { transform: none; }
 }
 
-/* ---- "Why LG Gold" panels: open only on hover, focus or tap ---- */
-.why-grid { transition: grid-template-columns 0.5s ease; }
+/* ---------- "Why LG Gold" panels: open on hover, focus or tap ---------- */
+.why-grid { transition: grid-template-columns 0.55s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .why-detail { max-height: 0; opacity: 0; margin-top: 0; transition: max-height 0.5s ease, opacity 0.35s ease, margin-top 0.4s ease; overflow: hidden; }
 .why-detail-open { max-height: 14rem; opacity: 1; margin-top: 0.75rem; transition-delay: 0s, 0.15s, 0s; }
 .why-acc { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
 .why-acc-open { grid-template-rows: 1fr; }
 .why-acc > div { min-height: 0; }
 
+/* ---------- Print: recipes print cleanly ---------- */
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+  body { background: #fff; }
+}
+
+/* ---------- Signature effects (components/fx) ---------- */
+
+/* Spotlight: a soft gold light following the cursor over dark sections */
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--so, 0);
+  transition: opacity 0.4s ease;
+  background: radial-gradient(520px circle at var(--sx, 50%) var(--sy, 50%), rgb(201 162 39 / 0.14), transparent 60%);
+  z-index: 0;
+}
+.spotlight > * { position: relative; z-index: 1; }
+
+/* Cards whose edge lights up where the spotlight passes */
+.spot-border { position: relative; isolation: isolate; }
+.spot-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--cx, -100px) var(--cy, -100px), rgb(231 213 154 / 0.85), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: var(--so, 0);
+  transition: opacity 0.4s ease;
+}
+.spotlight .spot-border::after { opacity: 1; }
+
+/* 3D tilt (useTilt): the card leans towards the pointer and a sheen follows it */
+.tilt {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-sheen {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: var(--glare, 0);
+  transition: opacity 0.4s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.35), transparent 55%);
+  mix-blend-mode: soft-light;
+  z-index: 5;
+}
+.tilt-depth { transform: translateZ(40px); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Headings that rise into place word by word (SectionHeader) */
+.split-word { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.split-word > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+.split-in .split-word > span { transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .why-grid, .why-detail, .why-acc { transition: none; }
+  .tilt { transform: none !important; }
+  .tilt-depth { transform: none; }
+  .split-word > span { transform: none; }
+  .spotlight::before, .spot-border::after { display: none; }
 }

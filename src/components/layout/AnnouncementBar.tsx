@@ -1,48 +1,41 @@
 import React from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Truck, TrendingUp } from 'lucide-react';
 import { BRAND_CONFIG } from '../../config/brandConfig';
+import { getProductBySlug } from '../../data/products';
+import { priceInfo, formatPriceDate } from '../../data/prices';
+import { AppLink } from '../ui/AppLink';
 
-interface AnnouncementBarProps {
-  onNavigate: (route: string) => void;
-}
+/** A thin bar above the header with today's mill rates and the free-delivery rule. */
+export const AnnouncementBar: React.FC = () => {
+  const rate = (slug: string) => getProductBySlug(slug)?.packOptions.find((o) => o.size === '26kg Bag');
+  const hmt = rate('hmt-rice');
+  const jsr = rate('jsr-rice');
+  const date = formatPriceDate(priceInfo.updated);
+  const free = BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN');
 
-export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onNavigate }) => {
   return (
-    <div className="bg-[#174A32] text-[#F8F5EA] text-xs sm:text-xs font-semibold py-2 px-4 sm:px-10 border-b border-[#C9A227]/20 select-none">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {/* Left / Center Message */}
-        <div className="flex-1 flex items-center justify-center sm:justify-start gap-4 sm:gap-8 overflow-hidden text-center sm:text-left">
-          <span className="text-[#C9A227] font-bold tracking-widest shrink-0">
-            Export Quality Rice
-          </span>
-          <span className="hidden sm:inline text-white/30">•</span>
-          <span className="hidden sm:inline text-white font-medium tracking-wider">
-            Export Orders Accepted
-          </span>
-          <span className="hidden md:inline text-white/30">•</span>
-          <span className="hidden md:inline text-[#E7D59A] font-semibold tracking-wider">
-            Wholesale & Bulk Orders
-          </span>
-        </div>
-
-        {/* Right CTA */}
-        <div className="hidden sm:flex items-center gap-6 shrink-0 text-xs">
-          <button
-            onClick={() => onNavigate('export')}
-            className="inline-flex items-center gap-1 text-[#C9A227] hover:text-white font-bold tracking-widest transition-colors cursor-pointer"
-          >
-            <span>Inquire for Export</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-          <span className="text-white/20">|</span>
-          <button
-            onClick={() => onNavigate('wholesale')}
-            className="text-[#F8F5EA] hover:text-[#C9A227] font-semibold tracking-widest transition-colors cursor-pointer"
-          >
-            <span>Wholesale Supply</span>
-          </button>
-        </div>
+    <aside aria-label="Today’s rates and delivery" className="bg-forest-950 text-cream text-[13px] sm:text-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-center gap-x-6 px-4 py-2 sm:justify-between sm:px-6 lg:px-8">
+        <AppLink to="products" className="hidden sm:inline-flex items-center gap-2 font-medium hover:text-gold-300">
+          <TrendingUp className="h-4 w-4 text-gold-400" aria-hidden="true" />
+          <span className="text-cream/70">Today&apos;s mill rate{date ? `, ${date}` : ''}:</span>
+          {hmt && (
+            <span className="tabular">
+              HMT <strong className="text-gold-300">₹{hmt.retailPrice.toLocaleString('en-IN')}</strong>
+            </span>
+          )}
+          {jsr && (
+            <span className="tabular">
+              · JSR <strong className="text-gold-300">₹{jsr.retailPrice.toLocaleString('en-IN')}</strong>
+            </span>
+          )}
+          <span className="text-cream/60">per 26kg bag</span>
+        </AppLink>
+        <p className="inline-flex items-center gap-2 font-medium">
+          <Truck className="h-4 w-4 text-gold-400" aria-hidden="true" />
+          Free doorstep delivery on orders over ₹{free}
+        </p>
       </div>
-    </div>
+    </aside>
   );
 };

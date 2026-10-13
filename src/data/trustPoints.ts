@@ -1,5 +1,3 @@
-import { Review } from '../types';
-
 export const WHY_LG_GOLD_PILLARS = [
   {
     id: 'carefully-sourced',
@@ -26,7 +24,7 @@ export const WHY_LG_GOLD_PILLARS = [
     id: 'hygienically-packed',
     title: 'Hygienically Packed',
     subtitle: 'Food-Grade Multi-Layer Packing',
-    description: 'Automated packing in moisture-resistant poly, non-woven, and heavy-duty export PP bags preserving natural aroma and freshness.',
+    description: 'Weighed and machine-stitched into food-grade 26kg PP bags without hand contact, sealing in the natural aroma and freshness.',
     icon: 'PackageCheck'
   },
   {
@@ -99,7 +97,7 @@ export const EXPORT_JOURNEY_STEPS = [
   {
     step: 4,
     title: 'Export Packaging',
-    desc: 'Standardized 26kg BOPP, laminated PP, or customized private-label buyer packaging.',
+    desc: 'Standard 26kg PP, laminated or private-label bags in the buyer’s own branding.',
     icon: 'PackageCheck'
   },
   {
@@ -149,53 +147,6 @@ export const WHO_WE_SUPPLY_TARGETS = [
   }
 ];
 
-export const REVIEWS: Review[] = [
-  {
-    id: 'r1',
-    author: 'K. Venkateshwarlu',
-    role: 'Head Chef & Caterer',
-    location: 'Hyderabad, Telangana',
-    rating: 5,
-    comment: 'We use LG Gold HMT Rice for all our wedding feasts and weekend biryanis. The grain elongation and aroma are phenomenal. Zero complaints from 5,000+ guest banquets.',
-    date: 'February 2026',
-    verified: true,
-    productTarget: 'HMT Rice'
-  },
-  {
-    id: 'r2',
-    author: 'S. Al-Mansoor',
-    role: 'Commodities Trade Director',
-    location: 'Dubai, UAE',
-    rating: 5,
-    comment: 'Importing 6 container loads of LG Gold Rice monthly. The moisture consistency, sortex cleanliness, and sturdy export PP packaging meet all Gulf customs requirements flawlessly.',
-    date: 'January 2026',
-    verified: true,
-    productTarget: 'Export Orders'
-  },
-  {
-    id: 'r3',
-    author: 'Ananya Sharma',
-    role: 'Homemaker & Food Blogger',
-    location: 'Bengaluru',
-    rating: 5,
-    comment: 'LG Gold JSR Rice is so soft and light on the stomach. My kids love the curd rice and rasam rice made with this. It cooks in just 10 minutes without turning sticky!',
-    date: 'January 2026',
-    verified: true,
-    productTarget: 'JSR Rice'
-  },
-  {
-    id: 'r4',
-    author: 'R. Ramesh Reddy',
-    role: 'Supermarket Chain Owner',
-    location: 'Warangal',
-    rating: 5,
-    comment: 'Sri Lakshmi Ganapathi Trading Company has been our most punctual rice supplier. Customers specifically walk into the store asking for LG Gold 25kg bags.',
-    date: 'December 2025',
-    verified: true,
-    productTarget: 'Wholesale Supply'
-  }
-];
-
 export const FAQS = [
   {
     category: 'Products & Quality',
@@ -205,17 +156,17 @@ export const FAQS = [
   {
     category: 'Retail & Ordering',
     question: 'What pack sizes are available for home delivery?',
-    answer: 'We offer 5kg and 10kg consumer handle packs, as well as 25kg and 50kg household bags. You can easily order directly via our online cart or place a direct WhatsApp order with immediate doorstep dispatch.'
+    answer: 'LG Gold rice comes in 26kg bags, and you can also order 5 or 10 bags at a time. Order through the cart on this website or directly on WhatsApp.'
   },
   {
     category: 'Wholesale & Commercial',
     question: 'What are the minimum order quantities for wholesale rates?',
-    answer: 'Wholesale pricing starts from 500kg (20 bags of 25kg or 10 bags of 50kg). We provide mill-direct pricing with door delivery across Telangana, Andhra Pradesh, Karnataka, Maharashtra, and pan-India.'
+    answer: 'Wholesale pricing starts from about 500kg (20 bags of 26kg). We provide mill-direct pricing with door delivery across Telangana, Andhra Pradesh, Karnataka, Maharashtra, and pan-India.'
   },
   {
     category: 'Export & International Trade',
     question: 'How do you handle export orders and international container shipping?',
-    answer: 'We supply 20ft and 40ft FCL container loads (approx. 25-26 Metric Tons per 20ft FCL). We handle export packaging (BOPP, laminated PP, Jute), container stuffing, phytosanitary compliance, and export documentation under FOB or CIF terms.'
+    answer: 'We supply 20ft and 40ft FCL container loads (26 Metric Tons, or 1,000 bags of 26kg, per 20ft FCL). We handle export packaging (26kg PP, laminated or private-label bags), container stuffing, phytosanitary compliance, and export documentation under FOB or CIF terms.'
   },
   {
     category: 'Storage & Usage',

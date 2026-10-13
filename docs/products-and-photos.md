@@ -23,7 +23,7 @@ A quick trick: on github.com, open any issue or pull request, drag the picture i
 
 | Field | What to enter |
 | --- | --- |
-| What to do | `add or update product` (or `remove product` for one you added) |
+| What to do | `add or update product`, `remove pack size`, or `remove product` (for one you added) |
 | Product id | Lowercase with dashes, for example `basmati-rice`. This becomes the product's web address. |
 | Full name | `LG Gold Basmati Rice` (needed for a new product) |
 | Short name | `Basmati`. Used on the filter buttons. |
@@ -31,7 +31,8 @@ A quick trick: on github.com, open any issue or pull request, drag the picture i
 | A few sentences | A short description shown on the card and product page |
 | Picture | The file name from step 1 (`basmati-bag.jpg`) or a link |
 | Picture fit | `contain` shows the whole picture (use it for bags). `cover` fills the frame (use it for food photos). |
-| Pack size | `26kg Bag`, `5kg Bag`, `50kg Bag` and so on |
+| Pack size | Pick from the list: `5kg Bag`, `10kg Bag`, `26kg Bag`, `50kg Bag`. For any other size pick `other (type below)`. Leave it on `none` when you are not changing a pack. |
+| Other pack size | Only when you picked `other`, for example `25kg Bag` or `1kg Pouch` |
 | Price and MRP | In rupees. MRP is the crossed-out price and is optional. |
 | Stock | `in stock`, `out of stock` or `no change` |
 
@@ -41,8 +42,10 @@ A **new product** needs: id, full name, picture, and a price for one pack.
 
 ## Common jobs
 
-- **Add another pack size to a product:** run the form with the same product id, a new pack size and its price. The earlier packs stay.
-- **Change a product's price:** run the form with the same product id, the same pack size and the new price. (HMT and JSR prices are changed with the "Update prices and stock" form instead.)
+- **Add a 5kg, 10kg or 50kg bag (also to HMT and JSR):** product id (for example `hmt-rice`), pick the pack size from the list, type its price. Nothing else is needed. The earlier packs stay, and the new one appears in size order with the 26kg bag still selected first.
+- **Change the price of a pack you added:** the same as adding it, with the new price.
+- **Stop selling a pack you added:** What to do = `remove pack size`, the product id and the pack size. (The built-in 26kg packs of HMT and JSR cannot be removed; mark them out of stock instead.)
+- **Change a product's price:** run the form with the same product id, the same pack size and the new price. (The 26kg prices of HMT and JSR are changed with the "Update prices and stock" form instead.)
 - **Replace a product's picture:** run the form with just the product id and the new picture. Works for `hmt-rice` and `jsr-rice` too.
 - **Mark a product out of stock:** product id and Stock set to `out of stock`.
 - **Remove a product you added:** What to do = `remove product` and the product id. HMT and JSR are built in and cannot be removed.

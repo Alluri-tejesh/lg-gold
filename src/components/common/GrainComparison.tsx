@@ -1,366 +1,108 @@
 import React from 'react';
-import {
-  Check,
-  Wheat,
-  Sparkles,
-  Utensils,
-  ArrowRight,
-} from 'lucide-react';
-import { PRODUCTS } from '../../data/products';
+import { ArrowRight, Check } from 'lucide-react';
+import { getProductBySlug } from '../../data/products';
+import { AppLink } from '../ui/AppLink';
+import { buttonClass } from '../ui/Button';
 
 interface GrainComparisonProps {
-  onNavigate: (route: string, param?: string) => void;
+  onNavigate?: (route: string, param?: string) => void;
 }
 
-export const GrainComparison: React.FC<GrainComparisonProps> = ({ onNavigate }) => {
+const BEST_FOR: { dish: string; hmt: 'best' | 'good'; jsr: 'best' | 'good' }[] = [
+  { dish: 'Biryani & pulao', hmt: 'best', jsr: 'good' },
+  { dish: 'Fried & lemon rice', hmt: 'best', jsr: 'good' },
+  { dish: 'Daily rice, sambar & dal', hmt: 'good', jsr: 'best' },
+  { dish: 'Curd rice & rasam', hmt: 'good', jsr: 'best' },
+];
+
+const Rating: React.FC<{ v: 'best' | 'good' }> = ({ v }) =>
+  v === 'best' ? (
+    <span className="inline-flex items-center gap-1 rounded-full bg-forest-800 px-2.5 py-1 text-[13px] font-semibold text-gold-300">
+      <Check className="h-3.5 w-3.5" aria-hidden="true" /> Best
+    </span>
+  ) : (
+    <span className="text-[15px] text-muted">Good</span>
+  );
+
+/** HMT vs JSR side by side. Every number comes from the product data, so prices follow the daily price file. */
+export const GrainComparison: React.FC<GrainComparisonProps> = () => {
+  const hmt = getProductBySlug('hmt-rice');
+  const jsr = getProductBySlug('jsr-rice');
+  if (!hmt || !jsr) return null;
+
+  const bag = (p: typeof hmt) => p.packOptions.find((o) => o.size === '26kg Bag');
+  const short = (s: string) => s.split(' (')[0];
+
+  const rows: { label: string; hint?: string; hmt: React.ReactNode; jsr: React.ReactNode }[] = [
+    { label: 'Grain', hmt: short(hmt.grainSpecs.grainLength), jsr: short(jsr.grainSpecs.grainLength), hint: 'Length before cooking' },
+    { label: 'Cooked texture', hmt: 'Firm and separate', jsr: 'Soft and tender' },
+    { label: 'Ageing', hmt: short(hmt.grainSpecs.aging), jsr: short(jsr.grainSpecs.aging) },
+    { label: 'Moisture', hmt: short(hmt.grainSpecs.moistureContent), jsr: short(jsr.grainSpecs.moistureContent) },
+    { label: 'Broken grains', hmt: short(hmt.grainSpecs.brokenGrainPercentage), jsr: short(jsr.grainSpecs.brokenGrainPercentage) },
+    { label: 'Rice : water', hmt: short(hmt.cookingGuide.waterRatio), jsr: short(jsr.cookingGuide.waterRatio) },
+    { label: 'Cooking time', hmt: hmt.cookingGuide.cookingTime.replace(/ on medium flame/, ''), jsr: jsr.cookingGuide.cookingTime },
+    ...BEST_FOR.map((b) => ({ label: b.dish, hmt: <Rating v={b.hmt} />, jsr: <Rating v={b.jsr} /> })),
+    {
+      label: 'Price, 26kg bag',
+      hint: 'Today’s rate',
+      hmt: <span className="font-display text-2xl text-forest-800 tabular">₹{bag(hmt)?.retailPrice.toLocaleString('en-IN')}</span>,
+      jsr: <span className="font-display text-2xl text-forest-800 tabular">₹{bag(jsr)?.retailPrice.toLocaleString('en-IN')}</span>,
+    },
+  ];
+
   return (
-    <div className="bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-4 sm:p-8 shadow-clean rounded-sm space-y-6">
-      
-      {/* Header Section */}
-      <div className="text-center max-w-2xl mx-auto space-y-1.5 pb-2">
-        <span className="text-xs sm:text-xs font-bold text-[#C9A227] block">
-          Direct Variety Comparison
-        </span>
-        <h2 className="font-serif-brand font-medium text-2xl sm:text-3xl text-[#174A32]">
-          HMT vs JSR Rice Comparison
-        </h2>
-        <p className="text-xs sm:text-sm text-[#5F806D] max-w-lg mx-auto">
-          Understand the grain dimensions, cooking behavior, and culinary suitability for each single-origin Telangana variety.
-        </p>
-      </div>
-
-      {/* Modern Clean Comparison Table Layout */}
-      <div className="w-full">
-        
-        {/* Table Column Headers */}
-        <div className="grid grid-cols-12 items-end pb-3 sm:pb-4 border-b border-gray-200 gap-2">
-          
-          {/* Column 1: Attribute Label */}
-          <div className="col-span-6 sm:col-span-6">
-            <span className="text-xs sm:text-xs font-bold text-gray-400">
-              Attribute
-            </span>
-          </div>
-
-          {/* Column 2: LG Gold HMT Header */}
-          <div className="col-span-3 sm:col-span-3 text-center flex flex-col items-center justify-end">
-            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#174A32]/10 text-[#174A32] flex items-center justify-center mb-1 shadow-2xs">
-              <Wheat className="w-4 h-4 sm:w-5 sm:h-5 text-[#174A32]" />
-            </div>
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] leading-tight block">
-              LG Gold HMT
-            </span>
-            <span className="text-xs sm:text-xs text-[#5F806D] font-medium block mt-0.5">
-              Medium-Slender
-            </span>
-          </div>
-
-          {/* Column 3: LG Gold JSR Header */}
-          <div className="col-span-3 sm:col-span-3 text-center flex flex-col items-center justify-end">
-            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#C9A227]/20 text-[#916E14] flex items-center justify-center mb-1 shadow-2xs">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#C9A227]" />
-            </div>
-            <span className="font-bold text-xs sm:text-sm text-[#916E14] leading-tight block">
-              LG Gold JSR
-            </span>
-            <span className="text-xs sm:text-xs text-[#916E14]/80 font-medium block mt-0.5">
-              Super-Fine Grain
-            </span>
-          </div>
-        </div>
-
-        {/* Row 1: Average Grain Length */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Grain Length
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Pre-cooked kernel size</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
-              5.4 mm
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#916E14]">
-              5.0 mm
-            </span>
-          </div>
-        </div>
-
-        {/* Row 2: 100% Sortex Optical Cleaned */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              100% Sortex Cleaned
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">High-speed CCD color sorting</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-        </div>
-
-        {/* Row 3: Zero Stones & Foreign Seeds */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Zero Stones & Seeds
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Multi-vibratory sieves</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-        </div>
-
-        {/* Row 4: Moisture Controlled (< 13%) */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Moisture &lt; 13%
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Prevents spoilage & pest growth</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#174A32] text-white flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-          <div className="col-span-3 sm:col-span-3 flex justify-center">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#C9A227] text-[#174A32] flex items-center justify-center shadow-2xs">
-              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-            </div>
-          </div>
-        </div>
-
-        {/* Row 5: Natural Godown Aging */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Natural Aging
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Aerated Telangana storage</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
-              12+ Months
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#916E14]">
-              12+ Months
-            </span>
-          </div>
-        </div>
-
-        {/* Row 6: Cooked Grain Texture */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Cooked Texture
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Grain separation & mouthfeel</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-semibold text-xs sm:text-xs text-[#174A32] leading-tight block">
-              Firm & Separate
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-semibold text-xs sm:text-xs text-[#916E14] leading-tight block">
-              Extra-Soft & Tender
-            </span>
-          </div>
-        </div>
-
-        {/* Row 7: Cooking Water Ratio */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Water Ratio
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Optimum absorption (Rice : Water)</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
-              1 : 2.0
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#916E14]">
-              1 : 2.25
-            </span>
-          </div>
-        </div>
-
-        {/* Section: Ideal Culinary Suitability */}
-        <div className="pt-2">
-          
-          {/* Main Category Header Row */}
-          <div className="my-2 py-2 px-2.5 sm:px-3 bg-[#F8F5EA] border-y border-[#C9A227]/30 flex items-center justify-between rounded-xs">
-            <div className="flex items-center gap-1.5">
-              <Utensils className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
-              <span className="font-bold text-xs sm:text-sm text-[#174A32]">
-                Culinary Suitability
-              </span>
-            </div>
-            <span className="text-xs sm:text-xs text-[#5F806D] font-medium">
-              Dish & Recipe Matching
-            </span>
-          </div>
-
-          {/* Sub-item: Hyderabadi Dum Biryani */}
-          <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
-            <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-xs text-[#202522] font-medium leading-tight">Biryani & Pulao</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs font-bold text-[#174A32]">Best Match</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs text-gray-500">Good</span>
-            </div>
-          </div>
-
-          {/* Sub-item: Traditional Andhra Thali / Sambar */}
-          <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
-            <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-xs text-[#202522] font-medium leading-tight">Thali & Sambar</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs text-gray-500">Good</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs font-bold text-[#916E14]">Best Match</span>
-            </div>
-          </div>
-
-          {/* Sub-item: Rasam Rice & Curd Rice */}
-          <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
-            <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-xs text-[#202522] font-medium leading-tight">Rasam & Curd</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs text-gray-500">Good</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs font-bold text-[#916E14]">Best Match</span>
-            </div>
-          </div>
-
-          {/* Sub-item: Daily Family Meals */}
-          <div className="grid grid-cols-12 items-center py-2 sm:py-2.5 border-b border-gray-100 gap-2 px-1 sm:px-2">
-            <div className="col-span-6 sm:col-span-6 flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-xs text-[#202522] font-medium leading-tight">Daily Family Meals</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs font-bold text-[#174A32]">Everyday Choice</span>
-            </div>
-            <div className="col-span-3 sm:col-span-3 text-center">
-              <span className="text-xs sm:text-xs font-bold text-[#916E14]">Special Dining</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Row: Standard Packaging */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b border-gray-100 gap-2">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Standard Packaging
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Tamper-evident machine stitched</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32]">
-              26kg Bag
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-bold text-xs sm:text-sm text-[#916E14]">
-              26kg Bag
-            </span>
-          </div>
-        </div>
-
-        {/* Row: Retail Price */}
-        <div className="grid grid-cols-12 items-center py-2.5 sm:py-3.5 border-b-2 border-[#C9A227]/30 gap-2 bg-[#F8F5EA]/30 px-1 sm:px-2 rounded-xs">
-          <div className="col-span-6 sm:col-span-6">
-            <span className="font-bold text-xs sm:text-sm text-[#174A32] block">
-              Price (26kg Bag)
-            </span>
-            <span className="text-xs text-gray-500 hidden sm:block">Includes GST & mill-direct packing</span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-serif-brand font-bold text-xs sm:text-base text-[#174A32]">
-              ₹1,650
-            </span>
-          </div>
-          <div className="col-span-3 sm:col-span-3 text-center">
-            <span className="font-serif-brand font-bold text-xs sm:text-base text-[#916E14]">
-              ₹1,820
-            </span>
-          </div>
-        </div>
-
-        {/* Direct Navigation Action Buttons: Responsive Auto-sizing & No Text Wrap */}
-        <div className="grid grid-cols-2 sm:grid-cols-12 items-center pt-4 gap-2.5 sm:gap-2">
-          
-          {/* Desktop Left Text */}
-          <div className="hidden sm:block sm:col-span-6">
-            <span className="text-xs text-[#5F806D]">
-              Click to view detailed grain specs, recipes & reviews
-            </span>
-          </div>
-
-          {/* HMT Button: Full width on mobile column, perfectly scaled */}
-          <div className="col-span-1 sm:col-span-3">
-            <button
-              onClick={() => onNavigate('product-detail', 'hmt-rice')}
-              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#174A32] hover:bg-[#226444] text-white font-bold text-xs sm:text-xs rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
-            >
-              <span>View HMT</span>
-              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-            </button>
-          </div>
-
-          {/* JSR Button: Full width on mobile column, perfectly scaled */}
-          <div className="col-span-1 sm:col-span-3">
-            <button
-              onClick={() => onNavigate('product-detail', 'jsr-rice')}
-              className="w-full py-2.5 sm:py-2 px-2 sm:px-3 bg-[#C9A227] hover:bg-[#b08d1f] text-white font-bold text-xs sm:text-xs rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap"
-            >
-              <span>View JSR</span>
-              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-            </button>
-          </div>
-        </div>
-
-        {/* Footer Note */}
-        <div className="mt-5 pt-3 border-t border-gray-200 text-center sm:text-left">
-          <p className="text-sm text-gray-500 leading-relaxed">
-            All LG Gold rice bags are processed at Sri Lakshmi Ganapathi Modern Milltec Facility in Venkatadri Palem, Telangana. Aged for a minimum of 12 months with 100% Sortex optical verification and tamper-evident machine stitching.
-          </p>
-        </div>
-
-      </div>
-
+    <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-line shadow-soft">
+      <table className="w-full table-fixed border-collapse text-left">
+        <caption className="sr-only">HMT rice compared with JSR rice</caption>
+        <colgroup>
+          <col className="w-[40%] sm:w-[34%]" />
+          <col />
+          <col />
+        </colgroup>
+        <thead>
+          <tr className="bg-cream">
+            <th scope="col" className="p-4 align-bottom text-[13px] font-semibold uppercase tracking-[0.14em] text-muted sm:p-6">
+              Compare
+            </th>
+            {[hmt, jsr].map((p) => (
+              <th key={p.slug} scope="col" className="p-4 align-bottom sm:p-6">
+                <img
+                  src={p.images.primary}
+                  alt=""
+                  className={`mb-3 h-16 w-16 rounded-2xl bg-white ring-1 ring-line sm:h-20 sm:w-20 ${p.images.primaryFit === 'contain' ? 'object-contain p-1' : 'object-cover'}`}
+                  referrerPolicy="no-referrer"
+                />
+                <span className="block font-display text-xl font-medium text-forest-800 sm:text-2xl">{p.shortName}</span>
+                <span className="block text-sm font-normal text-muted">{p.subTitle.split(' with ')[0]}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.label} className="border-t border-line">
+              <th scope="row" className="p-4 align-top font-semibold text-forest-800 sm:px-6">
+                {r.label}
+                {r.hint && <span className="block text-sm font-normal text-muted">{r.hint}</span>}
+              </th>
+              <td className="p-4 align-top text-[15px] text-ink-soft sm:px-6">{r.hmt}</td>
+              <td className="p-4 align-top text-[15px] text-ink-soft sm:px-6">{r.jsr}</td>
+            </tr>
+          ))}
+          <tr className="border-t border-line bg-cream/60">
+            <td className="p-4 text-sm text-muted sm:px-6">
+              <span className="hidden sm:inline">Specs, cooking guide and recipes</span>
+            </td>
+            {[hmt, jsr].map((p) => (
+              <td key={p.slug} className="p-3 sm:px-6 sm:py-4">
+                <AppLink to="product-detail" param={p.slug} className={buttonClass(p.slug === 'hmt-rice' ? 'primary' : 'gold', 'sm', true)}>
+                  View {p.shortName.replace(' Rice', '')} <ArrowRight className="h-4 w-4" />
+                </AppLink>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

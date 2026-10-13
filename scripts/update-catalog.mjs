@@ -3,8 +3,9 @@
  * Adds, updates or removes a product in public/catalog.json, and saves its picture in public/products/.
  * Inputs come from environment variables so the GitHub Actions form and a local run use the same code:
  *
- *   ACTION        "add or update product" (default) or "remove product"
- *   SLUG          lowercase-with-dashes id, e.g. basmati-rice. Use hmt-rice or jsr-rice to change those products' pictures or text.
+ *   ACTION        "add or update product" (default), "remove pack size" or "remove product"
+ *   SLUG          lowercase-with-dashes id, e.g. basmati-rice. Use hmt-rice or jsr-rice to change those products,
+ *                 including adding new pack sizes such as "5kg Bag" to them.
  *   NAME          full name, e.g. LG Gold Basmati Rice        (required for a new product)
  *   SHORT_NAME    short name for buttons and filters           (optional)
  *   SUBTITLE      one line under the name                      (optional)
@@ -12,6 +13,8 @@
  *   IMAGE         a picture: an https link, or a file name already uploaded to public/products/ (required for a new product)
  *   IMAGE_FIT     "contain" (whole picture, best for bag photos) or "cover" (fills the frame)
  *   PACK_SIZE     e.g. "26kg Bag" or "50kg Bag"                (default "26kg Bag" when a price is given)
+ *                 "none" means not set; "other (type below)" reads CUSTOM_PACK_SIZE instead.
+ *   CUSTOM_PACK_SIZE  any other size, e.g. "1kg Pouch" or "25 kg"  ("25 kg" is tidied to "25kg Bag")
  *   PRICE, MRP    rupees; MRP is the crossed-out price         (price required for a new product)
  *   STOCK         "in stock", "out of stock" or blank/"no change"
  *
@@ -24,6 +27,8 @@ const CATALOG_FILE = process.env.CATALOG_FILE || 'public/catalog.json';
 const PRICES_FILE = process.env.PRICES_FILE || 'public/prices.json';
 const PRODUCTS_DIR = process.env.PRODUCTS_DIR || 'public/products';
 const BUILT_IN = ['hmt-rice', 'jsr-rice'];
+// HMT and JSR's own packs. Their prices are changed with the "Update prices and stock" form; any other size can be added here.
+const BUILT_IN_PACKS = ['26kg Bag', '26kg x 5 Bags (130kg)', '26kg x 10 Bags (260kg)'];
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
 const env = (k) => (process.env[k] ?? '').trim();
@@ -39,6 +44,15 @@ const parsePrice = (raw, label) => {
   const n = Number(raw.replace(/[^0-9.]/g, ''));
   if (!Number.isFinite(n) || n < 100 || n > 500000) fail(`${label} "${raw}" is not a sensible price in rupees.`);
   return n;
+};
+
+/** The pack size from the form, tidied so "5 kg", "5KG bag" and "5kg Bag" are all saved as "5kg Bag". Empty when not set. */
+const packSize = () => {
+  const choice = env('PACK_SIZE');
+  const raw = /^other/i.test(choice) ? env('CUSTOM_PACK_SIZE') : /^none$/i.test(choice) ? '' : choice;
+  if (/^other/i.test(choice) && !raw) fail('You chose "other" for the pack size. Type the size in "Other pack size", e.g. 25kg Bag.');
+  const kg = raw.match(/^(\d+(?:\.\d+)?)\s*kg\s*(?:bags?)?$/i);
+  return kg ? `${kg[1]}kg Bag` : raw;
 };
 
 const stamp = () => new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12); // 202610131045
@@ -81,6 +95,26 @@ async function main() {
   const index = catalog.products.findIndex((p) => p.slug === slug);
   const out = [];
 
+  if (action === 'remove pack size') {
+    const size = packSize();
+    if (!size) fail('Choose the pack size to remove.');
+    if (BUILT_IN.includes(slug) && BUILT_IN_PACKS.includes(size)) {
+      fail(`${size} is one of ${slug}'s own packs and cannot be removed. Mark it out of stock with the "Update prices and stock" form instead.`);
+    }
+    const entry = catalog.products[index];
+    const before = entry?.packs?.length ?? 0;
+    if (entry) entry.packs = (entry.packs ?? []).filter((p) => p.size !== size);
+    if (!entry || entry.packs.length === before) fail(`${slug} has no "${size}" pack to remove.`);
+    if (!BUILT_IN.includes(slug) && entry.packs.length === 0) {
+      fail(`${size} is the only pack ${slug} has. Remove the whole product instead, or add another pack first.`);
+    }
+    if (prices.prices?.[slug]) delete prices.prices[slug][size];
+    writeJson(CATALOG_FILE, catalog);
+    writeJson(PRICES_FILE, prices);
+    console.log(`### Removed the ${size} pack from ${entry.name || slug}\n\nThe other packs stay on the site.`);
+    return;
+  }
+
   if (action.startsWith('remove')) {
     if (index === -1) {
       fail(
@@ -120,9 +154,11 @@ async function main() {
 
   let packNote = '';
   if (env('PRICE') || env('MRP')) {
-    if (builtIn) fail('Change HMT and JSR prices with the "Update prices and stock" form. This form is for pictures, text and new products.');
     if (!env('PRICE')) fail('Enter the price as well as the MRP.');
-    const size = env('PACK_SIZE') || '26kg Bag';
+    const size = packSize() || '26kg Bag';
+    if (builtIn && BUILT_IN_PACKS.includes(size)) {
+      fail(`Change the ${size} price for ${slug} with the "Update prices and stock" form. This form adds other sizes, like 5kg Bag.`);
+    }
     const price = parsePrice(env('PRICE'), 'Price');
     entry.packs ??= [];
     let pack = entry.packs.find((p) => p.size === size);
@@ -130,8 +166,12 @@ async function main() {
     pack.price = price;
     const mrp = env('MRP') ? parsePrice(env('MRP'), 'MRP') : pack.mrp ?? price;
     pack.mrp = mrp >= price ? mrp : price;
+    // The admin page keeps every pack's price in prices.json too, and the site applies prices.json last,
+    // so update it here as well or an older price there would win.
+    const priced = prices.prices?.[slug]?.[size];
+    if (priced) Object.assign(priced, { price: pack.price, mrp: pack.mrp });
     packNote = `${size}: ${inr(price)}${pack.mrp > price ? ` (MRP ${inr(pack.mrp)})` : ''}`;
-  } else if (env('PACK_SIZE')) {
+  } else if (packSize()) {
     fail('A pack size needs a price too.');
   }
 

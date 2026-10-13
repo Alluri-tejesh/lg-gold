@@ -1,104 +1,45 @@
 import React from 'react';
-import { CheckCircle, MessageCircle, X, ShieldCheck } from 'lucide-react';
-import { BRAND_CONFIG, createWhatsAppUrl } from '../../config/brandConfig';
+import { CheckCircle2, MessageCircle, Phone } from 'lucide-react';
+import { BRAND_CONFIG, openWhatsApp, phoneTelHref } from '../../config/brandConfig';
+import { Dialog } from '../ui/Dialog';
+import { Button } from '../ui/Button';
 
 interface QuoteSuccessModalProps {
   isOpen: boolean;
   onClose: () => void;
-  quoteType: 'Export' | 'Wholesale' | 'Bulk';
-  referenceId: string;
-  data: any;
+  quoteType: 'Export' | 'Wholesale' | 'Bulk' | 'Contact';
+  /** The WhatsApp link that was just opened, so the buyer can open it again if they closed the tab. */
+  whatsappUrl: string;
 }
 
-export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({
-  isOpen,
-  onClose,
-  quoteType,
-  referenceId,
-  data,
-}) => {
-  if (!isOpen) return null;
-
-  const handleWhatsAppFollowUp = () => {
-    let msg = `Hi LG Gold ${quoteType} Desk, I just submitted an RFQ #${referenceId} on your website.\n`;
-    if (data?.companyName || data?.businessName) {
-      msg += `Company: ${data.companyName || data.businessName}\n`;
-    }
-    if (data?.riceVariety) {
-      msg += `Variety: ${data.riceVariety}\n`;
-    }
-    if (data?.requiredQuantity || data?.monthlyRequirement) {
-      msg += `Quantity: ${data.requiredQuantity || data.monthlyRequirement}\n`;
-    }
-    msg += `Please expedite our trade quotation. Thank you!`;
-
-    window.open(createWhatsAppUrl(msg), '_blank');
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-[#FFFFFF] w-full max-w-lg rounded-sm shadow-clean border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 overflow-hidden">
-        
-        {/* Header */}
-        <div className="p-5 bg-[#174A32] text-white flex items-center justify-between border-b border-[#C9A227]">
-          <div className="flex items-center gap-2.5">
-            <span className="font-serif-brand font-medium text-lg text-[#C9A227]">{quoteType} Quote Request</span>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-white/70 hover:text-white p-1 rounded-xs hover:bg-white/10 transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 sm:p-8 text-center space-y-4">
-          <div className="w-16 h-16 bg-[#174A32]/10 rounded-full flex items-center justify-center mx-auto text-[#174A32]">
-            <CheckCircle className="w-10 h-10 text-[#174A32]" />
-          </div>
-
-          <div>
-            <h3 className="font-serif-brand font-medium text-2xl text-[#174A32]">
-              Inquiry Received
-            </h3>
-            <p className="text-xs text-[#5F806D] mt-1">
-              Reference ID: <strong className="text-[#C9A227]">#{referenceId}</strong>
-            </p>
-          </div>
-
-          <p className="text-sm sm:text-sm text-[#202522] leading-relaxed">
-            Our trade desk at Sri Lakshmi Ganapathi Trading Company in Telangana has received your inquiry. A commercial specialist will review your specifications and contact you with current mill pricing within <strong>2 to 4 business hours</strong>.
-          </p>
-
-          <div className="p-3 bg-[#F8F5EA] rounded-xs border border-[#C9A227]/30 text-left text-xs text-[#202522] space-y-1">
-            <div><span className="font-bold text-[#174A32]">Mill Desk:</span> Venkatadri Palem, Telangana</div>
-            <div><span className="font-bold text-[#174A32]">Support Hotline:</span> {BRAND_CONFIG.contact.primaryPhone}</div>
-          </div>
-
-          <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              onClick={handleWhatsAppFollowUp}
-              className="px-5 py-2.5 bg-[#25D366] text-white text-xs font-bold rounded-xs flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-colors cursor-pointer shadow-xs"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Connect on WhatsApp</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="px-5 py-2.5 bg-[#174A32] text-white text-xs font-bold rounded-xs hover:bg-[#1a5a3d] transition-colors cursor-pointer border border-[#174A32]"
-            >
-              Done
-            </button>
-          </div>
-
-          <div className="flex items-center justify-center gap-1.5 text-xs text-[#5F806D] pt-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#C9A227]" />
-            <span>Sri Lakshmi Ganapathi Trading Company Commercial Desk</span>
-          </div>
-        </div>
-
+/**
+ * Shown after an enquiry form opens WhatsApp. Nothing is sent from the website itself:
+ * the enquiry only reaches the mill once the buyer presses Send in WhatsApp, so the wording says exactly that.
+ */
+export const QuoteSuccessModal: React.FC<QuoteSuccessModalProps> = ({ isOpen, onClose, quoteType, whatsappUrl }) => (
+  <Dialog open={isOpen} onClose={onClose} label={quoteType === 'Contact' ? 'Message ready' : `${quoteType} enquiry ready`}>
+    <div className="overflow-y-auto px-6 pb-8 pt-12 text-center sm:px-10">
+      <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-whatsapp/15 animate-pop-in">
+        <CheckCircle2 className="h-11 w-11 text-whatsapp-ink" />
       </div>
+      <h2 className="mt-5 font-display text-3xl text-forest-800">Your enquiry is ready on WhatsApp</h2>
+      <p className="mx-auto mt-3 max-w-md text-lg leading-relaxed text-ink-soft">
+        WhatsApp has opened with your details filled in. <strong>Press Send there</strong> and our trade desk will reply on WhatsApp with
+        current mill rates.
+      </p>
+      <p className="mt-3 text-sm text-muted">
+        WhatsApp didn&apos;t open? Use the button below, or call {BRAND_CONFIG.contact.primaryPhone}.
+      </p>
+      <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+        <Button variant="whatsapp" icon={<MessageCircle className="h-5 w-5" />} onClick={() => openWhatsApp(whatsappUrl)}>
+          Open WhatsApp again
+        </Button>
+        <Button href={phoneTelHref()} variant="outline" icon={<Phone className="h-5 w-5" />}>
+          Call the mill
+        </Button>
+        <Button onClick={onClose}>Done</Button>
+      </div>
+      <p className="mt-6 text-sm text-muted">{BRAND_CONFIG.contact.operatingHours}</p>
     </div>
-  );
-};
+  </Dialog>
+);

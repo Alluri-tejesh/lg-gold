@@ -1,94 +1,54 @@
 import React from 'react';
-import { Home, Package, UtensilsCrossed, ShoppingBag, MessageCircle } from 'lucide-react';
+import { Home, Store, UtensilsCrossed, ShoppingBag, UserRound } from 'lucide-react';
+import { useCustomer } from '../../customer/CustomerContext';
 import { useCart } from '../../context/CartContext';
-import { BRAND_CONFIG, createWhatsAppUrl } from '../../config/brandConfig';
+import { createWhatsAppUrl } from '../../config/brandConfig';
+import { AppLink } from '../ui/AppLink';
 
-interface MobileBottomNavProps {
-  currentRoute: string;
-  onNavigate: (route: string) => void;
-}
-
-export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ currentRoute, onNavigate }) => {
+/** Thumb-reach navigation for phones. Hidden on large screens, where the header has everything. */
+export const MobileBottomNav: React.FC<{ currentRoute: string }> = ({ currentRoute }) => {
   const { totalItems, setIsCartOpen } = useCart();
+  const { user } = useCustomer();
 
-  const navItems = [
-    {
-      id: 'home',
-      label: 'Home',
-      icon: Home,
-      action: () => onNavigate('home'),
-      isActive: currentRoute === 'home',
-    },
-    {
-      id: 'products',
-      label: 'Products',
-      icon: Package,
-      action: () => onNavigate('products'),
-      isActive: currentRoute === 'products' || currentRoute === 'product-detail',
-    },
-    {
-      id: 'recipes',
-      label: 'Recipes',
-      icon: UtensilsCrossed,
-      action: () => onNavigate('recipes'),
-      isActive: currentRoute === 'recipes' || currentRoute === 'recipe-detail',
-    },
-    {
-      id: 'cart',
-      label: 'Cart',
-      icon: ShoppingBag,
-      action: () => setIsCartOpen(true),
-      isActive: false,
-      badge: totalItems > 0 ? totalItems : undefined,
-    },
-    {
-      id: 'whatsapp',
-      label: 'WhatsApp',
-      icon: MessageCircle,
-      action: () => {
-        const url = createWhatsAppUrl(`Hi LG Gold Team, I am browsing your website from my mobile phone and would like to inquire about your rice products.`);
-        window.open(url, '_blank');
-      },
-      isActive: false,
-      isHighlight: true,
-    }
+  const item = 'relative flex flex-col items-center justify-center gap-1 text-[12px] font-semibold min-h-14 transition-colors';
+  const tabs = [
+    { to: 'home', label: 'Home', icon: Home, active: currentRoute === 'home' },
+    { to: 'products', label: 'Shop', icon: Store, active: ['products', 'product-detail'].includes(currentRoute) },
+    { to: 'recipes', label: 'Recipes', icon: UtensilsCrossed, active: ['recipes', 'recipe-detail'].includes(currentRoute) },
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#FFFFFF] border-t border-[#E7D59A]/60 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] backdrop-blur-md bg-white/95 safe-area-pb">
-      <div className="grid grid-cols-5 h-16 max-w-lg mx-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={item.action}
-              className={`flex flex-col items-center justify-center relative py-1 px-1 transition-colors cursor-pointer ${
-                item.isActive
-                  ? 'text-[#174A32] font-bold'
-                  : item.isHighlight
-                  ? 'text-[#128C7E] font-semibold'
-                  : 'text-[#202522]/70 hover:text-[#174A32]'
-              }`}
-            >
-              <div className="relative">
-                <Icon className={`w-5 h-5 ${item.isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
-                {item.badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2 bg-[#C9A227] text-[#174A32] font-extrabold text-xs w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
-                    {item.badge}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs mt-1 tracking-tight truncate max-w-full">
-                {item.label}
+    <nav
+      aria-label="Quick links"
+      className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/92 backdrop-blur-xl pb-safe shadow-[0_-8px_24px_-12px_rgb(23_74_50/0.2)] lg:hidden"
+    >
+      <div className="mx-auto grid max-w-lg grid-cols-5">
+        {tabs.map(({ to, label, icon: Icon, active }) => (
+          <AppLink key={to} to={to} aria-current={active ? 'page' : undefined} className={`${item} ${active ? 'text-forest-800' : 'text-muted'}`}>
+            <span className={`grid h-7 w-12 place-items-center rounded-full transition-colors ${active ? 'bg-gold-100' : ''}`}>
+              <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.9} />
+            </span>
+            {label}
+          </AppLink>
+        ))}
+        <button type="button" onClick={() => setIsCartOpen(true)} className={`${item} text-muted cursor-pointer`} aria-label={`Cart, ${totalItems} packs`}>
+          <span className="relative grid h-7 w-12 place-items-center">
+            <ShoppingBag className="h-5 w-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 right-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold-500 px-1 text-[11px] font-bold text-forest-900 ring-2 ring-paper">
+                {totalItems}
               </span>
-              {item.isActive && (
-                <span className="absolute bottom-1 w-6 h-0.5 bg-[#C9A227] rounded-full" />
-              )}
-            </button>
-          );
-        })}
+            )}
+          </span>
+          Cart
+        </button>
+        <AppLink to={user ? 'account' : 'login'} className={`${item} text-forest-800`}>
+          <span className="grid h-7 w-12 place-items-center">
+            <UserRound className="h-5 w-5" />
+          </span>
+          Account
+        </AppLink>
       </div>
-    </div>
+    </nav>
   );
 };

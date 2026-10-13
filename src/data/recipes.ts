@@ -21,6 +21,7 @@ export const RECIPE_CATEGORIES = [
   'Andhra & Telangana',
   'Sweets',
   'Festival',
+  'Special Occasions',
   'Kids & Lunchbox',
   'Healthy',
   'One-Pot',

@@ -137,12 +137,14 @@ export const applyCatalog = (catalog: Catalog): number => {
       }
     }
   }
+  // Packs added later (a 5kg bag next to the 26kg one) appear in size order: 5kg, 10kg, 26kg, 26kg x 5 ...
+  for (const product of PRODUCTS) product.packOptions.sort((a, b) => a.weightKg - b.weightKg);
   return changed;
 };
 
 export const loadCatalog = async (): Promise<void> => {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 2500);
+  const timer = setTimeout(() => ctrl.abort(), 1500);
   try {
     const res = await fetch(`${import.meta.env.BASE_URL}catalog.json?t=${Date.now()}`, { cache: 'no-store', signal: ctrl.signal });
     if (res.ok) applyCatalog((await res.json()) as Catalog);
