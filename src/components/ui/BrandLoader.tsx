@@ -1,4 +1,5 @@
 import React, { useId } from 'react';
+import { Monogram } from './Logo';
 
 /** Grain positions (x) inside the coin; each falls on its own beat (see .bl-grain in index.html). */
 const GRAINS = [46, 58, 70, 52, 64, 75];
@@ -6,7 +7,8 @@ const GRAINS = [46, 58, 70, 52, 64, 75];
 const wave = (y: number, up: boolean) => `M-60 ${y} q15 ${up ? -5 : 5} 30 0${' t30 0'.repeat(9)} V240 H-60 Z`;
 
 /**
- * "Grain to Gold": rice grains fall into the LG Gold coin while liquid gold rises inside it.
+ * "Grain to Gold": rice grains fall into the coin while liquid gold rises inside it, and the company monogram
+ * (the G and L of the logo) draws itself on top.
  * The same drawing is in index.html as the first-load screen; its CSS (the .bl-* classes) lives there too,
  * so it is ready before any script runs. Respects "reduce motion".
  */
@@ -41,12 +43,8 @@ export const BrandLoader: React.FC<{ small?: boolean; label?: string }> = ({ sma
         <circle cx="60" cy="60" r="51" fill="none" stroke="#EFE3BF" strokeWidth="3" />
         <circle className="bl-ring" cx="60" cy="60" r="51" fill="none" stroke="#D8B23A" strokeWidth="3" strokeLinecap="round" pathLength="100" />
         <g className="bl-mono">
-          <g transform="translate(60 60) scale(1.25) translate(-30 -32)" fill="#174A32">
-            <path d="M18 20h5.2v19.4h9.4V44H18z" />
-            <path
-              d="M41.5 33.6h-7v4.1h3.2c-.6 1.8-2.1 2.8-4.1 2.8-2.9 0-4.8-2.3-4.8-5.6s1.9-5.6 4.7-5.6c1.6 0 2.8.7 3.6 1.9l3.8-2.4c-1.6-2.5-4.2-3.9-7.4-3.9-5.7 0-9.7 4.1-9.7 10s3.9 10 9.6 10c5.6 0 8.9-3.9 8.9-9.7z"
-              transform="translate(2 -1.5) scale(0.92)"
-            />
+          <g transform="translate(60 60) scale(0.92) translate(-50 -50)">
+            <Monogram weight={5.2} />
           </g>
         </g>
       </svg>

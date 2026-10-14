@@ -13,13 +13,13 @@ interface Step {
   icon: string;
 }
 
-/** Six steps on a line. When it scrolls into view the line draws itself and each step pops in as it is reached. */
+/** Steps on a line. When it scrolls into view the line draws itself and each step pops in as it is reached. */
 export const JourneyTimeline: React.FC<{ steps: Step[] }> = ({ steps }) => {
   const [ref, seen] = useInView<HTMLOListElement>(0.25);
   const stagger = 1600 / steps.length; // matches the 1.6s line draw
 
   return (
-    <ol ref={ref} className="relative grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-6">
+    <ol ref={ref} className={`relative grid grid-cols-1 gap-x-6 gap-y-10 ${steps.length <= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-6'}`}>
       {/* desktop: horizontal track, vertical on small screens */}
       <span aria-hidden="true" className="absolute left-7 right-7 top-7 hidden h-0.5 bg-gold-300/50 lg:block" />
       <span aria-hidden="true" className={`absolute left-7 right-7 top-7 hidden h-0.5 bg-gold-500 line-grow lg:block ${seen ? 'is-in' : ''}`} />

@@ -16,9 +16,11 @@ export const BRAND_CONFIG = {
 
   contact: {
     primaryPhone: '+91 97015 35231',
-    emailRetail: 'care@lggoldrice.com',
-    emailWholesale: 'wholesale@lggoldrice.com',
-    emailExport: 'exports@lggoldrice.com',
+    // Email addresses are shown on the site only when filled in. Leave them empty until the mailbox really
+    // works (e.g. 'care@lggoldrice.com' once the domain and its email are set up), so no message gets lost.
+    emailRetail: '',
+    emailWholesale: '',
+    emailExport: '',
     operatingHours: 'Mon – Sat: 8:00 AM – 8:00 PM IST',
   },
 
@@ -56,11 +58,6 @@ export const BRAND_CONFIG = {
     cashOnDelivery: true,
   },
 
-  /**
-   * Optional: a Google Sheet published as CSV, so prices can change without a deploy.
-   * Only used when the shop server cannot be reached; normally prices come from the admin page.
-   */
-  pricesCsvUrl: '',
 };
 
 /** A tap-to-call link for the main number, without spaces so every phone dials it correctly. */

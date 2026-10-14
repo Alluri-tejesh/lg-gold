@@ -17,7 +17,7 @@ import {
 import { ApiError } from '../customer/api';
 import { formatPriceDate } from '../data/prices';
 import type { StoreSettings, Storefront } from '../data/storefront';
-import { LogoMark } from '../components/ui/Logo';
+import { LogoMark, LogoSeal } from '../components/ui/Logo';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { Button } from '../components/ui/Button';
 import { Field, TextField, inputClass } from '../components/ui/Field';
@@ -130,7 +130,7 @@ const SignIn: React.FC<{ configured: boolean; onSignedIn: () => void }> = ({ con
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-gold-500/20 blur-3xl" aria-hidden="true" />
       <div className="relative w-full max-w-sm animate-pop-in">
         <div className="text-center">
-          <LogoMark className="mx-auto h-16 w-16" />
+          <LogoSeal className="mx-auto h-32 w-32 drop-shadow-[0_10px_30px_rgb(0_0_0/0.4)]" />
           <h1 className="mt-4 font-display text-4xl text-white">LG Gold Admin</h1>
           <p className="mt-2 text-cream/70">Orders, prices, stock and products.</p>
         </div>

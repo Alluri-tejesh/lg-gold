@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin, Phone, Mail, MessageCircle, Clock, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { BRAND_CONFIG, createWhatsAppUrl, fssaiLabel, phoneTelHref } from '../../config/brandConfig';
-import { Logo } from '../ui/Logo';
+import { LogoSeal } from '../ui/Logo';
 import { AppLink } from '../ui/AppLink';
 import { buttonClass } from '../ui/Button';
 
@@ -69,7 +69,12 @@ export const Footer: React.FC = () => {
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-3">
-          <Logo dark />
+          <div className="flex items-center gap-4">
+            <LogoSeal className="h-24 w-24 shrink-0 drop-shadow-[0_6px_18px_rgb(0_0_0/0.35)]" />
+            <span className="font-display text-[1.7rem] font-bold leading-none tracking-tight text-white">
+              LG <span className="text-gold-400">GOLD</span>
+            </span>
+          </div>
           <p className="mt-5 max-w-sm leading-relaxed text-cream/70">
             Single-origin HMT and JSR rice, aged 12 months or more and Sortex cleaned at our own mill in Venkatadri Palem, Telangana.
           </p>
@@ -116,12 +121,14 @@ export const Footer: React.FC = () => {
                 {contact.primaryPhone}
               </a>
             </li>
-            <li className="flex gap-3">
-              <Mail className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" aria-hidden="true" />
-              <a href={`mailto:${contact.emailWholesale}`} className="break-all hover:text-white">
-                {contact.emailWholesale}
-              </a>
-            </li>
+            {contact.emailWholesale && (
+              <li className="flex gap-3">
+                <Mail className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" aria-hidden="true" />
+                <a href={`mailto:${contact.emailWholesale}`} className="break-all hover:text-white">
+                  {contact.emailWholesale}
+                </a>
+              </li>
+            )}
             <li className="flex gap-3">
               <Clock className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" aria-hidden="true" />
               {contact.operatingHours}

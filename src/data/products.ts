@@ -210,7 +210,3 @@ export const getDefaultPack = (product: Product): PackOption =>
   product.packOptions.find((o) => o.isPopular) ?? product.packOptions.find((o) => o.size === '26kg Bag') ?? product.packOptions[0];
 
 /** Single-bag sizes a product comes in, smallest first, e.g. "5kg · 10kg · 26kg". Multi-bag lots are left out. */
-export const getBagSizesLabel = (product: Product): string => {
-  const sizes = product.packOptions.filter((o) => !/\sx\s/i.test(o.size)).map((o) => o.size.replace(/\s*bag$/i, ''));
-  return [...new Set(sizes)].join(' · ');
-};

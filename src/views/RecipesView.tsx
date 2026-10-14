@@ -68,7 +68,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
         onNavigate={onNavigate}
         eyebrow="From the mill kitchen"
         title="Cook something delicious"
-        intro={`${RECIPES.length} recipes tested with LG Gold HMT and JSR rice, from Hyderabadi dum biryani to five-minute curd rice. Each one scales to your family size and has built-in timers.`}
+        intro={`${RECIPES.length} recipes made with LG Gold HMT and JSR rice, from Hyderabadi dum biryani to five-minute curd rice. Each one scales to your family size and has built-in timers.`}
         actions={
           <div className="relative w-full max-w-xl">
             <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" aria-hidden="true" />

@@ -24,7 +24,6 @@ export const upiLink = (amount: number, orderId: string) => {
 
 /* ------------------------------------------------------------------ Razorpay (cards, net banking, wallets) */
 
-export const razorpayEnabled = () => !!BRAND_CONFIG.payments.razorpayKeyId;
 
 interface RazorpayResponse {
   razorpay_payment_id: string;

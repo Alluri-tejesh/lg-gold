@@ -1,12 +1,10 @@
 import { PRODUCTS } from './products';
-import { BRAND_CONFIG } from '../config/brandConfig';
 
 /**
  * Prices, MRPs and stock are set on the admin page and stored in the database (see data/storefront.ts).
  * When the shop server cannot be reached, these fallbacks are used instead:
- *   1. a published Google Sheet (BRAND_CONFIG.pricesCsvUrl), then
- *   2. public/prices.json, then
- *   3. the prices written in products.ts.
+ *   1. public/prices.json, then
+ *   2. the prices written in products.ts.
  */
 
 export interface PriceEntry {
@@ -56,38 +54,6 @@ export const applyPrices = (table: PriceTable): number => {
   return applied + outOfStock.size;
 };
 
-/**
- * Parses a Google Sheet exported as CSV. Columns: slug, pack, price, mrp, stock.
- * Put "out" in the stock column to mark one pack out of stock.
- * Special rows: "updated,2026-10-12" sets the date, and "outofstock,hmt-rice" marks a whole product out of stock.
- */
-export const parsePriceCsv = (csv: string): PriceTable => {
-  const table: PriceTable = { prices: {} };
-  for (const line of csv.split(/\r?\n/)) {
-    const cells = line.split(',').map((c) => c.trim().replace(/^"|"$/g, ''));
-    if (cells.length < 2) continue;
-    const [slug, pack, price, mrp] = cells;
-    if (slug.toLowerCase() === 'updated') {
-      table.updated = pack;
-      continue;
-    }
-    if (slug.toLowerCase() === 'outofstock') {
-      (table.outOfStock ??= []).push(pack);
-      continue;
-    }
-    const p = Number((price ?? '').replace(/[^0-9.]/g, ''));
-    const m = Number((mrp ?? '').replace(/[^0-9.]/g, ''));
-    if (!slug || !pack || !isPositive(p)) continue;
-    const stock = (cells[4] ?? '').toLowerCase();
-    (table.prices[slug] ??= {})[pack] = {
-      price: p,
-      mrp: isPositive(m) ? m : p,
-      inStock: !['out', 'no', 'false', '0'].includes(stock),
-    };
-  }
-  return table;
-};
-
 const fetchWithTimeout = async (url: string, ms: number): Promise<Response> => {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), ms);
@@ -100,15 +66,6 @@ const fetchWithTimeout = async (url: string, ms: number): Promise<Response> => {
 
 /** Loads today's prices. Never throws: on any failure the built-in prices stay. */
 export const loadPrices = async (): Promise<void> => {
-  const csvUrl = BRAND_CONFIG.pricesCsvUrl;
-  if (csvUrl) {
-    try {
-      const res = await fetchWithTimeout(csvUrl, 1500);
-      if (res.ok && applyPrices(parsePriceCsv(await res.text())) > 0) return;
-    } catch {
-      /* fall through to prices.json */
-    }
-  }
   try {
     const res = await fetchWithTimeout(`${import.meta.env.BASE_URL}prices.json?t=${Date.now()}`, 1500);
     if (res.ok) applyPrices((await res.json()) as PriceTable);

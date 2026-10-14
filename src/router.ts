@@ -121,7 +121,7 @@ const META: Record<string, { title: string; description: string }> = {
   },
   recipes: {
     title: `Rice Recipes: Biryani, Pulao, Curd Rice and More | ${SITE}`,
-    description: 'Over 100 tested recipes made with LG Gold HMT and JSR rice, from Hyderabadi biryani to quick lemon rice.',
+    description: 'Over 100 recipes made with LG Gold HMT and JSR rice, from Hyderabadi biryani to quick lemon rice.',
   },
   export: {
     title: `Rice Exporter from India: HMT & JSR, 20ft/40ft FCL | ${SITE}`,

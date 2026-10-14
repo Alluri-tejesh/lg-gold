@@ -5,7 +5,6 @@ import { priceInfo, formatPriceDate } from '../data/prices';
 import { BRAND_CONFIG, fssaiLabel } from '../config/brandConfig';
 import { ProductCard } from '../components/common/ProductCard';
 import { GrainComparison } from '../components/common/GrainComparison';
-import { CookingCalculator } from '../components/common/CookingCalculator';
 import { RiceFinder } from '../components/common/RiceFinder';
 import { Reveal } from '../components/common/motion';
 import { PageHero } from '../components/ui/PageHero';
@@ -65,14 +64,6 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
           </Reveal>
           <Reveal className="mt-10">
             <RiceFinder />
-          </Reveal>
-        </Container>
-      </Section>
-
-      <Section tone="cream" tight>
-        <Container>
-          <Reveal>
-            <CookingCalculator />
           </Reveal>
         </Container>
       </Section>

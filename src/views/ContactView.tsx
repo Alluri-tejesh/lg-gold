@@ -53,13 +53,18 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
       cta: 'Start chat',
       whatsapp: true,
     },
-    {
-      icon: Mail,
-      title: 'Email',
-      value: contact.emailRetail,
-      href: `mailto:${contact.emailRetail}`,
-      cta: 'Write an email',
-    },
+    // Shown only once a working email address is set in brandConfig.
+    ...(contact.emailRetail
+      ? [
+          {
+            icon: Mail,
+            title: 'Email',
+            value: contact.emailRetail,
+            href: `mailto:${contact.emailRetail}`,
+            cta: 'Write an email',
+          },
+        ]
+      : []),
     {
       icon: Navigation,
       title: 'Visit',
@@ -82,7 +87,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
 
       <Section tone="paper" tight>
         <Container>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className={`grid gap-4 sm:grid-cols-2 ${ways.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
             {ways.map((w, i) => (
               <Reveal key={w.title} delay={i * 70} className="h-full">
                 <a

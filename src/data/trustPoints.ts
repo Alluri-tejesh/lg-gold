@@ -1,113 +1,26 @@
-export const WHY_LG_GOLD_PILLARS = [
-  {
-    id: 'carefully-sourced',
-    title: 'Carefully Sourced',
-    subtitle: 'Selective Paddy Procurement',
-    description: 'Procured directly from established farmer networks across Telangana with strict initial grain moisture and maturity checks.',
-    icon: 'Sprout'
-  },
-  {
-    id: 'quality-checked',
-    title: 'Quality Checked',
-    subtitle: 'Multi-Stage Grain Testing',
-    description: 'Continuous quality inspections across moisture levels, grain elongation, translucency, and foreign particle elimination.',
-    icon: 'ShieldCheck'
-  },
-  {
-    id: 'processed-with-care',
-    title: 'Processed with Care',
-    subtitle: 'Modern Controlled Milling',
-    description: 'Precision temperature-regulated dehusking, polishing, and multi-camera Sortex optical grading for spotless grain consistency.',
-    icon: 'Cpu'
-  },
-  {
-    id: 'hygienically-packed',
-    title: 'Hygienically Packed',
-    subtitle: 'Food-Grade Multi-Layer Packing',
-    description: 'Weighed and machine-stitched into food-grade 26kg PP bags without hand contact, sealing in the natural aroma and freshness.',
-    icon: 'PackageCheck'
-  },
-  {
-    id: 'reliable-supply',
-    title: 'Reliable Supply',
-    subtitle: 'Consumer to Global Cargo',
-    description: 'Seamless order fulfillment for household retail, supermarket wholesale, commercial kitchens, and full-container ocean exports.',
-    icon: 'Truck'
-  }
-];
 
-export const GRAIN_TO_KITCHEN_STEPS = [
-  {
-    step: 1,
-    title: 'Sourcing',
-    desc: 'Selective procurement of mature paddy from rich agricultural soils of Telangana.',
-    icon: 'Wheat'
-  },
-  {
-    step: 2,
-    title: 'Processing',
-    desc: 'De-stoning, gentle dehusking, and silky friction polishing under monitored humidity.',
-    icon: 'Factory'
-  },
-  {
-    step: 3,
-    title: 'Quality Checking',
-    desc: 'Multi-pass Japanese Sortex optical sorters remove discolored or broken grains.',
-    icon: 'Eye'
-  },
-  {
-    step: 4,
-    title: 'Packaging',
-    desc: 'Hygienic weighing and machine-stitching into standard 26kg food-safe heavy-duty bags.',
-    icon: 'Box'
-  },
-  {
-    step: 5,
-    title: 'Distribution',
-    desc: 'Fast regional dispatch to retail stores, wholesalers, and institutional hubs.',
-    icon: 'Truck'
-  },
-  {
-    step: 6,
-    title: 'Customer Kitchen',
-    desc: 'Fluffy, aromatic, nutrient-rich rice served at your family dining table.',
-    icon: 'Utensils'
-  }
-];
 
 export const EXPORT_JOURNEY_STEPS = [
   {
     step: 1,
-    title: 'Paddy Sourcing',
-    desc: 'Finest single-origin paddy selection with export-grade elongation potential.',
-    icon: 'Wheat'
-  },
-  {
-    step: 2,
-    title: 'Precision Milling',
-    desc: 'Advanced destoners and multi-head silk polishers maintaining strict grain integrity.',
-    icon: 'Factory'
-  },
-  {
-    step: 3,
     title: 'Export Quality Audit',
     desc: '100% Sortex verification, moisture < 13%, minimal broken ratio, phytosanitary checks.',
     icon: 'ShieldCheck'
   },
   {
-    step: 4,
+    step: 2,
     title: 'Export Packaging',
     desc: 'Standard 26kg PP, laminated or private-label bags in the buyer’s own branding.',
     icon: 'PackageCheck'
   },
   {
-    step: 5,
+    step: 3,
     title: 'Container Stuffing',
     desc: '20ft & 40ft FCL container loads (1,000 bags of 26kg = 26 MT) sealed at mill dock.',
     icon: 'Container'
   },
   {
-    step: 6,
+    step: 4,
     title: 'International Buyer',
     desc: 'Port-to-port maritime dispatch to Middle East, SEA, Europe, Americas, and global markets.',
     icon: 'Globe'
@@ -122,23 +35,8 @@ export const WHO_WE_SUPPLY_TARGETS = [
   },
   {
     title: 'Distributors & Wholesalers',
-    desc: 'Competitive mill-direct pricing on 26kg multi-bag lots, steady supply volumes, and dedicated account managers.',
+    desc: 'Competitive mill-direct pricing on 26kg multi-bag lots, and steady supply volumes.',
     icon: 'Boxes'
-  },
-  {
-    title: 'Supermarket & Retail Chains',
-    desc: 'Retail-ready branded 26kg consumer bags with tamper-proof machine stitching.',
-    icon: 'Store'
-  },
-  {
-    title: 'Hotels, Caterers & Restaurants',
-    desc: 'Consistent 26kg bags offering high grain yield, excellent fluffiness, and low wastage.',
-    icon: 'ChefHat'
-  },
-  {
-    title: 'Institutional & Hostel Canteens',
-    desc: 'Nutritious, uniform cooking grain in standard 26kg bags suited for high-volume daily meal preparation.',
-    icon: 'Building2'
   },
   {
     title: 'Private Label Partners',

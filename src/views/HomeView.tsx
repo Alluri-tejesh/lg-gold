@@ -2,18 +2,15 @@ import React, { useState } from 'react';
 import { ArrowRight, ShieldCheck, Globe, Boxes, CheckCircle2, MessageCircle, Phone, TrendingUp, Factory, Container as ContainerIcon, Store, Truck } from 'lucide-react';
 import { PRODUCTS, getProductBySlug } from '../data/products';
 import { RECIPES } from '../data/recipes';
-import { WHY_LG_GOLD_PILLARS } from '../data/trustPoints';
 import { createWhatsAppUrl, fssaiLabel, phoneTelHref, BRAND_CONFIG } from '../config/brandConfig';
 import { priceInfo, formatPriceDate } from '../data/prices';
 import { ProductCard } from '../components/common/ProductCard';
 import { RecipeCard } from '../components/common/RecipeCard';
-import { RiceFinder } from '../components/common/RiceFinder';
 import { millPlantImage, millPlantSrcSet, jsrBagImage } from '../assets';
 import { Reveal, CountUp } from '../components/common/motion';
 import { GrainField } from '../components/fx/GrainField';
 import { GrainStory } from '../components/fx/GrainStory';
 import { Spotlight } from '../components/fx/Spotlight';
-import { WhyPillars } from '../components/common/WhyPillars';
 import { Container, Section, SectionHeader, Eyebrow } from '../components/ui/Section';
 import { AppLink } from '../components/ui/AppLink';
 import { buttonClass } from '../components/ui/Button';
@@ -137,7 +134,7 @@ export const HomeView: React.FC<HomeViewProps> = () => {
         </div>
       </section>
 
-      {/* 3. PRODUCTS + RICE FINDER */}
+      {/* 3. PRODUCTS */}
       <Section tone="paper">
         <Container>
           <SectionHeader
@@ -157,26 +154,10 @@ export const HomeView: React.FC<HomeViewProps> = () => {
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-10">
-            <RiceFinder />
-          </Reveal>
         </Container>
       </Section>
 
-      {/* 4. WHY LG GOLD */}
-      <Section tone="cream" grain>
-        <Container>
-          <SectionHeader
-            eyebrow="Why LG Gold"
-            title="Five things we never skip"
-            intro="Every bag that leaves Venkatadri Palem has been through the same five steps."
-            align="center"
-          />
-          <WhyPillars pillars={WHY_LG_GOLD_PILLARS} />
-        </Container>
-      </Section>
-
-      {/* 5. WATCH A GRAIN BECOME LG GOLD (scroll story) + THE MILL */}
+      {/* 4. WATCH A GRAIN BECOME LG GOLD (scroll story) + THE MILL */}
       <GrainStory />
 
       <Section tone="white" tight>
@@ -291,7 +272,7 @@ export const HomeView: React.FC<HomeViewProps> = () => {
           <SectionHeader
             eyebrow="From our kitchen"
             title="Cook something delicious tonight"
-            intro={`${RECIPES.length} tested recipes, from Hyderabadi dum biryani to five-minute curd rice.`}
+            intro={`${RECIPES.length} recipes, from Hyderabadi dum biryani to five-minute curd rice.`}
             action={
               <AppLink to="recipes" className={buttonClass('outline', 'md')}>
                 All {RECIPES.length} recipes <ArrowRight className="h-4 w-4" />

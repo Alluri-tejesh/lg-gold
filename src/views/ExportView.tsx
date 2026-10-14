@@ -159,7 +159,11 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
       {/* How it ships */}
       <Section tone="cream">
         <Container>
-          <SectionHeader eyebrow="From our mill to your port" title="How an export order ships" />
+          <SectionHeader
+            eyebrow="From our mill to your port"
+            title="How an export order ships"
+            intro="How the rice itself is grown, milled, sorted and aged is on the Our Mill page."
+          />
           <JourneyTimeline steps={EXPORT_JOURNEY_STEPS} />
         </Container>
       </Section>
