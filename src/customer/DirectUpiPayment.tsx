@@ -59,7 +59,7 @@ export function DirectUpiPayment({
           </div>
         )}
         <div className="min-w-0 text-center sm:text-left">
-          <p className="font-display text-3xl text-forest-800 tabular">
+          <p className="text-3xl font-bold tracking-tight text-forest-800 tabular">
             {money(amount)}
           </p>
           <p className="mt-2 text-sm text-muted">

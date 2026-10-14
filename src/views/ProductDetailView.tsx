@@ -238,7 +238,7 @@ const ProductPage: React.FC<ProductDetailViewProps> = ({ productSlug, onNavigate
             {/* Price, pack and quantity */}
             <div className="mt-6 rounded-3xl bg-cream p-5 ring-1 ring-line">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <RollingNumber value={pack.retailPrice} className="font-display text-5xl text-forest-800" />
+                <RollingNumber value={pack.retailPrice} className="text-5xl font-bold tracking-tight text-forest-800" />
                 {discount > 0 && (
                   <>
                     <span className="text-lg text-muted line-through tabular">{inr(pack.mrp)}</span>
@@ -479,7 +479,7 @@ const ProductPage: React.FC<ProductDetailViewProps> = ({ productSlug, onNavigate
               {quantity > 1 ? `${quantity} × ` : ''}
               {pack.size}
             </p>
-            <p className="font-display text-2xl leading-none text-forest-800">
+            <p className="text-2xl font-bold leading-none tracking-tight text-forest-800">
               <RollingNumber value={lineTotal} />
             </p>
           </div>

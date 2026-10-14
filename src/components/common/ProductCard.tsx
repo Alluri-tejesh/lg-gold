@@ -120,7 +120,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="mt-5 flex flex-wrap items-end justify-between gap-2 border-t border-line pt-4">
           <div>
             <div className="flex items-baseline gap-2">
-              <RollingNumber value={pack.retailPrice} className="font-display text-[2rem] leading-none text-forest-800" />
+              <RollingNumber value={pack.retailPrice} className="text-[2rem] font-bold leading-none tracking-tight text-forest-800" />
               {discount > 0 && <span className="text-sm text-muted line-through tabular">{inr(pack.mrp)}</span>}
               {discount > 0 && <span className="rounded-full bg-forest-100 px-2 py-0.5 text-xs font-bold text-forest-700">{discount}% off</span>}
             </div>

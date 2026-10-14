@@ -15,7 +15,6 @@ import {
   Printer,
   RefreshCw,
   ShieldCheck,
-  Smartphone,
   Trash2,
   Truck,
   X,
@@ -869,6 +868,7 @@ function Addresses() {
 function Profile() {
   const { user, setUser } = useCustomer();
   const [name, setName] = useState(user?.name || ""),
+    [phone, setPhone] = useState(user?.phone || ""),
     [email, setEmail] = useState(user?.email || ""),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -880,7 +880,11 @@ function Profile() {
       const result = await api<{ user: Customer }>(
         "/account/profile",
         "PATCH",
-        { name, ...(email.trim() ? { email } : {}) },
+        {
+          name,
+          ...(phone.trim() ? { phone } : {}),
+          ...(email.trim() ? { email } : {}),
+        },
       );
       setUser(result.user);
       toast({ message: "Your profile is updated." });
@@ -937,21 +941,18 @@ function Profile() {
           hint={
             user?.emailVerified
               ? "Verified email. Contact the mill if you need to change it."
-              : "Add an email for password recovery."
+              : "Optional. Lets you reset your password by email."
           }
         />
-        <div className="rounded-2xl bg-cream p-4">
-          <p className="text-sm font-semibold text-forest-800">Mobile number</p>
-          <p className="mt-1 text-sm text-muted">
-            {user?.phone || "No verified mobile number yet"}
-          </p>
-          <AppLink
-            to="security"
-            className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-forest-800 underline"
-          >
-            Manage mobile sign-in
-          </AppLink>
-        </div>
+        <TextField
+          label="Mobile number"
+          type="tel"
+          autoComplete="tel-national"
+          inputMode="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          hint="You sign in with this number, and the mill calls it about deliveries."
+        />
         <ErrorNotice error={error} />
         <Button type="submit" loading={busy}>
           Save profile
@@ -982,12 +983,9 @@ function Profile() {
   );
 }
 function Security() {
-  const { user, refresh, logout, setUser } = useCustomer();
+  const { user, refresh, logout } = useCustomer();
   const [current, setCurrent] = useState(""),
-    [password, setPassword] = useState(""),
-    [phone, setPhone] = useState(""),
-    [challenge, setChallenge] = useState(""),
-    [code, setCode] = useState("");
+    [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const changePassword = async (e: React.FormEvent) => {
@@ -1011,87 +1009,9 @@ function Security() {
       setBusy(false);
     }
   };
-  const linkPhone = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    setError("");
-    try {
-      if (!challenge) {
-        const result = await api<{ challengeId: string }>(
-          "/auth/otp/request",
-          "POST",
-          { phone, purpose: "link" },
-        );
-        setChallenge(result.challengeId);
-      } else {
-        const result = await api<{ user: Customer }>(
-          "/auth/otp/verify",
-          "POST",
-          { challengeId: challenge, code },
-        );
-        setUser(result.user);
-        setChallenge("");
-        setCode("");
-        setPhone("");
-        toast({ message: "Mobile number verified." });
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
   return (
     <>
       <ErrorNotice error={error} />
-      <form onSubmit={linkPhone} className="account-panel space-y-5">
-        <div className="flex items-center gap-3">
-          <Smartphone className="h-6 w-6 text-gold-700" />
-          <h2 className="font-display text-2xl text-forest-800">
-            Mobile sign-in
-          </h2>
-        </div>
-        <p className="text-sm text-muted">
-          {user?.phoneVerified
-            ? `Verified: ${user.phone}. You can sign in with an SMS code.`
-            : "Verify your mobile number to sign in with SMS."}
-        </p>
-        {challenge ? (
-          <>
-            <TextField
-              label="SMS code"
-              autoComplete="one-time-code"
-              inputMode="numeric"
-              maxLength={6}
-              pattern="[0-9]{6}"
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setChallenge("");
-                setCode("");
-              }}
-              className="min-h-11 text-sm text-forest-800 underline cursor-pointer"
-            >
-              Use a different number or request a new code
-            </button>
-          </>
-        ) : (
-          <TextField
-            label={user?.phoneVerified ? "New mobile number" : "Mobile number"}
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        )}
-        <Button type="submit" loading={busy}>
-          {challenge ? "Verify mobile number" : "Send SMS code"}
-        </Button>
-      </form>
       <form onSubmit={changePassword} className="account-panel space-y-5">
         <div className="flex items-center gap-3">
           <KeyRound className="h-6 w-6 text-gold-700" />

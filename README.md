@@ -1,42 +1,45 @@
 # LG Gold Rice
 
-Rice storefront and customer platform for Sri Lakshmi Ganapathi Trading Company. React 19, Vite 6, Tailwind CSS 4, an Express API and MongoDB.
+Rice shop and order system for Sri Lakshmi Ganapathi Trading Company. React 19, Vite 6, Tailwind CSS 4, an Express API and MongoDB.
 
-## Development
+## Run it on your computer
 
 Use Node.js 22.12 or newer.
 
 ```
 npm install
-npm run dev:all
+npm run dev
 ```
 
-Open http://localhost:3000. This starts the shop, API and a real local MongoDB database with persistent storage in `.local/mongodb`. When a MongoDB Atlas URI is configured in `server/.env`, it uses Atlas instead.
+Open http://localhost:3000. One command starts the website, the API and a local MongoDB database (stored in `.local/mongodb`, kept between runs). With a MongoDB Atlas address in `server/.env`, Atlas is used instead.
 
-If the frontend is already running, start just the API with `npm run dev:api`.
+## Pages
 
-## Customer pages
+| Who | Page | Address |
+| --- | --- | --- |
+| Customers | Sign in: SMS code to the mobile, or mobile/email + password | `#login` |
+| | Create an account (by SMS code, or with a password) | `#register` |
+| | Checkout (account required) | `#checkout` |
+| | My account, orders, addresses, profile, password | `#account`, `#orders`, `#addresses`, `#profile`, `#security` |
+| The mill | Admin: orders, products & prices, add a product, customers, settings | `#admin` |
 
-- Sign-up / SMS OTP / password sign-in: `#register` / `#login`
-- Account dashboard: `#account`
-- Orders and tracking: `#orders` / `#order-detail/<id>`
-- Saved addresses: `#addresses`
-- Profile, email verification, mobile verification and passwords: `#profile` / `#security`
-- Help: `#support`
-- Order management: `#admin-orders` (administrator account required)
-- Existing GitHub product and price administration: `#admin`
+## The admin page
 
-Orders are saved in MongoDB before the cart is cleared. Prices, shipping, account permissions and payment status are controlled by the server. Customers can track orders across devices, reorder current available packs and print an order summary. WhatsApp is optional for sharing and support.
+Sign in at `#admin` with the username and password in `server/.env` (`ADMIN_USERNAME`, `ADMIN_PASSWORD`). Everything saved there (prices, stock, pack sizes, new products, photos, delivery charges, UPI ID, cash on delivery) is stored in the database and shows on the website straight away. No GitHub, no tokens, no redeploy. See [docs/admin-page.md](docs/admin-page.md).
 
-Direct UPI QR/app links appear after an order is saved. Direct UPI remains pending until the mill verifies receipt; customers do not tick a paid checkbox or enter a UTR. Gateway payments use server-created orders, signature/amount checks and verified capture webhooks.
+## Orders and payments
 
-## Connect services and deploy
+Customers need an account to order; the order is saved to it before the cart is emptied, and they follow it in My orders. Prices, delivery charges and payment status are decided by the server, never by the browser.
 
-Read [Customer platform setup](docs/customer-platform.md) for **MongoDB Atlas, SMS OTP, email recovery, admin accounts, Razorpay and production hosting**. Copy `server/.env.example` to `server/.env` and fill in credentials locally; keep secrets off the frontend.
+- **UPI**: after placing the order the customer gets a QR code (computer) or a one-tap link to GPay / PhonePe / Paytm with the amount filled in, paying the UPI ID set in Admin › Settings. The mill marks it paid in Admin › Orders once the money is in the bank.
+- **Cash on delivery** and **pay after the mill confirms**: switchable in Settings.
+- **Cards, net banking, wallets**: needs a Razorpay merchant account; add its keys to `server/.env`. See [docs/customer-platform.md](docs/customer-platform.md).
+- **SMS sign-in codes**: work on your computer straight away (codes are printed in the `npm run dev` terminal). Switched on or off in Admin › Settings (off by default). Real SMS also needs a Twilio Verify account in `server/.env`.
+- **WhatsApp**: optional. The confirmation screen offers to send the order to the mill on WhatsApp for a quicker reply.
 
-Development SMS/email messages are simulated in `.local/mail` when their providers are blank. Production requires real SMS/email credentials to deliver messages. No OTP is exposed by an API response.
+## Going live
 
-This full-stack app needs a Node.js host. The Dockerfile builds the frontend and serves it with the API on the same HTTPS origin. GitHub Pages alone cannot host customer accounts or MongoDB orders. The GitHub workflow runs validation; configure your Node host separately for deployment.
+The shop needs a Node.js host (GitHub Pages cannot run the API or database). The `Dockerfile` builds the website and serves it together with the API on one HTTPS address. Setup for MongoDB Atlas, email, Razorpay and hosting: [docs/customer-platform.md](docs/customer-platform.md). Secrets go in the server environment only, never in `VITE_` variables.
 
 ## Checks
 
@@ -47,14 +50,11 @@ npm run test:server
 npm run build
 ```
 
-The API tests run against an isolated MongoDB process and use simulated SMS and payment-provider responses.
+The API tests run against an isolated MongoDB process with simulated email and payment-provider responses.
 
-## Store content
+## Where things live
 
-- Prices and stock: [Updating prices](docs/updating-prices.md)
-- Product and pack sizes: [Products and photos](docs/products-and-photos.md)
-- GitHub product admin: [Admin page](docs/admin-page.md)
-- Business details and delivery rules: `src/config/brandConfig.ts`
-- Theme, shared controls and customer motion: `src/index.css`, `src/components/ui`, `src/customer`
-
-Build/development synchronizes the trusted server catalog and delivery rules from the existing product and brand configuration. GitHub product edits require the backend host to redeploy; order status updates are immediate database writes.
+- Business details (name, phone, address, hours): `src/config/brandConfig.ts`
+- Built-in products (HMT, JSR), their descriptions and specs: `src/data/products.ts`
+- Starting data for a new database and the offline fallback: `public/catalog.json`, `public/prices.json`
+- Theme and shared controls: `src/index.css`, `src/components/ui`

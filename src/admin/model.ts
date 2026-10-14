@@ -20,10 +20,9 @@ export interface EditPack {
   builtIn: boolean;
 }
 
+/** A photo chosen on the admin page, resized but not uploaded yet (that happens on Save). */
 export interface NewImage {
-  /** Path inside the website, e.g. "products/basmati-rice-202610131045.webp". */
-  sitePath: string;
-  base64: string;
+  blob: Blob;
   previewUrl: string;
 }
 
@@ -156,7 +155,7 @@ const todayInIndia = () =>
 
 /**
  * Turns the edited list back into catalog.json and prices.json.
- * Fields the page does not know about are kept, so files written by the GitHub forms survive a save.
+ * Fields the page does not know about are kept, so nothing saved earlier is lost on a save.
  */
 export function serialize(products: EditProduct[], original: { catalog: Catalog; prices: PriceTable }): { catalog: Catalog; prices: PriceTable } {
   const origEntries = new Map((original.catalog.products ?? []).map((c) => [c.slug, c]));
@@ -189,8 +188,7 @@ export function serialize(products: EditProduct[], original: { catalog: Catalog;
     setText('subTitle', p.subTitle);
     setText('description', p.description);
 
-    if (p.newImage) entry.image = p.newImage.sitePath;
-    else if (!base || p.image !== base.image) entry.image = p.image;
+    if (!base || p.image !== base.image) entry.image = p.image;
     else delete entry.image;
     if (base && p.imageFit === base.imageFit) delete entry.imageFit;
     else entry.imageFit = p.imageFit;

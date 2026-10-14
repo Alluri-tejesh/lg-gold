@@ -1,103 +1,145 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { KeyRound, LogOut, ExternalLink, Eye, EyeOff, RefreshCw, Rocket, CheckCircle2, AlertTriangle, Loader2, Plus, Package, ChevronDown } from 'lucide-react';
-import { BRAND_CONFIG } from '../config/brandConfig';
-import type { Catalog } from '../data/catalog';
-import type { PriceTable } from '../data/prices';
+import {
+  AlertTriangle,
+  ClipboardList,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  LogIn,
+  LogOut,
+  Package,
+  Plus,
+  RefreshCw,
+  Save,
+  Settings2,
+  Users,
+} from 'lucide-react';
+import { ApiError } from '../customer/api';
 import { formatPriceDate } from '../data/prices';
+import type { StoreSettings, Storefront } from '../data/storefront';
 import { LogoMark } from '../components/ui/Logo';
 import { Button } from '../components/ui/Button';
 import { Field, TextField, inputClass } from '../components/ui/Field';
 import { toast } from '../components/ui/Toast';
-import { AdminError, Auth, ConflictError, DeployState, commitFiles, deployState, headSha, readText, verifyAccess, FileChange } from './github';
-import { EditProduct, buildModel, fileText, hasChanges, serialize, validate } from './model';
-import { AppLink } from '../components/ui/AppLink';
+import { navigate } from '../router';
+import { AdminError, adminLogin, adminLogout, adminMe, AdminMe, loadStore, saveStore, uploadImage } from './api';
+import { EditProduct, buildModel, hasChanges, serialize, validate } from './model';
 import { AddProductForm, ProductEditor } from './ProductEditor';
+import { OrdersPanel } from './OrdersPanel';
+import { CustomersPanel } from './CustomersPanel';
+import { SettingsPanel, settingsProblems } from './SettingsPanel';
 
-const AUTH_KEY = 'lg_gold_admin_auth';
-const CATALOG_PATH = 'public/catalog.json';
-const PRICES_PATH = 'public/prices.json';
+const TABS = [
+  { id: 'orders', label: 'Orders', icon: ClipboardList },
+  { id: 'products', label: 'Products & prices', icon: Package },
+  { id: 'add', label: 'Add a product', icon: Plus },
+  { id: 'customers', label: 'Customers', icon: Users },
+  { id: 'settings', label: 'Settings', icon: Settings2 },
+] as const;
+type Tab = (typeof TABS)[number]['id'];
 
-const loadAuth = (): Auth | null => {
-  for (const store of [localStorage, sessionStorage]) {
+/** The admin page (#admin): sign in with the admin username and password, then run the shop. */
+export const AdminView: React.FC<{ tab?: string }> = ({ tab }) => {
+  const [me, setMe] = useState<AdminMe | null>(null);
+  const [error, setError] = useState('');
+
+  const check = useCallback(async () => {
+    setError('');
     try {
-      const raw = store.getItem(AUTH_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch {
-      /* storage blocked: sign in each visit */
+      setMe(await adminMe());
+    } catch (e) {
+      setError((e as Error).message);
     }
-  }
-  return null;
-};
+  }, []);
 
-const saveAuth = (auth: Auth | null, remember = false) => {
-  try {
-    localStorage.removeItem(AUTH_KEY);
-    sessionStorage.removeItem(AUTH_KEY);
-    if (auth) (remember ? localStorage : sessionStorage).setItem(AUTH_KEY, JSON.stringify(auth));
-  } catch {
-    /* ignore */
-  }
-};
+  useEffect(() => {
+    check();
+  }, [check]);
 
-/** The admin page: sign in once, then change prices, stock, pack sizes and products. */
-export const AdminView: React.FC = () => {
-  const [auth, setAuth] = useState<Auth | null>(loadAuth);
-  return auth ? (
+  if (error)
+    return (
+      <Centered>
+        <AlertTriangle className="mx-auto h-10 w-10 text-danger" />
+        <p className="mt-4 text-lg font-semibold text-forest-800">The shop server is not responding.</p>
+        <p className="mt-2 text-muted">{error}</p>
+        {import.meta.env.DEV && (
+          <p className="mt-4 rounded-xl bg-gold-50 p-3 text-sm text-gold-700">
+            On your computer, start the website and server together with <code>npm run dev</code>.
+          </p>
+        )}
+        <Button className="mt-6" icon={<RefreshCw className="h-4 w-4" />} onClick={check}>
+          Try again
+        </Button>
+      </Centered>
+    );
+  if (!me) return <Centered>{<div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-forest-200 border-t-forest-700" aria-label="Loading" />}</Centered>;
+  if (!me.admin) return <SignIn configured={me.configured} onSignedIn={check} />;
+  const current = (TABS.some((t) => t.id === tab) ? tab : 'orders') as Tab;
+  return (
     <Dashboard
-      auth={auth}
-      onSignOut={() => {
-        saveAuth(null);
-        setAuth(null);
+      username={me.username}
+      sms={me.sms}
+      tab={current}
+      onExpired={() => {
+        toast({ message: 'Your admin session ended. Please sign in again.', tone: 'info' });
+        setMe({ ...me, admin: false });
       }}
-    />
-  ) : (
-    <SignIn
-      onSignedIn={(a, remember) => {
-        saveAuth(a, remember);
-        setAuth(a);
+      onSignOut={async () => {
+        await adminLogout().catch(() => undefined);
+        setMe({ ...me, admin: false });
       }}
     />
   );
 };
 
+const Centered: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <main className="grid min-h-screen place-items-center bg-cream bg-grain px-4">
+    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-center ring-1 ring-line shadow-soft">{children}</div>
+  </main>
+);
+
 /* ------------------------------------------------------------------ Sign in */
 
-const SignIn: React.FC<{ onSignedIn: (a: Auth, remember: boolean) => void }> = ({ onSignedIn }) => {
-  const [repo, setRepo] = useState(BRAND_CONFIG.admin.repo);
-  const [token, setToken] = useState('');
+const SignIn: React.FC<{ configured: boolean; onSignedIn: () => void }> = ({ configured, onSignedIn }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
-  const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [help, setHelp] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const auth = { repo: repo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, ''), token: token.trim() };
-    if (!auth.repo || !auth.token) return setError('Enter the repository and your access key.');
+    if (!username.trim() || !password) return setError('Enter your username and password.');
     setBusy(true);
     try {
-      await verifyAccess(auth);
-      onSignedIn(auth, remember);
+      await adminLogin(username, password);
+      onSignedIn();
     } catch (err) {
-      setError(err instanceof AdminError ? err.message : 'Sign-in failed. Check the details and try again.');
+      setError((err as Error).message);
+      setPassword('');
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-cream bg-grain px-4 py-10 sm:py-16">
-      <div className="mx-auto max-w-md">
+    <main className="relative grid min-h-screen place-items-center overflow-hidden bg-forest-950 px-4 py-10">
+      <div className="pointer-events-none absolute inset-0 bg-grain-light opacity-60" aria-hidden="true" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[30rem] w-[30rem] -translate-x-1/2 rounded-full bg-gold-500/20 blur-3xl" aria-hidden="true" />
+      <div className="relative w-full max-w-sm animate-pop-in">
         <div className="text-center">
           <LogoMark className="mx-auto h-16 w-16" />
-          <h1 className="mt-4 font-display text-4xl text-forest-800">LG Gold Admin</h1>
-          <AppLink to="admin-orders" className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-forest-800 px-5 text-sm font-semibold text-white">Open order administration <ExternalLink className="h-4 w-4" /></AppLink>
-          <p className="mt-2 text-muted">Change prices, stock, pack sizes and products. Publish to GitHub, then deploy the updated shop.</p>
+          <h1 className="mt-4 font-display text-4xl text-white">LG Gold Admin</h1>
+          <p className="mt-2 text-cream/70">Orders, prices, stock and products.</p>
         </div>
 
-        <form onSubmit={submit} className="mt-8 space-y-5 rounded-3xl bg-white p-6 ring-1 ring-line shadow-soft sm:p-8">
+        <form onSubmit={submit} noValidate className="mt-8 space-y-5 rounded-3xl bg-white p-6 shadow-lift sm:p-8">
+          {!configured && (
+            <p className="rounded-2xl bg-gold-50 p-4 text-sm text-gold-700 ring-1 ring-gold-300">
+              The admin password is not set yet. Add <code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code> to <code>server/.env</code> and restart the server.
+            </p>
+          )}
           {error && (
             <p role="alert" className="flex gap-2 rounded-2xl bg-danger-50 px-4 py-3 text-sm font-medium text-danger">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -105,34 +147,30 @@ const SignIn: React.FC<{ onSignedIn: (a: Auth, remember: boolean) => void }> = (
             </p>
           )}
           <TextField
-            label="Website repository on GitHub"
-            required
-            placeholder="owner/repository"
-            value={repo}
-            onChange={(e) => setRepo(e.target.value)}
+            label="Username"
+            autoComplete="username"
             autoCapitalize="off"
             autoCorrect="off"
             spellCheck={false}
-            hint="As in github.com/owner/repository"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoFocus
           />
-          <Field label="Access key" required>
+          <Field label="Password">
             {({ id }) => (
               <div className="relative">
                 <input
                   id={id}
                   type={show ? 'text' : 'password'}
-                  placeholder="github_pat_…"
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
-                  spellCheck={false}
-                  required
                   className={`${inputClass} pr-14`}
                 />
                 <button
                   type="button"
                   onClick={() => setShow(!show)}
-                  aria-label={show ? 'Hide access key' : 'Show access key'}
+                  aria-label={show ? 'Hide password' : 'Show password'}
                   className="absolute right-1.5 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-forest-800/5 cursor-pointer"
                 >
                   {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -140,54 +178,16 @@ const SignIn: React.FC<{ onSignedIn: (a: Auth, remember: boolean) => void }> = (
               </div>
             )}
           </Field>
-          <label className="flex min-h-11 items-center gap-3 text-[15px] text-ink-soft cursor-pointer">
-            <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-5 w-5 accent-forest-800" />
-            Keep me signed in on this device
-          </label>
-          <Button type="submit" size="lg" block loading={busy} icon={!busy ? <KeyRound className="h-5 w-5" /> : undefined}>
+          <Button type="submit" size="lg" block loading={busy} disabled={!configured} icon={!busy ? <LogIn className="h-5 w-5" /> : undefined}>
             Sign in
           </Button>
+          <p className="text-center text-xs text-muted">You stay signed in on this device for 12 hours.</p>
         </form>
-
-        <div className="mt-5 rounded-3xl bg-white ring-1 ring-line">
-          <button
-            type="button"
-            onClick={() => setHelp(!help)}
-            aria-expanded={help}
-            className="flex min-h-14 w-full items-center justify-between px-6 text-left font-semibold text-forest-800 cursor-pointer"
-          >
-            First time? Get your access key (2 minutes)
-            <ChevronDown className={`h-5 w-5 text-muted transition-transform ${help ? 'rotate-180' : ''}`} />
-          </button>
-          {help && (
-            <ol className="list-decimal space-y-2.5 px-6 pb-6 pl-11 text-[15px] leading-relaxed text-ink-soft">
-              <li>
-                Sign in to GitHub and open{' '}
-                <a
-                  href="https://github.com/settings/personal-access-tokens/new"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-forest-700 underline underline-offset-2"
-                >
-                  New access token
-                </a>
-                .
-              </li>
-              <li>Name it “LG Gold admin” and pick an expiry, for example 1 year.</li>
-              <li>
-                Under <strong>Repository access</strong> choose <strong>Only select repositories</strong> and pick the website repository.
-              </li>
-              <li>
-                Under <strong>Permissions</strong> set <strong>Contents</strong> to <strong>Read and write</strong>. Optionally set{' '}
-                <strong>Actions</strong> to <strong>Read-only</strong> to see validation status.
-              </li>
-              <li>Press <strong>Generate token</strong>, copy it and paste it above.</li>
-              <li className="list-none -ml-5 rounded-xl bg-gold-50 p-3 text-sm text-gold-700 ring-1 ring-gold-300">
-                Treat the key like a password: anyone who has it can change your website. If it leaks, delete it on the same GitHub page.
-              </li>
-            </ol>
-          )}
-        </div>
+        <p className="mt-6 text-center">
+          <a href="#home" className="text-sm font-semibold text-cream/70 hover:text-white">
+            ← Back to the shop
+          </a>
+        </p>
       </div>
     </main>
   );
@@ -195,48 +195,44 @@ const SignIn: React.FC<{ onSignedIn: (a: Auth, remember: boolean) => void }> = (
 
 /* ------------------------------------------------------------------ Dashboard */
 
-interface Loaded {
-  sha: string;
-  catalog: Catalog;
-  prices: PriceTable;
-  catalogText: string | null;
-  pricesText: string | null;
-}
-
-const Dashboard: React.FC<{ auth: Auth; onSignOut: () => void }> = ({ auth, onSignOut }) => {
-  const [loaded, setLoaded] = useState<Loaded | null>(null);
+const Dashboard: React.FC<{ username: string; sms: AdminMe['sms']; tab: Tab; onExpired: () => void; onSignOut: () => void }> = ({
+  username,
+  sms,
+  tab,
+  onExpired,
+  onSignOut,
+}) => {
+  const [store, setStore] = useState<Storefront | null>(null);
   const [loadError, setLoadError] = useState('');
   const [products, setProducts] = useState<EditProduct[]>([]);
-  const [tab, setTab] = useState<'products' | 'add'>('products');
-  const [publishing, setPublishing] = useState(false);
+  const [settings, setSettings] = useState<StoreSettings | null>(null);
+  const [saving, setSaving] = useState(false);
   const [showProblems, setShowProblems] = useState(false);
-  const [deploy, setDeploy] = useState<{ sha: string; state: DeployState; url?: string } | null>(null);
 
   const load = useCallback(async () => {
     setLoadError('');
-    setLoaded(null);
     try {
-      const sha = await headSha(auth);
-      const [catalogText, pricesText] = await Promise.all([readText(auth, CATALOG_PATH, sha), readText(auth, PRICES_PATH, sha)]);
-      const catalog: Catalog = catalogText ? JSON.parse(catalogText) : { products: [] };
-      const prices: PriceTable = pricesText ? JSON.parse(pricesText) : { prices: {} };
-      setLoaded({ sha, catalog, prices, catalogText, pricesText });
-      setProducts(buildModel(catalog, prices));
+      const s = await loadStore();
+      setStore(s);
+      setProducts(buildModel(s.catalog, s.prices));
+      setSettings(s.settings);
     } catch (e) {
-      setLoadError(e instanceof AdminError ? e.message : 'The products could not be loaded. Check your connection and try again.');
+      setLoadError((e as Error).message);
     }
-  }, [auth]);
+  }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  const original = useMemo(() => (loaded ? buildModel(loaded.catalog, loaded.prices) : []), [loaded]);
-  const dirty = !!loaded && hasChanges(products, loaded);
+  const original = useMemo(() => (store ? buildModel(store.catalog, store.prices) : []), [store]);
+  const settingsDirty = !!store && !!settings && JSON.stringify(settings) !== JSON.stringify(store.settings);
+  const dirty = !!store && (hasChanges(products, store) || settingsDirty);
   const problems = useMemo(() => validate(products), [products]);
-  const problemCount = Object.values(problems).reduce<number>((n, list: string[]) => n + list.length, 0);
+  const settingErrors = settings ? settingsProblems(settings) : {};
+  const problemCount = Object.values(problems).reduce<number>((n, list: string[]) => n + list.length, 0) + Object.keys(settingErrors).length;
 
-  // Warn before leaving with unpublished changes.
+  // Warn before leaving with unsaved changes.
   useEffect(() => {
     if (!dirty) return;
     const warn = (e: BeforeUnloadEvent) => {
@@ -247,79 +243,65 @@ const Dashboard: React.FC<{ auth: Auth; onSignOut: () => void }> = ({ auth, onSi
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
 
-  // Follow the website rebuild after a publish until it is live (or fails).
-  useEffect(() => {
-    if (!deploy || deploy.state === 'live' || deploy.state === 'failed' || deploy.state === 'unknown') return;
-    let tries = 0;
-    const timer = setInterval(async () => {
-      tries++;
-      const next = await deployState(auth, deploy.sha);
-      if (next.state !== 'building' || tries > 45) {
-        clearInterval(timer);
-        setDeploy({ sha: deploy.sha, ...(tries > 45 && next.state === 'building' ? { state: 'unknown' } : next) });
-      } else if (next.url && next.url !== deploy.url) setDeploy({ ...deploy, url: next.url });
-    }, 8000);
-    return () => clearInterval(timer);
-  }, [deploy?.sha, deploy?.state]);
+  const go = (t: Tab) => navigate('admin', t === 'orders' ? undefined : t);
 
-  const publish = async () => {
-    if (!loaded) return;
+  const save = async () => {
+    if (!store || !settings) return;
     if (problemCount) {
       setShowProblems(true);
       const first = Object.keys(problems)[0];
-      document.getElementById(`product-${first}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (first) {
+        if (tab !== 'products') go('products');
+        requestAnimationFrame(() => document.getElementById(`product-${first}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      } else if (tab !== 'settings') go('settings');
       return;
     }
-    setPublishing(true);
+    setSaving(true);
     try {
-      // Someone (or the GitHub price form) may have changed the files since this page loaded them.
-      const latest = await headSha(auth);
-      if (latest !== loaded.sha) {
-        const [c, p] = await Promise.all([readText(auth, CATALOG_PATH, latest), readText(auth, PRICES_PATH, latest)]);
-        if (c !== loaded.catalogText || p !== loaded.pricesText) {
-          throw new ConflictError('Prices or products were changed somewhere else since you opened this page. Reload to get the latest, then make your change again.');
+      // New photos are uploaded first; each gets its own address on the site.
+      const ready: EditProduct[] = [];
+      for (const p of products) {
+        if (!p.newImage) {
+          ready.push(p);
+          continue;
         }
+        const path = await uploadImage(p.newImage.blob);
+        ready.push({ ...p, image: path, newImage: undefined });
       }
-      const out = serialize(products, loaded);
-      const files: FileChange[] = [
-        { path: CATALOG_PATH, text: fileText(out.catalog) },
-        { path: PRICES_PATH, text: fileText(out.prices) },
-        ...products.filter((p) => p.newImage).map((p) => ({ path: `public/${p.newImage!.sitePath}`, base64: p.newImage!.base64 })),
-      ];
-      const changedNames = products.filter((p) => JSON.stringify(p) !== JSON.stringify(original.find((o) => o.slug === p.slug))).map((p) => p.shortName || p.name);
-      const sha = await commitFiles(auth, latest, files, `Admin: update ${changedNames.join(', ') || 'products'}`);
-
-      // What is on GitHub now becomes the new starting point.
-      const catalogText = fileText(out.catalog);
-      const pricesText = fileText(out.prices);
-      setLoaded({ sha, catalog: out.catalog, prices: out.prices, catalogText, pricesText });
-      setProducts(buildModel(out.catalog, out.prices));
-      setDeploy({ sha, state: 'building' });
+      setProducts(ready);
+      const out = serialize(ready, store);
+      const next = await saveStore({ version: store.version, catalog: out.catalog, prices: out.prices, settings });
+      setStore(next);
+      setProducts(buildModel(next.catalog, next.prices));
+      setSettings(next.settings);
       setShowProblems(false);
-      toast({ message: 'Saved to GitHub. Deploy the updated shop on your backend host.' });
+      toast({ message: 'Saved. The website shows your changes now.' });
     } catch (e) {
-      toast({ message: e instanceof AdminError ? e.message : 'Publishing failed. Your changes are still here; try again.', tone: 'error', duration: 9000 });
+      if (e instanceof ApiError && e.status === 401) return onExpired();
+      toast({ message: e instanceof AdminError || e instanceof ApiError ? e.message : 'Saving failed. Your changes are still here; try again.', tone: 'error', duration: 9000 });
     } finally {
-      setPublishing(false);
+      setSaving(false);
     }
   };
 
   const discard = () => {
-    if (!loaded) return;
-    setProducts(buildModel(loaded.catalog, loaded.prices));
+    if (!store) return;
+    setProducts(buildModel(store.catalog, store.prices));
+    setSettings(store.settings);
     setShowProblems(false);
     toast({ message: 'Changes discarded.', tone: 'info' });
   };
 
+  const needsStore = tab === 'products' || tab === 'add' || tab === 'settings';
+
   return (
     <div className="min-h-screen bg-cream pb-40">
-      {/* Top bar */}
       <header className="sticky top-0 z-30 bg-forest-900 text-cream shadow-lift">
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
           <LogoMark className="h-10 w-10" />
           <div className="min-w-0 flex-1">
             <p className="font-display text-xl leading-tight text-white">LG Gold Admin</p>
-            <p className="truncate text-xs text-cream/60">{auth.repo}</p>
+            <p className="truncate text-xs text-cream/60">Signed in as {username}</p>
           </div>
           <a
             href="#home"
@@ -332,83 +314,82 @@ const Dashboard: React.FC<{ auth: Auth; onSignOut: () => void }> = ({ auth, onSi
           <button
             type="button"
             onClick={() => {
-              if (!dirty || window.confirm('You have unpublished changes. Sign out anyway?')) onSignOut();
+              if (!dirty || window.confirm('You have unsaved changes. Sign out anyway?')) onSignOut();
             }}
             className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-cream/80 hover:bg-white/10 hover:text-white cursor-pointer"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
-      </header>
-
-      <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6">
-        <AppLink to="admin-orders" className="mb-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-forest-800 px-5 text-sm font-semibold text-white">Open order administration <ExternalLink className="h-4 w-4" /></AppLink>
-        {/* Rebuild status after a publish */}
-        {deploy && <DeployBanner deploy={deploy} repo={auth.repo} onClose={() => setDeploy(null)} />}
-
-        {loadError ? (
-          <div className="mt-10 rounded-3xl bg-white p-8 text-center ring-1 ring-line">
-            <AlertTriangle className="mx-auto h-10 w-10 text-danger" />
-            <p className="mt-4 text-lg font-semibold text-forest-800">{loadError}</p>
-            <div className="mt-6 flex justify-center gap-3">
-              <Button icon={<RefreshCw className="h-4 w-4" />} onClick={load}>
-                Try again
-              </Button>
-              <Button variant="outline" onClick={onSignOut}>
-                Sign in again
-              </Button>
-            </div>
-          </div>
-        ) : !loaded ? (
-          <div className="mt-6 space-y-4" aria-busy="true" aria-label="Loading products">
-            {[0, 1].map((i) => (
-              <div key={i} className="h-72 skeleton rounded-3xl" />
+        <nav aria-label="Admin sections" className="mx-auto max-w-6xl overflow-x-auto px-2 scrollbar-none sm:px-4">
+          <div className="flex gap-1 pb-2">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                aria-current={tab === t.id ? 'page' : undefined}
+                onClick={() => go(t.id)}
+                className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 text-[15px] font-semibold transition-colors cursor-pointer ${
+                  tab === t.id ? 'bg-white text-forest-900' : 'text-cream/75 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <t.icon className="h-4 w-4" /> {t.label}
+                {t.id === 'products' && store && <span className="text-xs opacity-60">{products.length}</span>}
+              </button>
             ))}
           </div>
-        ) : (
-          <>
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <h1 className="font-display text-3xl text-forest-800 sm:text-4xl">Products &amp; prices</h1>
-                <p className="mt-1 text-muted">
-                  Prices on the website are dated {formatPriceDate(loaded.prices.updated ?? null) ?? 'not set'}. Publishing sets today’s date.
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" icon={<RefreshCw className="h-4 w-4" />} onClick={() => (!dirty || window.confirm('Reload and lose your unpublished changes?')) && load()}>
-                Reload
+        </nav>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-4 pt-6 sm:px-6">
+        {tab === 'orders' && <OrdersPanel onExpired={onExpired} />}
+        {tab === 'customers' && <CustomersPanel onExpired={onExpired} />}
+
+        {needsStore &&
+          (loadError ? (
+            <div className="mt-6 rounded-3xl bg-white p-8 text-center ring-1 ring-line">
+              <AlertTriangle className="mx-auto h-10 w-10 text-danger" />
+              <p className="mt-4 text-lg font-semibold text-forest-800">{loadError}</p>
+              <Button className="mt-6" icon={<RefreshCw className="h-4 w-4" />} onClick={load}>
+                Try again
               </Button>
             </div>
-
-            <div role="tablist" aria-label="Admin sections" className="mb-6 inline-flex rounded-full bg-white p-1 ring-1 ring-line">
-              {[
-                { id: 'products' as const, label: `My products (${products.length})`, icon: Package },
-                { id: 'add' as const, label: 'Add a product', icon: Plus },
-              ].map((t) => (
-                <button
-                  key={t.id}
-                  role="tab"
-                  aria-selected={tab === t.id}
-                  onClick={() => setTab(t.id)}
-                  className={`inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[15px] font-semibold transition-colors cursor-pointer ${
-                    tab === t.id ? 'bg-forest-800 text-white' : 'text-forest-800 hover:bg-forest-800/5'
-                  }`}
-                >
-                  <t.icon className="h-4 w-4" /> {t.label}
-                </button>
+          ) : !store || !settings ? (
+            <div className="space-y-4" aria-busy="true" aria-label="Loading products">
+              {[0, 1].map((i) => (
+                <div key={i} className="h-72 skeleton rounded-3xl" />
               ))}
             </div>
-
-            {tab === 'add' ? (
-              <AddProductForm
-                existingSlugs={products.map((p) => p.slug)}
-                onAdd={(p) => {
-                  setProducts([...products, p]);
-                  setTab('products');
-                  toast({ message: `${p.name} added to your list. Press Publish to put it on the website.` });
-                  requestAnimationFrame(() => document.getElementById(`product-${p.slug}`)?.scrollIntoView({ behavior: 'smooth' }));
-                }}
-              />
-            ) : (
+          ) : tab === 'settings' ? (
+            <SettingsPanel value={settings} onChange={setSettings} errors={showProblems ? settingErrors : {}} sms={sms} />
+          ) : tab === 'add' ? (
+            <AddProductForm
+              existingSlugs={products.map((p) => p.slug)}
+              onAdd={(p) => {
+                setProducts([...products, p]);
+                go('products');
+                toast({ message: `${p.name} added. Press Save changes to put it on the website.` });
+                setTimeout(() => document.getElementById(`product-${p.slug}`)?.scrollIntoView({ behavior: 'smooth' }), 300);
+              }}
+            />
+          ) : (
+            <>
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h1 className="font-display text-3xl text-forest-800 sm:text-4xl">Products &amp; prices</h1>
+                  <p className="mt-1 text-muted">
+                    Prices on the website are dated {formatPriceDate(store.prices.updated ?? null) ?? 'not set'}. Saving sets today’s date.
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon={<RefreshCw className="h-4 w-4" />}
+                  onClick={() => (!dirty || window.confirm('Reload and lose your unsaved changes?')) && load()}
+                >
+                  Reload
+                </Button>
+              </div>
               <div className="space-y-6">
                 {products.map((p, i) => (
                   <ProductEditor
@@ -421,83 +402,32 @@ const Dashboard: React.FC<{ auth: Auth; onSignOut: () => void }> = ({ auth, onSi
                   />
                 ))}
               </div>
-            )}
-          </>
-        )}
+            </>
+          ))}
       </main>
 
-      {/* Publish bar */}
-      {loaded && (dirty || publishing) && (
+      {/* Save bar: appears as soon as something changes, on any tab. */}
+      {store && (dirty || saving) && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 backdrop-blur-xl pb-safe shadow-[0_-12px_32px_-12px_rgb(23_74_50/0.25)] animate-slide-up">
-          <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-6">
+          <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-6">
             <div className="flex-1">
-              <p className="font-semibold text-forest-800">You have unpublished changes</p>
+              <p className="font-semibold text-forest-800">You have unsaved changes</p>
               <p className={`text-sm ${showProblems && problemCount ? 'font-medium text-danger' : 'text-muted'}`}>
                 {showProblems && problemCount
-                  ? `Fix ${problemCount} ${problemCount === 1 ? 'problem' : 'problems'} marked in red, then publish.`
-                  : 'Publish to GitHub, then deploy your backend host to update the shop.'}
+                  ? `Fix ${problemCount} ${problemCount === 1 ? 'problem' : 'problems'} marked in red, then save.`
+                  : 'Customers see them as soon as you save.'}
               </p>
             </div>
             <div className="flex gap-3">
-              <Button variant="ghost" onClick={discard} disabled={publishing}>
+              <Button variant="ghost" onClick={discard} disabled={saving}>
                 Discard
               </Button>
-              <Button size="lg" onClick={publish} loading={publishing} icon={!publishing ? <Rocket className="h-5 w-5" /> : undefined} className="flex-1 sm:flex-none">
-                Publish changes
+              <Button size="lg" onClick={save} loading={saving} icon={!saving ? <Save className="h-5 w-5" /> : undefined} className="flex-1 sm:flex-none">
+                Save changes
               </Button>
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-};
-
-const DeployBanner: React.FC<{ deploy: { state: DeployState; url?: string }; repo: string; onClose: () => void }> = ({ deploy, repo, onClose }) => {
-  const actionsUrl = deploy.url ?? `https://github.com/${repo}/actions`;
-  const view = {
-    building: {
-      icon: <Loader2 className="h-5 w-5 animate-spin text-gold-600" />,
-      title: 'Checking your changes…',
-      body: 'Your changes are saved. GitHub is validating the app.',
-      tone: 'bg-gold-50 ring-gold-300',
-    },
-    live: {
-      icon: <CheckCircle2 className="h-5 w-5 text-forest-700" />,
-      title: 'Live on the website',
-      body: 'Visitors now see your changes (they may need to refresh the page).',
-      tone: 'bg-forest-50 ring-forest-200',
-    },
-    failed: {
-      icon: <AlertTriangle className="h-5 w-5 text-danger" />,
-      title: 'The website could not be rebuilt',
-      body: 'Your changes are saved, but the site update failed. Open the details on GitHub, or ask your developer.',
-      tone: 'bg-danger-50 ring-danger/30',
-    },
-    unknown: {
-      icon: <CheckCircle2 className="h-5 w-5 text-forest-700" />,
-      title: 'Saved',
-      body: 'Saved to GitHub. Check your backend host deployment to confirm the updated shop is live.',
-      tone: 'bg-forest-50 ring-forest-200',
-    },
-  }[deploy.state];
-
-  return (
-    <div role="status" className={`mb-6 flex items-start gap-3 rounded-2xl p-4 ring-1 animate-pop-in ${view.tone}`}>
-      <span className="mt-0.5">{view.icon}</span>
-      <div className="flex-1">
-        <p className="font-semibold text-forest-800">{view.title}</p>
-        <p className="text-sm text-ink-soft">
-          {view.body}{' '}
-          <a href={actionsUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2">
-            Details on GitHub
-          </a>
-        </p>
-      </div>
-      {deploy.state !== 'building' && (
-        <button type="button" onClick={onClose} className="rounded-full px-3 py-1.5 text-sm font-semibold text-muted hover:bg-white cursor-pointer">
-          Dismiss
-        </button>
       )}
     </div>
   );

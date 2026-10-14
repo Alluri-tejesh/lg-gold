@@ -4,14 +4,18 @@ loadEnv({ path: "server/.env", quiet: true });
 export async function readConfig() {
   const production = process.env.NODE_ENV === "production";
   const origin = process.env.APP_ORIGIN || "http://localhost:3000";
+  const adminUsername = (process.env.ADMIN_USERNAME || "").trim();
+  const adminPassword = process.env.ADMIN_PASSWORD || "";
   if (
     production &&
-    (!process.env.MONGODB_URI ||
-      (process.env.OTP_SECRET?.length || 0) < 32 ||
-      !origin.startsWith("https://"))
+    (!process.env.MONGODB_URI || !origin.startsWith("https://"))
   )
     throw new Error(
-      "Production requires MONGODB_URI, an OTP_SECRET of at least 32 characters, and an HTTPS APP_ORIGIN in the server environment.",
+      "Production requires MONGODB_URI and an HTTPS APP_ORIGIN in the server environment.",
+    );
+  if (production && (!adminUsername || adminPassword.length < 10))
+    throw new Error(
+      "Production requires ADMIN_USERNAME and an ADMIN_PASSWORD of at least 10 characters in the server environment.",
     );
   return {
     production,
@@ -20,6 +24,9 @@ export async function readConfig() {
     dbName: process.env.MONGODB_DB || "lg_gold",
     port: Number(process.env.PORT || 4000),
     trustProxy: Number(process.env.TRUST_PROXY || 0),
+    adminUsername,
+    adminPassword,
+    // Signs development SMS codes; a fresh random value each start is fine.
     otpSecret: process.env.OTP_SECRET || secret(),
     dummyHash: await hashPassword(secret()),
     smtpHost: process.env.SMTP_HOST,

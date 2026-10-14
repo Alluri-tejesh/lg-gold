@@ -2,8 +2,8 @@ import { PRODUCTS } from './products';
 import { Product, PackOption } from '../types';
 
 /**
- * Extra products and picture changes live in public/catalog.json, so they can be edited without touching code
- * (see docs/products-and-photos.md). The file is read on every visit and merged into the built-in product list.
+ * Products added later, extra pack sizes and photo changes: the admin page saves them to the database in this shape.
+ * public/catalog.json holds the same shape as the starting data for a new database and the offline fallback.
  */
 
 export interface CatalogPack {

@@ -13,6 +13,8 @@ const messages = [],
 const config = {
   production: false,
   origin: "http://localhost:3000",
+  adminUsername: "millowner",
+  adminPassword: "admin fixture strong phrase",
   otpSecret: "test-only-secret",
   razorpayKey: "rzp_test_fixture",
   razorpaySecret: "fixture-secret",
@@ -21,15 +23,15 @@ const config = {
 const provider = {
   smsAvailable: true,
   emailAvailable: true,
-  async email(to, subject, text) {
-    messages.push({ to, subject, text });
-  },
   async sendOtp(phone, challengeId) {
     codes.set(challengeId, "123456");
     return { provider: "fixture" };
   },
   async checkOtp(c, code) {
     return codes.get(c._id) === code;
+  },
+  async email(to, subject, text) {
+    messages.push({ to, subject, text });
   },
 };
 const address = {
@@ -79,6 +81,7 @@ after(async () => {
 test("register, hashing, cookie security, login and origin checks", async () => {
   const r = await post(alice, "/auth/register", {
     name: "Alice Test",
+    phone: "+91 90000 00001",
     email: "ALICE@example.test",
     password: "correct horse battery staple",
     role: "admin",
@@ -86,6 +89,7 @@ test("register, hashing, cookie security, login and origin checks", async () => 
   assert.equal(r.status, 201);
   assert.equal(r.body.user.role, "customer");
   assert.equal(r.body.user.email, "alice@example.test");
+  assert.equal(r.body.user.phone, "+919000000001");
   assert.ok(!r.body.user.passwordHash);
   assert.match(r.headers["set-cookie"][0], /HttpOnly/);
   assert.match(r.headers["set-cookie"][0], /SameSite=Lax/);
@@ -111,7 +115,7 @@ test("register, hashing, cookie security, login and origin checks", async () => 
   assert.equal(
     (
       await post(bob, "/auth/login", {
-        email: "alice@example.test",
+        identifier: "9000000001",
         password: "wrong password",
       })
     ).status,
@@ -121,22 +125,186 @@ test("register, hashing, cookie security, login and origin checks", async () => 
     (
       await post(bob, "/auth/register", {
         name: "Bob Test",
-        email: "bob@example.test",
+        phone: "9000000002",
         password: "a second strong password",
       })
     ).status,
     201,
   );
-  await post(administrator, "/auth/register", {
-    name: "Mill Admin",
-    email: "admin@example.test",
+  // One account per mobile number.
+  assert.equal(
+    (
+      await post(request(app), "/auth/register", {
+        name: "Copy Cat",
+        phone: "09000000002",
+        password: "yet another strong phrase",
+      })
+    ).status,
+    409,
+  );
+  // Sign in with the mobile number in any common format, or with the email.
+  for (const identifier of ["9000000001", "+91 90000 00001", "ALICE@example.test"])
+    assert.equal(
+      (
+        await post(request.agent(app), "/auth/login", {
+          identifier,
+          password: "correct horse battery staple",
+        })
+      ).status,
+      200,
+    );
+});
+test("admin sign-in uses the server credentials, not customer accounts", async () => {
+  assert.equal((await alice.get("/api/admin/orders")).status, 401);
+  assert.equal((await alice.get("/api/admin/me")).body.admin, false);
+  assert.equal(
+    (
+      await post(administrator, "/admin/login", {
+        username: "millowner",
+        password: "wrong",
+      })
+    ).status,
+    401,
+  );
+  const ok = await post(administrator, "/admin/login", {
+    username: "MillOwner",
     password: "admin fixture strong phrase",
   });
-  await db
-    .collection("customers")
-    .updateOne({ email: "admin@example.test" }, { $set: { role: "admin" } });
+  assert.equal(ok.status, 200);
+  assert.match(ok.headers["set-cookie"][0], /lg_admin=.*HttpOnly/);
+  assert.match(ok.headers["set-cookie"][0], /SameSite=Strict/);
+  assert.equal((await administrator.get("/api/admin/me")).body.admin, true);
+  assert.equal((await administrator.get("/api/admin/orders")).status, 200);
+  // Once signed out, the old admin cookie is useless.
+  const out = request.agent(app);
+  await post(out, "/admin/login", {
+    username: "millowner",
+    password: "admin fixture strong phrase",
+  });
+  await post(out, "/admin/logout");
+  assert.equal((await out.get("/api/admin/orders")).status, 401);
 });
-test("SMS login creates a verified phone account; code is single use and attempt limited", async () => {
+const put = (agent, path, body) =>
+  agent
+    .put(`/api${path}`)
+    .set("X-LG-Client", "web")
+    .set("Origin", config.origin)
+    .send(body);
+test("admin edits to prices and settings reach the shop and order pricing at once", async () => {
+  const before = (await request(app).get("/api/storefront")).body;
+  assert.equal(before.prices.prices["hmt-rice"]["26kg Bag"].price, 1650);
+  const edited = structuredClone(before);
+  edited.prices.prices["hmt-rice"]["26kg Bag"] = { price: 1700, mrp: 1900 };
+  edited.settings.delivery = { freeFromOrderValue: 3000, charge: 60 };
+  edited.catalog.products.push({
+    slug: "sona-masoori",
+    name: "LG Gold Sona Masoori",
+    image: "api/images/000000000000000000000000",
+    packs: [{ size: "10kg Bag", weightKg: 10, price: 700, mrp: 760 }],
+  });
+  edited.prices.prices["sona-masoori"] = { "10kg Bag": { price: 700, mrp: 760 } };
+  const body = {
+    version: edited.version,
+    catalog: edited.catalog,
+    prices: edited.prices,
+    settings: edited.settings,
+  };
+  assert.equal((await put(alice, "/admin/storefront", body)).status, 401);
+  const saved = await put(administrator, "/admin/storefront", body);
+  assert.equal(saved.status, 200);
+  assert.equal(saved.body.version, before.version + 1);
+  // A second device saving on top of the old version is stopped.
+  assert.equal((await put(administrator, "/admin/storefront", body)).status, 409);
+  const live = (await request(app).get("/api/storefront")).body;
+  assert.equal(live.prices.prices["hmt-rice"]["26kg Bag"].price, 1700);
+  // New price plus the new delivery charge: 1700 + 60.
+  assert.equal((await post(bob, "/orders", payload({ expectedTotal: 1700 }))).status, 409);
+  const o = await post(bob, "/orders", payload({ expectedTotal: 1760 }));
+  assert.equal(o.status, 201);
+  assert.equal(o.body.order.totals.delivery, 60);
+  // A product added on the admin page can be ordered straight away.
+  const added = await post(
+    bob,
+    "/orders",
+    payload({
+      items: [{ productSlug: "sona-masoori", packSize: "10kg Bag", quantity: 1 }],
+      expectedTotal: 760,
+    }),
+  );
+  assert.equal(added.status, 201);
+  // Bad settings are refused.
+  const bad = structuredClone(body);
+  bad.version = live.version;
+  bad.settings.upiId = "not a upi id";
+  assert.equal((await put(administrator, "/admin/storefront", bad)).status, 400);
+  // Put the original data back for the remaining tests.
+  const restore = await put(administrator, "/admin/storefront", {
+    version: live.version,
+    catalog: before.catalog,
+    prices: before.prices,
+    settings: before.settings,
+  });
+  assert.equal(restore.status, 200);
+});
+test("product photos upload for admins only and are served with long caching", async () => {
+  const png = Buffer.concat([
+    Buffer.from("89504e470d0a1a0a", "hex"),
+    Buffer.alloc(200, 1),
+  ]);
+  const upload = (agent) =>
+    agent
+      .post("/api/admin/images")
+      .set("X-LG-Client", "web")
+      .set("Origin", config.origin)
+      .set("Content-Type", "image/png")
+      .send(png);
+  assert.equal((await upload(alice)).status, 401);
+  const up = await upload(administrator);
+  assert.equal(up.status, 201);
+  assert.match(up.body.path, /^api\/images\/[a-f\d]{24}$/);
+  const got = await request(app).get("/" + up.body.path);
+  assert.equal(got.status, 200);
+  assert.equal(got.headers["content-type"], "image/png");
+  assert.match(got.headers["cache-control"], /immutable/);
+  assert.equal(Buffer.compare(got.body, png), 0);
+});
+test("the mill can give a customer a temporary password", async () => {
+  const list = await administrator.get(
+    "/api/admin/customers?search=" + encodeURIComponent("90000 00002"),
+  );
+  const customer = list.body.customers.find((c) => c.phone === "+919000000002");
+  assert.ok(customer);
+  assert.equal(
+    (await post(alice, `/admin/customers/${customer.id}/reset-password`)).status,
+    401,
+  );
+  const r = await post(
+    administrator,
+    `/admin/customers/${customer.id}/reset-password`,
+  );
+  assert.match(r.body.temporaryPassword, /^LG-[A-F\d]{4}-[A-F\d]{4}$/);
+  // Old sessions end; the temporary password works.
+  assert.equal((await bob.get("/api/auth/me")).body.user, null);
+  const back = await post(bob, "/auth/login", {
+    identifier: "9000000002",
+    password: r.body.temporaryPassword,
+  });
+  assert.equal(back.status, 200);
+});
+test("SMS code sign-in: new numbers get an account; codes are single use, expire and are attempt limited", async () => {
+  // Off by default: password sign-in only, and the API refuses to send codes.
+  assert.equal((await request(app).get("/api/auth/config")).body.sms, false);
+  assert.equal((await post(request(app), "/auth/otp/request", { phone: "9876543219" })).status, 503);
+  // The admin switches it on in Settings.
+  const store = (await request(app).get("/api/storefront")).body;
+  const on = await administrator
+    .put("/api/admin/storefront")
+    .set("X-LG-Client", "web")
+    .set("Origin", config.origin)
+    .send({ version: store.version, catalog: store.catalog, prices: store.prices, settings: { ...store.settings, smsLogin: true } });
+  assert.equal(on.status, 200);
+  assert.equal((await request(app).get("/api/auth/config")).body.sms, true);
+  assert.equal((await administrator.get("/api/admin/me")).body.sms, "live");
   const sms = request.agent(app);
   const start = await post(sms, "/auth/otp/request", {
     phone: "9876543211",
@@ -144,84 +312,67 @@ test("SMS login creates a verified phone account; code is single use and attempt
   });
   assert.equal(start.status, 200);
   const challengeId = start.body.challengeId;
-  assert.equal(
-    (await post(sms, "/auth/otp/request", { phone: "9876543211" })).status,
-    429,
-  );
-  assert.equal(
-    (await post(sms, "/auth/otp/verify", { challengeId, code: "111111" }))
-      .status,
-    400,
-  );
-  const verified = await post(sms, "/auth/otp/verify", {
-    challengeId,
-    code: "123456",
-  });
+  assert.ok(!JSON.stringify(start.body).includes("123456"), "the code is never returned");
+  // One code a minute per number.
+  assert.equal((await post(request(app), "/auth/otp/request", { phone: "9876543211" })).status, 429);
+  assert.equal((await post(sms, "/auth/otp/verify", { challengeId, code: "111111" })).status, 400);
+  const verified = await post(sms, "/auth/otp/verify", { challengeId, code: "123456" });
   assert.equal(verified.status, 200);
-  assert.equal(verified.body.user.phoneVerified, true);
+  assert.equal(verified.body.user.name, "SMS Customer");
   assert.equal(verified.body.user.phone, "+919876543211");
+  assert.equal(verified.body.user.phoneVerified, true);
+  assert.equal(verified.body.user.hasPassword, false);
+  assert.equal((await sms.get("/api/auth/me")).body.user.phone, "+919876543211");
+  assert.equal((await post(sms, "/auth/otp/verify", { challengeId, code: "123456" })).status, 400);
+  // Signing in again with a code finds the same account.
+  const again = await post(request.agent(app), "/auth/otp/request", { phone: "9876543212" });
+  await db.collection("otp").updateOne({ _id: again.body.challengeId }, { $set: { expiresAt: new Date(0) } });
   assert.equal(
-    (await post(sms, "/auth/otp/verify", { challengeId, code: "123456" }))
-      .status,
+    (await post(request(app), "/auth/otp/verify", { challengeId: again.body.challengeId, code: "123456" })).status,
     400,
   );
-  const expired = await post(sms, "/auth/otp/request", { phone: "9876543212" });
-  await db
-    .collection("otp")
-    .updateOne(
-      { _id: expired.body.challengeId },
-      { $set: { expiresAt: new Date(0) } },
-    );
-  assert.equal(
-    (
-      await post(sms, "/auth/otp/verify", {
-        challengeId: expired.body.challengeId,
-        code: "123456",
-      })
-    ).status,
-    400,
-  );
-  const limited = await post(sms, "/auth/otp/request", { phone: "9876543213" });
+  const limited = await post(request(app), "/auth/otp/request", { phone: "9876543213" });
   for (let i = 0; i < 5; i++)
     assert.equal(
-      (
-        await post(sms, "/auth/otp/verify", {
-          challengeId: limited.body.challengeId,
-          code: "111111",
-        })
-      ).status,
+      (await post(request(app), "/auth/otp/verify", { challengeId: limited.body.challengeId, code: "111111" })).status,
       400,
     );
   assert.equal(
-    (
-      await post(sms, "/auth/otp/verify", {
-        challengeId: limited.body.challengeId,
-        code: "123456",
-      })
-    ).status,
+    (await post(request(app), "/auth/otp/verify", { challengeId: limited.body.challengeId, code: "123456" })).status,
     400,
   );
 });
-test("phone linking requires the session that requested the code", async () => {
-  const start = await post(alice, "/auth/otp/request", {
-    phone: "9876543214",
-    purpose: "link",
-  });
+test("a code proves the number: an unverified password account is handed to the phone's owner", async () => {
+  const squatter = request.agent(app);
   assert.equal(
     (
-      await post(bob, "/auth/otp/verify", {
-        challengeId: start.body.challengeId,
-        code: "123456",
+      await post(squatter, "/auth/register", {
+        name: "Someone Else",
+        phone: "9000000003",
+        password: "a password the owner never set",
       })
     ).status,
-    403,
+    201,
   );
-  const done = await post(alice, "/auth/otp/verify", {
-    challengeId: start.body.challengeId,
-    code: "123456",
-  });
-  assert.equal(done.status, 200);
-  assert.equal(done.body.user.phoneVerified, true);
+  const owner = request.agent(app);
+  const start = await post(owner, "/auth/otp/request", { phone: "9000000003" });
+  const r = await post(owner, "/auth/otp/verify", { challengeId: start.body.challengeId, code: "123456" });
+  assert.equal(r.status, 200);
+  assert.equal(r.body.user.phoneVerified, true);
+  assert.equal(r.body.user.hasPassword, false);
+  assert.ok(r.body.notice);
+  // The other person's session and password no longer work.
+  assert.equal((await squatter.get("/api/auth/me")).body.user, null);
+  assert.equal(
+    (await post(request(app), "/auth/login", { identifier: "9000000003", password: "a password the owner never set" })).status,
+    401,
+  );
+  // The owner can add their own password afterwards.
+  assert.equal((await post(owner, "/account/password", { password: "the real owners phrase" })).status, 200);
+  assert.equal(
+    (await post(request(app), "/auth/login", { identifier: "9000000003", password: "the real owners phrase" })).status,
+    200,
+  );
 });
 test("addresses stay in the owner account and exactly one is default", async () => {
   const r = await alice
@@ -235,6 +386,7 @@ test("addresses stay in the owner account and exactly one is default", async () 
   assert.equal((await bob.get("/api/auth/me")).body.user.addresses.length, 0);
 });
 test("orders persist, prices are authoritative, payment flags are ignored and retries are idempotent", async () => {
+  // Ordering needs an account.
   assert.equal((await post(request(app), "/orders", payload())).status, 401);
   assert.equal(
     (await post(alice, "/orders", payload({ expectedTotal: 1 }))).status,
@@ -262,7 +414,7 @@ test("orders persist, prices are authoritative, payment flags are ignored and re
     (await bob.get(`/api/orders/${saved.body.order.id}`)).status,
     404,
   );
-  assert.equal((await bob.get("/api/admin/orders")).status, 403);
+  assert.equal((await bob.get("/api/admin/orders")).status, 401);
   const mine = await alice.get("/api/orders");
   assert.ok(mine.body.orders.some((o) => o.id === saved.body.order.id));
   assert.ok(mine.body.summary.active >= 1);
@@ -488,7 +640,7 @@ test("email verification is bound to the requested address; reset links expire, 
   assert.equal(
     (
       await post(alice, "/auth/login", {
-        email: "alice@example.test",
+        identifier: "alice@example.test",
         password: "correct horse battery staple",
       })
     ).status,
@@ -497,7 +649,7 @@ test("email verification is bound to the requested address; reset links expire, 
   assert.equal(
     (
       await post(alice, "/auth/login", {
-        email: "alice@example.test",
+        identifier: "alice@example.test",
         password: "a newly replaced strong phrase",
       })
     ).status,

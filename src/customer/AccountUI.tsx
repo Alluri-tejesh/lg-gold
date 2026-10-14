@@ -160,12 +160,6 @@ export function AccountShell({
                   {label}
                 </AppLink>
               ))}
-              {user.role === "admin" && (
-                <AppLink to="admin-orders" className="account-nav-link">
-                  <ShieldCheck className="h-4 w-4" />
-                  Manage orders
-                </AppLink>
-              )}
               <button
                 className="account-nav-link text-muted cursor-pointer"
                 onClick={async () => {
@@ -231,7 +225,8 @@ export function OrderCard({ order }: { order: SavedOrder }) {
             {order.items[0]?.productName}
           </p>
           <p className="mt-1 text-sm text-muted">
-            {order.items.reduce((n, i) => n + i.quantity, 0)} packs
+            {order.items.reduce((n, i) => n + i.quantity, 0)}{" "}
+            {order.items.reduce((n, i) => n + i.quantity, 0) === 1 ? "pack" : "packs"}
             {order.items.length > 1
               ? ` · ${order.items.length} varieties / sizes`
               : ` · ${order.items[0]?.packSize}`}

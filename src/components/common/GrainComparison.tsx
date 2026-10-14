@@ -45,8 +45,8 @@ export const GrainComparison: React.FC<GrainComparisonProps> = () => {
     {
       label: 'Price, 26kg bag',
       hint: 'Today’s rate',
-      hmt: <span className="font-display text-2xl text-forest-800 tabular">₹{bag(hmt)?.retailPrice.toLocaleString('en-IN')}</span>,
-      jsr: <span className="font-display text-2xl text-forest-800 tabular">₹{bag(jsr)?.retailPrice.toLocaleString('en-IN')}</span>,
+      hmt: <span className="text-2xl font-bold tracking-tight text-forest-800 tabular">₹{bag(hmt)?.retailPrice.toLocaleString('en-IN')}</span>,
+      jsr: <span className="text-2xl font-bold tracking-tight text-forest-800 tabular">₹{bag(jsr)?.retailPrice.toLocaleString('en-IN')}</span>,
     },
   ];
 

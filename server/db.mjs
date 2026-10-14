@@ -8,6 +8,13 @@ export async function connectDatabase(uri, name = "lg_gold") {
   const client = new MongoClient(uri, { serverSelectionTimeoutMS: 8000 });
   await client.connect();
   const db = client.db(name);
+  // Accounts used to need an SMS-verified number to be unique. Mobile + password sign-in makes every saved
+  // number a login, so the old index is replaced by one covering all of them.
+  const customers = db.collection("customers");
+  const old = (await customers.indexes().catch(() => [])).find(
+    (i) => i.name === "phone_1" && i.partialFilterExpression?.phoneVerified,
+  );
+  if (old) await customers.dropIndex("phone_1");
   await Promise.all([
     db
       .collection("customers")
@@ -22,9 +29,19 @@ export async function connectDatabase(uri, name = "lg_gold") {
       .collection("customers")
       .createIndex(
         { phone: 1 },
-        { unique: true, partialFilterExpression: { phoneVerified: true } },
+        {
+          name: "phone_login",
+          unique: true,
+          partialFilterExpression: { phone: { $type: "string" } },
+        },
       ),
     db.collection("sessions").createIndex({ tokenHash: 1 }, { unique: true }),
+    db
+      .collection("adminSessions")
+      .createIndex({ tokenHash: 1 }, { unique: true }),
+    db
+      .collection("adminSessions")
+      .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
     db
       .collection("sessions")
       .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),

@@ -16,6 +16,7 @@ import {
 } from "./security.mjs";
 import { createDelivery } from "./delivery.mjs";
 import { priceOrder } from "./catalog.mjs";
+import { createStore, publicStore } from "./store.mjs";
 
 const email = z.string().trim().toLowerCase().email().max(254);
 const password = z
@@ -59,6 +60,71 @@ const publicOrder = (o) => {
   const { _id, customerId, requestId, audit, ...rest } = o;
   return { ...rest, id: _id.toString() };
 };
+const last10 = (p) => String(p || "").replace(/\D/g, "").slice(-10);
+// Packs, prices and settings as the admin page sends them. Generous limits, strict types.
+const money = z.number().finite().min(0).max(10_000_000);
+const text = (max) => z.string().max(max);
+const storefrontInput = z.object({
+  version: z.number().int(),
+  catalog: z.object({
+    products: z
+      .array(
+        z
+          .object({
+            slug: z.string().regex(/^[a-z0-9-]{1,60}$/),
+            name: text(120).optional(),
+            shortName: text(80).optional(),
+            subTitle: text(200).optional(),
+            description: text(2000).optional(),
+            image: text(500).optional(),
+            imageFit: z.enum(["cover", "contain"]).optional(),
+            packs: z
+              .array(
+                z.object({
+                  size: z.string().min(1).max(80),
+                  weightKg: z.number().min(0).max(100000).optional(),
+                  price: money,
+                  mrp: money.optional(),
+                  packaging: text(80).optional(),
+                }),
+              )
+              .max(20)
+              .optional(),
+          })
+          .passthrough(),
+      )
+      .max(100),
+  }),
+  prices: z.object({
+    updated: text(20).optional(),
+    outOfStock: z.array(text(60)).max(100).optional(),
+    prices: z.record(
+      z.string().max(60),
+      z.record(
+        z.string().max(80),
+        z.object({ price: money, mrp: money, inStock: z.boolean().optional() }),
+      ),
+    ),
+  }),
+  settings: z.object({
+    delivery: z.object({
+      freeFromOrderValue: money,
+      charge: money,
+    }),
+    cashOnDelivery: z.boolean(),
+    upiId: z
+      .string()
+      .trim()
+      .max(100)
+      .refine(
+        (v) => v === "" || /^[\w.\-]{2,256}@[a-zA-Z][a-zA-Z0-9.\-]{1,64}$/.test(v),
+        "That UPI ID does not look right. It looks like name@bank.",
+      ),
+    upiPayeeName: z.string().trim().min(1).max(60),
+    // Customers can sign in with an SMS code (needs an SMS provider). Off: password sign-in only.
+    smsLogin: z.boolean().default(false),
+  }),
+});
 
 export function createApp(db, config, injectedDelivery) {
   const app = express();
@@ -67,7 +133,10 @@ export function createApp(db, config, injectedDelivery) {
     sessions = db.collection("sessions"),
     tokens = db.collection("tokens"),
     orders = db.collection("orders"),
-    challenges = db.collection("otp");
+    adminSessions = db.collection("adminSessions"),
+    challenges = db.collection("otp"),
+    images = db.collection("images"),
+    store = createStore(db, config.dataDir);
   app.disable("x-powered-by");
   // Proxy trust must match deployment topology; never trust arbitrary client-supplied forwarded IPs.
   if (config.trustProxy) app.set("trust proxy", config.trustProxy);
@@ -86,7 +155,6 @@ export function createApp(db, config, injectedDelivery) {
           imgSrc: ["'self'", "data:", "https:"],
           connectSrc: [
             "'self'",
-            "https://api.github.com",
             "https://api.postalpincode.in",
             "https://api.razorpay.com",
             "https://checkout.razorpay.com",
@@ -175,7 +243,18 @@ export function createApp(db, config, injectedDelivery) {
       res.json({ received: true });
     },
   );
-  app.use(express.json({ limit: "32kb" }), cookieParser());
+  // Product photos arrive as raw image bytes (already resized in the browser) and are stored in MongoDB.
+  app.post(
+    "/api/admin/images",
+    express.raw({ type: ["image/webp", "image/jpeg", "image/png"], limit: "3mb" }),
+  );
+  const smallJson = express.json({ limit: "32kb" });
+  const largeJson = express.json({ limit: "1mb" });
+  app.use(
+    (req, res, next) =>
+      (req.path === "/api/admin/storefront" ? largeJson : smallJson)(req, res, next),
+    cookieParser(),
+  );
   app.use("/api", (req, res, next) => {
     res.set("Cache-Control", "no-store");
     const allowedOrigins = [config.origin];
@@ -222,12 +301,24 @@ export function createApp(db, config, injectedDelivery) {
     }
     next();
   });
+  // The admin page has its own sign-in (ADMIN_USERNAME / ADMIN_PASSWORD in the server environment),
+  // separate from customer accounts. Its cookie is strict same-site and lasts 12 hours.
+  app.use("/api", async (req, res, next) => {
+    if (req.cookies.lg_admin)
+      req.admin = !!(await adminSessions.findOne({
+        tokenHash: digest(req.cookies.lg_admin),
+        expiresAt: { $gt: new Date() },
+      }));
+    next();
+  });
   const auth = (req, res, next) =>
     req.user ? next() : res.status(401).json({ error: "Sign in to continue." });
   const admin = (req, res, next) =>
-    req.user?.role === "admin"
+    req.admin
       ? next()
-      : res.status(403).json({ error: "Administrator access is required." });
+      : res
+          .status(401)
+          .json({ error: "Your admin session has ended. Sign in again." });
   const cookieOptions = {
     httpOnly: true,
     sameSite: "lax",
@@ -269,10 +360,13 @@ export function createApp(db, config, injectedDelivery) {
     await db.command({ ping: 1 });
     res.json({ ok: true });
   });
-  app.get("/api/auth/config", (req, res) =>
+  // SMS sign-in shows only when the admin has switched it on AND the server can send codes.
+  const smsLoginOn = async () =>
+    delivery.smsAvailable && !!(await store.get()).settings?.smsLogin;
+  app.get("/api/auth/config", async (req, res) =>
     res.json({
-      sms: delivery.smsAvailable,
-      localSms: !!delivery.localSms,
+      sms: await smsLoginOn(),
+      localSms: delivery.localSms,
       email: delivery.emailAvailable,
       gateway: !!(config.razorpayKey && config.razorpaySecret),
       razorpayKey: config.razorpayKey || "",
@@ -283,17 +377,22 @@ export function createApp(db, config, injectedDelivery) {
   );
   app.post("/api/auth/register", limit("register", 8), async (req, res) => {
     const input = z
-      .object({ name: z.string().trim().min(2).max(80), email, password })
+      .object({
+        name: z.string().trim().min(2, "Please enter your name.").max(80),
+        phone,
+        email: z.union([email, z.literal("")]).optional(),
+        password,
+      })
       .parse(req.body);
-    if (await customers.findOne({ email: input.email }))
-      fail(
-        409,
-        "An account already uses this email. Sign in or reset your password.",
-      );
+    if (await customers.findOne({ phone: input.phone }))
+      fail(409, "This mobile number already has an account. Sign in instead.");
+    if (input.email && (await customers.findOne({ email: input.email })))
+      fail(409, "An account already uses this email. Sign in instead.");
     const user = {
       _id: new ObjectId(),
       name: input.name,
-      email: input.email,
+      phone: input.phone,
+      ...(input.email ? { email: input.email } : {}),
       passwordHash: await hashPassword(input.password),
       emailVerified: false,
       phoneVerified: false,
@@ -307,14 +406,30 @@ export function createApp(db, config, injectedDelivery) {
   });
   app.post("/api/auth/login", limit("login", 15), async (req, res) => {
     const input = z
-      .object({ email, password: z.string().min(1).max(128) })
+      .object({
+        identifier: z.string().trim().min(3).max(254),
+        password: z.string().min(1).max(128),
+      })
       .parse(req.body);
-    const user = await customers.findOne({ email: input.email });
+    const byEmail = input.identifier.includes("@");
+    const mobile = phone.safeParse(input.identifier);
+    const user = byEmail
+      ? await customers.findOne({ email: input.identifier.toLowerCase() })
+      : mobile.success
+        ? await customers.findOne({ phone: mobile.data })
+        : null;
     // A constant-cost dummy hash prevents timing-based account discovery.
-    const hash = user?.passwordHash || config.dummyHash;
-    const valid = await checkPassword(input.password, hash);
+    const valid = await checkPassword(
+      input.password,
+      user?.passwordHash || config.dummyHash,
+    );
     if (!valid || !user?.passwordHash)
-      fail(401, "Email or password is incorrect.");
+      fail(
+        401,
+        byEmail
+          ? "Email or password is incorrect."
+          : "Mobile number or password is incorrect.",
+      );
     await issueSession(user, res);
     res.json({ user: publicCustomer(user) });
   });
@@ -322,21 +437,17 @@ export function createApp(db, config, injectedDelivery) {
     if (req.session) await sessions.deleteOne({ _id: req.session._id });
     res.clearCookie("lg_session", cookieOptions).json({ ok: true });
   });
+  /* ------------------------------------------------------------ SMS code sign-in (alongside passwords) */
   app.post("/api/auth/otp/request", limit("otp-send", 6), async (req, res) => {
     const input = z
       .object({
         phone,
         name: z.string().trim().min(2).max(80).optional(),
-        purpose: z.enum(["login", "link"]).default("login"),
       })
       .parse(req.body);
-    if (input.purpose === "link" && !req.user) fail(401, "Sign in first.");
-    if (!delivery.smsAvailable)
-      fail(
-        503,
-        "SMS sign-in is not connected yet. Please use email and password.",
-      );
-    // Scope resend limit by number as well as IP; a different browser cannot bypass the cooldown.
+    if (!(await smsLoginOn()))
+      fail(503, "Sign-in by SMS code is not available yet. Please use your password.");
+    // One code a minute per number, whichever browser asks.
     const locks = db.collection("otpCooldown");
     try {
       await locks.insertOne({ _id: input.phone, nextAllowedAt: new Date(0) });
@@ -353,14 +464,12 @@ export function createApp(db, config, injectedDelivery) {
       },
       { returnDocument: "after" },
     );
-    if (!lock) fail(429, "Wait a minute before requesting another code.");
+    if (!lock) fail(429, "Please wait a minute before asking for another code.");
     const challengeId = randomUUID();
     await challenges.insertOne({
       _id: challengeId,
       phone: input.phone,
       name: input.name,
-      purpose: input.purpose,
-      customerId: input.purpose === "link" ? req.user._id : null,
       attempts: 0,
       used: false,
       ready: false,
@@ -369,6 +478,7 @@ export function createApp(db, config, injectedDelivery) {
     });
     try {
       const provider = await delivery.sendOtp(input.phone, challengeId);
+      // Only the newest code for a number works.
       await challenges.updateMany(
         { phone: input.phone, _id: { $ne: challengeId } },
         { $set: { used: true } },
@@ -387,7 +497,7 @@ export function createApp(db, config, injectedDelivery) {
     const input = z
       .object({
         challengeId: z.string().uuid(),
-        code: z.string().regex(/^\d{6}$/),
+        code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code."),
       })
       .parse(req.body);
     const c = await challenges.findOneAndUpdate(
@@ -402,32 +512,19 @@ export function createApp(db, config, injectedDelivery) {
       { returnDocument: "after" },
     );
     if (!c)
-      fail(
-        400,
-        "This code has expired or reached its attempt limit. Request a new code.",
-      );
-    if (
-      c.purpose === "link" &&
-      (!req.user || !c.customerId.equals(req.user._id))
-    )
-      fail(403, "Sign in with the account that requested this code.");
+      fail(400, "This code has expired or had too many tries. Ask for a new code.");
     if (!(await delivery.checkOtp(c, input.code)))
-      fail(400, "That code is incorrect. Please check the SMS and try again.");
+      fail(400, "That code is not right. Check the SMS and try again.");
     const consumed = await challenges.updateOne(
       { _id: c._id, used: false },
       { $set: { used: true } },
     );
     if (!consumed.modifiedCount) fail(400, "This code has already been used.");
-    let user = await customers.findOne({ phone: c.phone, phoneVerified: true });
-    if (c.purpose === "link") {
-      if (user && !user._id.equals(req.user._id))
-        fail(409, "This mobile number belongs to another account.");
-      await customers.updateOne(
-        { _id: req.user._id },
-        { $set: { phone: c.phone, phoneVerified: true } },
-      );
-      user = await customers.findOne({ _id: req.user._id });
-    } else if (!user) {
+
+    let user = await customers.findOne({ phone: c.phone });
+    let notice = "";
+    if (!user) {
+      // A new number gets an account straight away; the name can be changed in the profile.
       user = {
         _id: new ObjectId(),
         name: c.name || "Customer",
@@ -442,17 +539,29 @@ export function createApp(db, config, injectedDelivery) {
         await customers.insertOne(user);
       } catch (err) {
         if (err.code !== 11000) throw err;
-        user = await customers.findOne({ phone: c.phone, phoneVerified: true });
+        user = await customers.findOne({ phone: c.phone });
       }
+    } else if (!user.phoneVerified) {
+      // First proof that this person owns the number. Whoever set the account's password never proved it,
+      // so the password is cleared and every other session ends: the phone's owner is now in control.
+      await customers.updateOne(
+        { _id: user._id },
+        { $set: { phoneVerified: true }, $unset: { passwordHash: "" } },
+      );
+      await sessions.deleteMany({ customerId: user._id });
+      notice = user.passwordHash
+        ? "Your mobile number is verified. For your security, set a new password in Account › Security if you want to sign in with one."
+        : "";
+      user = await customers.findOne({ _id: user._id });
     }
     await issueSession(user, res);
-    res.json({ user: publicCustomer(user) });
+    res.json({ user: publicCustomer(user), notice });
   });
   app.post(
     "/api/auth/forgot-password",
     limit("reset-send", 5),
     async (req, res) => {
-      if (!delivery.emailAvailable) fail(503, 'Email recovery is currently unavailable. Sign in with SMS or contact the mill.');
+      if (!delivery.emailAvailable) fail(503, 'Password reset by email is not available yet. Message the mill on WhatsApp and we will reset it for you.');
       const input = z.object({ email }).parse(req.body);
       const user = await customers.findOne({ email: input.email });
       if (user) await sendToken(user, "reset");
@@ -529,17 +638,27 @@ export function createApp(db, config, injectedDelivery) {
       .object({
         name: z.string().trim().min(2).max(80),
         email: email.optional(),
+        phone: phone.optional(),
       })
       .parse(req.body);
     const changedEmail = input.email && input.email !== req.user.email;
     if (changedEmail && req.user.emailVerified)
       fail(400, "Contact the mill to change a verified email address.");
+    if (
+      input.phone &&
+      input.phone !== req.user.phone &&
+      (await customers.findOne({ phone: input.phone }))
+    )
+      fail(409, "This mobile number belongs to another account.");
     await customers.updateOne(
       { _id: req.user._id },
       {
         $set: {
           name: input.name,
           ...(input.email ? { email: input.email } : {}),
+          ...(input.phone ? { phone: input.phone } : {}),
+          // A new number has not been proved by an SMS code yet.
+          ...(input.phone && input.phone !== req.user.phone ? { phoneVerified: false } : {}),
           ...(changedEmail ? { emailVerified: false } : {}),
         },
       },
@@ -559,19 +678,10 @@ export function createApp(db, config, injectedDelivery) {
         .object({ currentPassword: z.string().max(128).optional(), password })
         .parse(req.body);
       if (
-        req.user.passwordHash
-          ? !(await checkPassword(
-              input.currentPassword || "",
-              req.user.passwordHash,
-            ))
-          : Date.now() - req.session.createdAt.getTime() > 10 * 60_000
+        req.user.passwordHash &&
+        !(await checkPassword(input.currentPassword || "", req.user.passwordHash))
       )
-        fail(
-          400,
-          req.user.passwordHash
-            ? "Current password is incorrect."
-            : "Sign in again with SMS to set a password.",
-        );
+        fail(400, "Current password is incorrect.");
       await customers.updateOne(
         { _id: req.user._id },
         { $set: { passwordHash: await hashPassword(input.password) } },
@@ -606,6 +716,7 @@ export function createApp(db, config, injectedDelivery) {
       user: publicCustomer(await customers.findOne({ _id: req.user._id })),
     });
   });
+  // Ordering needs a customer account: the order is saved to it and followed in My orders.
   app.post("/api/orders", auth, limit("place-order", 30), async (req, res) => {
     const input = z
       .object({
@@ -637,17 +748,13 @@ export function createApp(db, config, injectedDelivery) {
     const priced = await priceOrder(
       input.items,
       input.expectedTotal,
+      await store.get(),
       config.dataDir,
     );
     if (input.method === "cod" && !priced.rules.cashOnDelivery)
       fail(400, "Cash on delivery is unavailable.");
-    if (input.method === "upi" && !priced.rules.upiEnabled)
-      fail(400, "Direct UPI is unavailable.");
-    if (
-      input.method === "card" &&
-      !(config.razorpayKey && config.razorpaySecret)
-    )
-      fail(400, "Online gateway payments are not connected yet.");
+    if (input.method === "upi" && !priced.rules.upiId)
+      fail(400, "UPI payment is unavailable.");
     const now = new Date();
     const order = {
       _id: new ObjectId(),
@@ -873,7 +980,7 @@ export function createApp(db, config, injectedDelivery) {
     );
     res.json({ order: publicOrder(await orders.findOne({ _id: o._id })) });
   });
-  app.get("/api/admin/orders", auth, admin, async (req, res) => {
+  app.get("/api/admin/orders", admin, async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const status =
       typeof req.query.status === "string" &&
@@ -914,7 +1021,7 @@ export function createApp(db, config, injectedDelivery) {
     ]);
     res.json({ orders: list.map(publicOrder), total: count, stats, page });
   });
-  app.patch("/api/admin/orders/:id", auth, admin, async (req, res) => {
+  app.patch("/api/admin/orders/:id", admin, async (req, res) => {
     const input = z
       .object({
         version: z.number().int(),
@@ -994,7 +1101,7 @@ export function createApp(db, config, injectedDelivery) {
                 : "Order updated by the mill."),
           },
           audit: {
-            actorId: req.user._id,
+            actor: "admin",
             at: now,
             action: input.verifyPayment ? "payment_verified" : "order_updated",
           },
@@ -1006,6 +1113,156 @@ export function createApp(db, config, injectedDelivery) {
       fail(409, "This order changed on another device. Refresh and try again.");
     res.json({ order: publicOrder(updated) });
   });
+  /* ------------------------------------------------------------ Admin sign-in */
+  app.post("/api/admin/login", limit("admin-login", 10), async (req, res) => {
+    const input = z
+      .object({ username: z.string().max(100), password: z.string().max(200) })
+      .parse(req.body);
+    // Compare digests so both checks take the same time whatever was typed.
+    const ok =
+      !!config.adminUsername &&
+      !!config.adminPassword &&
+      equal(
+        digest(input.username.trim().toLowerCase()),
+        digest(config.adminUsername.toLowerCase()),
+      ) &&
+      equal(digest(input.password), digest(config.adminPassword));
+    if (!ok) fail(401, "Username or password is incorrect.");
+    const raw = secret();
+    await adminSessions.insertOne({
+      tokenHash: digest(raw),
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 12 * 3600_000),
+    });
+    res
+      .cookie("lg_admin", raw, {
+        ...cookieOptions,
+        sameSite: "strict",
+        maxAge: 12 * 3600_000,
+      })
+      .json({ ok: true, username: config.adminUsername });
+  });
+  app.post("/api/admin/logout", async (req, res) => {
+    if (req.cookies.lg_admin)
+      await adminSessions.deleteOne({ tokenHash: digest(req.cookies.lg_admin) });
+    res
+      .clearCookie("lg_admin", { ...cookieOptions, sameSite: "strict" })
+      .json({ ok: true });
+  });
+  app.get("/api/admin/me", (req, res) =>
+    res.json({
+      admin: !!req.admin,
+      username: req.admin ? config.adminUsername : "",
+      configured: !!(config.adminUsername && config.adminPassword),
+      // For the Settings page: can this server send SMS codes at all?
+      sms: !delivery.smsAvailable ? "none" : delivery.localSms ? "test" : "live",
+    }),
+  );
+
+  /* ------------------------------------------------------------ Products, prices and settings */
+  app.get("/api/storefront", async (req, res) =>
+    res.json(publicStore(await store.get())),
+  );
+  app.put("/api/admin/storefront", admin, async (req, res) => {
+    const { version, ...data } = storefrontInput.parse(req.body);
+    const saved = await store.save(version, data);
+    if (!saved)
+      fail(
+        409,
+        "Products were changed on another device since you opened this page. Reload to see the latest, then make your change again.",
+      );
+    res.json(publicStore(saved));
+  });
+  app.post("/api/admin/images", admin, async (req, res) => {
+    if (!Buffer.isBuffer(req.body) || req.body.length < 100)
+      fail(400, "Choose a JPG, PNG or WebP photo.");
+    const _id = new ObjectId();
+    await images.insertOne({
+      _id,
+      type: req.get("content-type"),
+      data: req.body,
+      size: req.body.length,
+      createdAt: new Date(),
+    });
+    res.status(201).json({ path: `api/images/${_id}` });
+  });
+  app.get("/api/images/:id", async (req, res) => {
+    const img = await images.findOne({ _id: id(req.params.id) });
+    if (!img) fail(404, "Photo not found.");
+    // Every upload gets a new address, so the picture can be cached for a year.
+    res
+      .set("Cache-Control", "public, max-age=31536000, immutable")
+      .type(img.type)
+      .send(Buffer.from(img.data.buffer ?? img.data));
+  });
+
+  /* ------------------------------------------------------------ Customers (help with sign-in) */
+  app.get("/api/admin/customers", admin, async (req, res) => {
+    const q =
+      typeof req.query.search === "string"
+        ? req.query.search.trim().slice(0, 80)
+        : "";
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const digits = last10(q);
+    const query = q
+      ? {
+          $or: [
+            { name: { $regex: safe, $options: "i" } },
+            { email: { $regex: safe, $options: "i" } },
+            ...(digits.length >= 4 ? [{ phone: { $regex: digits } }] : []),
+          ],
+        }
+      : {};
+    const list = await customers
+      .find(query)
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .toArray();
+    const counts = await orders
+      .aggregate([
+        { $match: { customerId: { $in: list.map((c) => c._id) } } },
+        {
+          $group: {
+            _id: "$customerId",
+            count: { $sum: 1 },
+            value: { $sum: "$totals.total" },
+          },
+        },
+      ])
+      .toArray();
+    res.json({
+      customers: list.map((c) => {
+        const o = counts.find((x) => x._id.equals(c._id));
+        return {
+          id: c._id.toString(),
+          name: c.name,
+          phone: c.phone || "",
+          email: c.email || "",
+          createdAt: c.createdAt,
+          orders: o?.count || 0,
+          spent: o?.value || 0,
+        };
+      }),
+    });
+  });
+  // "I forgot my password": the mill gives the customer a temporary one on WhatsApp or a call.
+  app.post(
+    "/api/admin/customers/:id/reset-password",
+    admin,
+    async (req, res) => {
+      const customerId = id(req.params.id);
+      const temporary =
+        `LG-${secret().slice(0, 4)}-${secret().slice(0, 4)}`.toUpperCase();
+      const result = await customers.updateOne(
+        { _id: customerId },
+        { $set: { passwordHash: await hashPassword(temporary) } },
+      );
+      if (!result.matchedCount) fail(404, "Customer not found.");
+      await sessions.deleteMany({ customerId });
+      res.json({ temporaryPassword: temporary });
+    },
+  );
+
   app.use("/api", (req, res) =>
     res.status(404).json({ error: "Endpoint not found." }),
   );

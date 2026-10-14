@@ -3,9 +3,9 @@ import { ChevronDown, ImagePlus, Lock, Plus, Trash2, AlertTriangle, Upload } fro
 import { resolveImage } from '../data/catalog';
 import { Button } from '../components/ui/Button';
 import { ChoiceChips, TextField, TextAreaField, inputClass } from '../components/ui/Field';
-import { EditPack, EditProduct, PACK_CHOICES, packWeight, slugFromName, tidyPackSize } from './model';
+import { EditPack, EditProduct, NewImage, PACK_CHOICES, packWeight, slugFromName, tidyPackSize } from './model';
 import { preparePhoto } from './image';
-import { AdminError } from './github';
+import { AdminError } from './api';
 import { toast } from '../components/ui/Toast';
 
 const OTHER = '__other';
@@ -59,7 +59,7 @@ const MoneyInput: React.FC<{ value: string; onChange: (v: string) => void; label
 export const PhotoPicker: React.FC<{
   slug: string;
   current?: string;
-  onPicked: (img: { sitePath: string; base64: string; previewUrl: string }) => void;
+  onPicked: (img: NewImage) => void;
   fit: 'cover' | 'contain';
 }> = ({ slug, current, onPicked, fit }) => {
   const input = useRef<HTMLInputElement>(null);
@@ -71,7 +71,7 @@ export const PhotoPicker: React.FC<{
     if (!file) return;
     setBusy(true);
     try {
-      onPicked(await preparePhoto(file, slug || 'product'));
+      onPicked(await preparePhoto(file));
     } catch (e) {
       toast({ message: e instanceof AdminError ? e.message : 'That photo could not be used.', tone: 'error' });
     } finally {
@@ -188,7 +188,7 @@ export const ProductEditor: React.FC<{
     setCustomSize('');
     setNewPrice('');
     setNewMrp('');
-    toast({ message: `${size} added to ${p.shortName || p.name}. Press Publish to put it on the website.` });
+    toast({ message: `${size} added to ${p.shortName || p.name}. Press Save changes to put it on the website.` });
   };
 
   return (
@@ -347,14 +347,14 @@ export const ProductEditor: React.FC<{
   );
 };
 
-/** The "Add a product" form. Creates the product in the list; Publish puts it on the website. */
+/** The "Add a product" form. Creates the product in the list; Save changes puts it on the website. */
 export const AddProductForm: React.FC<{ existingSlugs: string[]; onAdd: (p: EditProduct) => void }> = ({ existingSlugs, onAdd }) => {
   const [name, setName] = useState('');
   const [shortName, setShortName] = useState('');
   const [subTitle, setSubTitle] = useState('');
   const [description, setDescription] = useState('');
   const [fit, setFit] = useState<'cover' | 'contain'>('contain');
-  const [photo, setPhoto] = useState<{ sitePath: string; base64: string; previewUrl: string }>();
+  const [photo, setPhoto] = useState<NewImage>();
   const [size, setSize] = useState('26kg Bag');
   const [custom, setCustom] = useState('');
   const [price, setPrice] = useState('');
@@ -394,7 +394,7 @@ export const AddProductForm: React.FC<{ existingSlugs: string[]; onAdd: (p: Edit
   return (
     <form onSubmit={submit} noValidate className="rounded-3xl bg-white p-5 ring-1 ring-line shadow-soft sm:p-8">
       <h2 className="font-display text-3xl text-forest-800">Add a new product</h2>
-      <p className="mt-1 text-muted">It appears in your list below. Press Publish when you are ready to put it on the website.</p>
+      <p className="mt-1 text-muted">It appears in your list below. Press Save changes when you are ready to put it on the website.</p>
 
       {errors.length > 0 && (
         <ul className="mt-5 space-y-1 rounded-2xl bg-danger-50 px-4 py-3 text-sm font-medium text-danger" role="alert">

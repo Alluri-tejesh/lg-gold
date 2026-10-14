@@ -45,8 +45,11 @@ export interface SavedOrder {
   updatedAt: string;
 }
 export interface AuthConfig {
+  /** Sign-in by SMS code is possible (Twilio set up, or test mode on a developer computer). */
   sms: boolean;
+  /** Test mode: codes are printed in the server terminal instead of being sent. */
   localSms?: boolean;
+  /** Password-reset emails can be sent (SMTP set up). Without it, the mill resets passwords via WhatsApp. */
   email: boolean;
   gateway: boolean;
   razorpayKey: string;
@@ -91,7 +94,11 @@ export async function api<T = { ok: boolean }>(
   const result = await response.json().catch(() => ({}));
   if (!response.ok)
     throw new ApiError(
-      result.error || "The request could not be completed.",
+      result.error ||
+        // No error message from our server means it never answered (stopped, restarting or unreachable).
+        (response.status >= 500
+          ? "The shop server is not responding right now. Please try again in a minute."
+          : "Something went wrong. Please try again."),
       response.status,
     );
   return result as T;

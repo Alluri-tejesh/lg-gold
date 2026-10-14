@@ -45,7 +45,9 @@ await writeFile(
   JSON.stringify({
     delivery: BRAND_CONFIG.delivery,
     cashOnDelivery: BRAND_CONFIG.payments.cashOnDelivery,
-    upiEnabled: !!BRAND_CONFIG.payments.upiId,
+    // First-run defaults for the database store; after that the admin page's Settings tab is in charge.
+    upiId: BRAND_CONFIG.payments.upiId,
+    upiPayeeName: BRAND_CONFIG.payments.upiPayeeName,
   }),
 );
 console.log("Synchronized server catalog and delivery rules.");

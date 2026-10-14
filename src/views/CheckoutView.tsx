@@ -47,7 +47,6 @@ import {
 } from "../checkout/payments";
 import { api, SavedOrder } from "../customer/api";
 import { useCustomer } from "../customer/CustomerContext";
-import { AccountShell } from "../customer/AccountUI";
 import { DirectUpiPayment } from "../customer/DirectUpiPayment";
 import { setPageMeta } from "../router";
 import { CartItem } from "../types";
@@ -100,7 +99,7 @@ interface Placed {
 }
 
 export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
-  const { user, config, loading: accountLoading } = useCustomer();
+  const { user, config, loading: accountLoading, error: accountError, refresh } = useCustomer();
   const {
     cart,
     totalItems,
@@ -359,12 +358,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
     );
   }
 
-  if (accountLoading || !user)
+
+  if (accountLoading)
     return (
-      <AccountShell route="checkout" title="Sign in to checkout">
-        {null}
-      </AccountShell>
+      <section className="bg-cream py-24">
+        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-forest-200 border-t-forest-700" aria-label="Loading" />
+      </section>
     );
+  if (!user) return <SignInStep total={grandTotal} items={totalItems} error={accountError} onRetry={refresh} />;
 
   const date = formatPriceDate(priceInfo.updated);
   const ctaLabel =
@@ -509,7 +510,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                 className={`h-4 w-4 transition-transform ${summaryOpen ? "rotate-180" : ""}`}
               />
             </span>
-            <span className="font-display text-2xl text-forest-800 tabular">
+            <span className="text-2xl font-bold tracking-tight text-forest-800 tabular">
               {inr(grandTotal)}
             </span>
           </button>
@@ -536,6 +537,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                   </span>
                 </span>
               </legend>
+              <p className="mt-4 text-sm text-muted">
+                Ordering as <strong className="text-forest-800">{user.name}</strong>. The order is saved in My orders.
+              </p>
               {user.addresses.length > 0 && (
                 <div className="mt-6">
                   <p className="mb-3 text-sm font-semibold text-forest-800">
@@ -713,15 +717,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                   <ul className="mt-1 list-disc space-y-1 pl-5">
                     {!upiEnabled() && (
                       <li>
-                        UPI (GPay, PhonePe, Paytm) appears once the mill’s UPI
-                        ID is set in <code>payments.upiId</code> in
-                        src/config/brandConfig.ts.
+                        UPI (GPay, PhonePe, Paytm) appears once a UPI ID is set
+                        in Admin › Settings.
                       </li>
                     )}
                     {!config.gateway && (
                       <li>
-                        Secure gateway payments will appear once the server
-                        payment account is connected.
+                        Card, net banking and wallets appear once a Razorpay
+                        account is connected (keys in server/.env).
                       </li>
                     )}
                   </ul>
@@ -777,10 +780,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                             Your order comes first.
                           </p>
                           <p className="mt-2 text-sm text-muted">
-                            Place your order below to get its UPI QR code or
-                            payment-app link. Your order is saved before you
-                            pay, and the mill updates payment verification in My
-                            orders.
+                            Place your order below. You then get a QR code (on a
+                            computer) or a one-tap link to GPay, PhonePe or Paytm
+                            with the amount filled in. The mill marks it paid once
+                            the money arrives.
                           </p>
                         </div>
                       )}
@@ -845,7 +848,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                 param={pendingOrder.id}
                 className="inline-flex min-h-11 items-center font-semibold text-forest-800 underline"
               >
-                Your order is saved. Check payment status in My orders.
+                Your order is saved. Check its payment status in My orders.
               </AppLink>
             )}
             {/* 3. Save order */}
@@ -855,13 +858,12 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                   3
                 </span>
                 <span className="font-display text-2xl text-white">
-                  Make it yours
+                  Place your order
                 </span>
               </div>
               <p className="mt-3 text-cream/80">
-                Your order is saved to your account. Follow its progress in My
-                orders, and message the mill on WhatsApp whenever you need a
-                hand.
+                The mill gets your order instantly and confirms the dispatch
+                time. Follow every update in My orders.
               </p>
               <Button
                 type="submit"
@@ -993,8 +995,8 @@ const OrderPlaced: React.FC<{
           Your order has a place at the table.
         </h1>
         <p className="mx-auto mt-3 max-w-md text-lg text-ink-soft">
-          Your order is saved in your account. The mill will confirm
-          availability and dispatch. Follow every update in My orders.
+          The mill has your order and will confirm the dispatch time. Follow
+          every update in My orders.
         </p>
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <Button
@@ -1010,7 +1012,7 @@ const OrderPlaced: React.FC<{
             icon={<MessageCircle className="h-5 w-5" />}
             onClick={() => openWhatsApp(placed.url)}
           >
-            Share on WhatsApp
+            Send to the mill on WhatsApp
           </Button>
           <Button
             variant="outline"
@@ -1072,11 +1074,11 @@ const OrderPlaced: React.FC<{
             {[
               {
                 t: "Your order is saved",
-                s: "Available in My orders on any signed-in device.",
+                s: "The mill sees it straight away. WhatsApp is optional, for a quicker reply.",
               },
               {
                 t: "The mill confirms",
-                s: "Availability, payment and dispatch updates appear in your order.",
+                s: "Payment and dispatch updates appear in My orders.",
               },
               {
                 t: "Rice at your door",
@@ -1096,6 +1098,66 @@ const OrderPlaced: React.FC<{
               </li>
             ))}
           </ol>
+        </div>
+      </div>
+    </Container>
+  </section>
+);
+
+/**
+ * Ordering needs an account (orders are saved to it and followed in My orders).
+ * Signed-out visitors see this step instead of the form; after signing in or creating an account
+ * they come straight back here with the cart untouched.
+ */
+const SignInStep: React.FC<{ total: number; items: number; error: string; onRetry: () => void }> = ({ total, items, error, onRetry }) => (
+  <section className="bg-cream bg-grain py-10 sm:py-16">
+    <Container narrow>
+      <AppLink to="products" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-forest-800 hover:underline">
+        <ArrowLeft className="h-4 w-4" /> Continue shopping
+      </AppLink>
+      <div className="mt-3 overflow-hidden rounded-3xl bg-white ring-1 ring-line shadow-lift">
+        <div className="flex items-center justify-between gap-4 bg-forest-800 px-6 py-5 text-cream bg-grain-light sm:px-8">
+          <span className="flex items-center gap-3">
+            <ShoppingBag className="h-5 w-5 text-gold-300" />
+            {items} {items === 1 ? "pack" : "packs"} in your cart
+          </span>
+          <span className="text-2xl font-bold tabular text-white">{inr(total)}</span>
+        </div>
+        <div className="p-6 sm:p-10">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-forest-800 font-display text-lg text-gold-300">1</span>
+          <h1 className="mt-4 font-display text-3xl text-forest-800 sm:text-4xl">Sign in to place your order</h1>
+          <p className="mt-3 text-ink-soft">
+            Your order is saved to your account, so you can follow its delivery and reorder your usual rice in two taps.
+            Your cart stays exactly as it is.
+          </p>
+          {error && (
+            <div className="mt-5 rounded-2xl bg-danger-50 p-4 text-sm text-danger" role="alert">
+              {error}{" "}
+              <button type="button" onClick={onRetry} className="font-semibold underline cursor-pointer">
+                Try again
+              </button>
+            </div>
+          )}
+          <div className="mt-7 grid gap-3 sm:grid-cols-2">
+            <AppLink to="register" param="checkout" className={buttonClass("primary", "lg", true)}>
+              <User className="h-5 w-5" /> Create an account
+            </AppLink>
+            <AppLink to="login" param="checkout" className={buttonClass("outline", "lg", true)}>
+              I have an account
+            </AppLink>
+          </div>
+          <p className="mt-4 text-center text-sm text-muted">New here? It takes under a minute: your name, mobile number and a password.</p>
+          <ul className="mt-8 grid gap-3 border-t border-line pt-6 text-sm text-ink-soft sm:grid-cols-3">
+            <li className="flex items-center gap-2">
+              <Truck className="h-4 w-4 text-gold-600" aria-hidden="true" /> Follow every delivery
+            </li>
+            <li className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-gold-600" aria-hidden="true" /> Address saved for next time
+            </li>
+            <li className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-gold-600" aria-hidden="true" /> Shared only with the mill
+            </li>
+          </ul>
         </div>
       </div>
     </Container>

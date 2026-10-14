@@ -2,11 +2,11 @@ import { PRODUCTS } from './products';
 import { BRAND_CONFIG } from '../config/brandConfig';
 
 /**
- * Daily prices live outside the code, so changing them never needs a developer:
- *   1. public/prices.json (edit the file, the site picks it up on the next visit after deploy), or
- *   2. a published Google Sheet (set BRAND_CONFIG.pricesCsvUrl), which updates the site instantly.
- * If neither can be loaded, the prices written in products.ts are used.
- * See docs/updating-prices.md.
+ * Prices, MRPs and stock are set on the admin page and stored in the database (see data/storefront.ts).
+ * When the shop server cannot be reached, these fallbacks are used instead:
+ *   1. a published Google Sheet (BRAND_CONFIG.pricesCsvUrl), then
+ *   2. public/prices.json, then
+ *   3. the prices written in products.ts.
  */
 
 export interface PriceEntry {

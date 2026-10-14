@@ -253,7 +253,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate, sectio
             </div>
             <div className="rounded-2xl bg-forest-800 p-6 text-cream bg-grain-light lg:col-span-5">
               <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-400">Estimated value</p>
-              <p className="mt-2 font-display text-5xl text-white" aria-live="polite">
+              <p className="mt-2 text-5xl font-bold tracking-tight text-white" aria-live="polite">
                 <RollingNumber value={estimate} />
               </p>
               <dl className="mt-4 space-y-1.5 text-[15px]">

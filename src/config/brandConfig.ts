@@ -30,14 +30,6 @@ export const BRAND_CONFIG = {
     licenseNumber: '',
   },
 
-  /**
-   * The admin page (#admin) saves into this GitHub repository, written as "owner/name".
-   * Filling it in saves typing it on the sign-in screen; it is not secret.
-   */
-  admin: {
-    repo: '',
-  },
-
   /** Doorstep delivery is free once the rice in the order reaches `freeFromOrderValue`. Below that, `charge` is added. */
   delivery: {
     freeFromOrderValue: 2500,
@@ -66,7 +58,7 @@ export const BRAND_CONFIG = {
 
   /**
    * Optional: a Google Sheet published as CSV, so prices can change without a deploy.
-   * Leave empty to use public/prices.json. See docs/updating-prices.md.
+   * Only used when the shop server cannot be reached; normally prices come from the admin page.
    */
   pricesCsvUrl: '',
 };
@@ -84,12 +76,14 @@ const onPhone = (): boolean =>
   (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)));
 
 /**
- * A link that opens a WhatsApp chat with the mill, with `message` already typed.
+ * A link that opens a WhatsApp chat with the mill (or with `to`, e.g. a customer), with `message` already typed.
  * Phones: wa.me, which opens the app straight away.
  * Computers: WhatsApp Web, which skips WhatsApp's "Open WhatsApp?" landing page.
  */
-export const createWhatsAppUrl = (message: string): string => {
-  const phone = BRAND_CONFIG.contact.primaryPhone.replace(/[^0-9]/g, '');
+export const createWhatsAppUrl = (message: string, to: string = BRAND_CONFIG.contact.primaryPhone): string => {
+  // Indian numbers: 10 digits get the 91 country code in front.
+  const digits = to.replace(/[^0-9]/g, '');
+  const phone = digits.length === 10 ? `91${digits}` : digits;
   const text = encodeURIComponent(message);
   return onPhone() ? `https://wa.me/${phone}?text=${text}` : `https://web.whatsapp.com/send?phone=${phone}&text=${text}`;
 };

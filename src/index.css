@@ -37,7 +37,6 @@
 .grain-one { top: 80px; left: 40px; transform: rotate(30deg); animation: rice-drift 8s ease-in-out infinite; }
 .grain-two { top: 240px; right: 45px; transform: rotate(-35deg); animation: rice-drift 10s 1s ease-in-out infinite; }
 .grain-three { top: 30px; left: 170px; transform: rotate(65deg); animation: rice-drift 12s 2s ease-in-out infinite; }
-.otp-input { text-align: center; letter-spacing: .55em; font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; padding-left: 1.5em; min-height: 76px; background: var(--color-cream); }
 @keyframes account-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes journey-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes grain-settle { from { transform: scale(.7); } to { transform: scale(1); } }

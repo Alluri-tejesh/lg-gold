@@ -182,7 +182,7 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
               </div>
               <div className="flex items-baseline justify-between border-t border-line pt-3">
                 <dt className="font-semibold text-forest-800">Total</dt>
-                <dd className="font-display text-2xl text-forest-800">
+                <dd className="text-2xl font-bold tracking-tight text-forest-800">
                   <RollingNumber value={grandTotal} />
                 </dd>
               </div>

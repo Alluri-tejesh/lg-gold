@@ -1,18 +1,18 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-// Business rules are exported from the same frontend configuration during build/dev.
+// HMT and JSR come from public/storefront.json (exported from products.ts); everything the admin page edits
+// (extra products and packs, prices, stock, delivery rules) comes from the database store.
 export async function priceOrder(
   items,
   expectedTotal,
+  store,
   dataDir = resolve("public"),
 ) {
-  const [base, catalog, prices, rules] = await Promise.all(
-    ["storefront.json", "catalog.json", "prices.json", "store-rules.json"].map(
-      async (file) =>
-        JSON.parse(await readFile(resolve(dataDir, file), "utf8")),
-    ),
+  const base = JSON.parse(
+    await readFile(resolve(dataDir, "storefront.json"), "utf8"),
   );
+  const { catalog, prices, settings: rules } = store;
   const products = new Map(
     base.products.map((p) => [p.slug, structuredClone(p)]),
   );

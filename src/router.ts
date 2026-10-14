@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 /**
- * Hash routing (#products, #product-detail/hmt-rice) so the site runs on GitHub Pages without a server.
+ * Hash routing (#products, #product-detail/hmt-rice): one HTML page serves every address, on any host.
  * New pages start at the top; Back and Forward return to where the visitor was on that page.
  */
 
@@ -161,7 +161,7 @@ const META: Record<string, { title: string; description: string }> = {
   profile: { title: `My profile | ${SITE}`, description: '' },
   security: { title: `Account security | ${SITE}`, description: '' },
   support: { title: `Customer help | ${SITE}`, description: '' },
-  'admin-orders': { title: `Order administration | ${SITE}`, description: '' },
+  'admin-orders': { title: `Admin | ${SITE}`, description: '' },
   'not-found': { title: `Page not found | ${SITE}`, description: '' },
 };
 

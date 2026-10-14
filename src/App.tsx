@@ -49,7 +49,6 @@ const AdminView = named(() => import('./admin/AdminView'), 'AdminView');
 const SearchModal = named(() => import('./components/common/SearchModal'), 'SearchModal');
 const AuthView = named(() => import('./customer/AuthView'), 'AuthView');
 const CustomerView = named(() => import('./customer/CustomerView'), 'CustomerView');
-const AdminOrdersView = named(() => import('./customer/AdminOrdersView'), 'AdminOrdersView');
 
 /** While a page downloads (usually a few milliseconds), keep the layout steady instead of flashing white. */
 const PageFallback = () => (
@@ -95,11 +94,11 @@ export function AppContent() {
     idle(() => Object.values(pages).forEach((load) => load().catch(() => {})));
   }, []);
 
-  if (loc.route === 'admin') {
+  if (loc.route === 'admin' || loc.route === 'admin-orders') {
     return (
       <ErrorBoundary resetKey="admin">
         <Suspense fallback={<PageFallback />}>
-          <AdminView />
+          <AdminView tab={loc.route === 'admin-orders' ? 'orders' : loc.param} />
           <Toaster />
         </Suspense>
       </ErrorBoundary>
@@ -144,7 +143,6 @@ export function AppContent() {
           {loc.route === 'checkout' && <CheckoutView onNavigate={go} />}
           {['login', 'register', 'forgot-password', 'reset-password', 'verify-email'].includes(loc.route) && <AuthView key={`${loc.route}/${loc.param || ''}`} route={loc.route} param={loc.param} />}
           {['account', 'orders', 'order-detail', 'addresses', 'profile', 'security', 'support'].includes(loc.route) && <CustomerView key={loc.route} route={loc.route} param={loc.param} />}
-          {loc.route === 'admin-orders' && <AdminOrdersView />}
           {loc.route === 'not-found' && <NotFoundView />}
         </Suspense>
         </ErrorBoundary>

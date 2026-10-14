@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Checks public/catalog.json and public/prices.json before every deploy, so a broken edit
- * (from the admin page, a GitHub form or a hand edit) stops the deploy instead of breaking the live shop.
+ * Checks public/catalog.json and public/prices.json (the starting data for a new database, and the shop's
+ * fallback when the server cannot be reached), so a broken hand edit fails the build instead of the live shop.
  * Exits with an error listing every problem found.
  */
 import { existsSync, readFileSync } from 'node:fs';

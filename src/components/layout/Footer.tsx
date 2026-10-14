@@ -13,6 +13,7 @@ const COLUMNS: { title: string; links: { label: string; to: string; param?: stri
       { label: 'JSR Rice', to: 'product-detail', param: 'jsr-rice' },
       { label: 'All products & prices', to: 'products' },
       { label: 'Recipes', to: 'recipes' },
+      { label: 'My orders', to: 'orders' },
     ],
   },
   {

@@ -106,7 +106,7 @@ export const HomeView: React.FC<HomeViewProps> = () => {
                     pack ? (
                       <div key={label} className="flex items-baseline justify-between">
                         <dt className="font-semibold text-forest-800">{label} · 26kg</dt>
-                        <dd className="font-display text-xl text-forest-800 tabular">₹{pack.retailPrice.toLocaleString('en-IN')}</dd>
+                        <dd className="text-xl font-bold tracking-tight text-forest-800 tabular">₹{pack.retailPrice.toLocaleString('en-IN')}</dd>
                       </div>
                     ) : null,
                   )}
