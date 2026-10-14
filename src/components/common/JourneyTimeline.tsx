@@ -13,43 +13,33 @@ interface Step {
   icon: string;
 }
 
-/** Six steps on a line. When it scrolls into view the line draws left to right and each step pops in as it is reached. */
+/** Steps on a line. When it scrolls into view the line draws itself and each step pops in as it is reached. */
 export const JourneyTimeline: React.FC<{ steps: Step[] }> = ({ steps }) => {
   const [ref, seen] = useInView<HTMLOListElement>(0.25);
-  const total = steps.length;
-  const stagger = 1600 / total; // matches the 1.6s line draw
+  const stagger = 1600 / steps.length; // matches the 1.6s line draw
 
   return (
-    <ol ref={ref} className="relative grid grid-cols-1 lg:grid-cols-6 gap-x-6 gap-y-10">
+    <ol ref={ref} className={`relative grid grid-cols-1 gap-x-6 gap-y-10 ${steps.length <= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-6'}`}>
       {/* desktop: horizontal track, vertical on small screens */}
-      <span aria-hidden="true" className="hidden lg:block absolute left-7 right-7 top-7 h-0.5 bg-[#C9A227]/25" />
-      <span
-        aria-hidden="true"
-        className={`hidden lg:block absolute left-7 right-7 top-7 h-0.5 bg-[#C9A227] line-grow ${seen ? 'is-in' : ''}`}
-      />
-      <span aria-hidden="true" className="lg:hidden absolute left-7 top-7 bottom-7 w-0.5 bg-[#C9A227]/25" />
-      <span
-        aria-hidden="true"
-        className={`lg:hidden absolute left-7 top-7 bottom-7 w-0.5 bg-[#C9A227] line-grow-y ${seen ? 'is-in' : ''}`}
-      />
+      <span aria-hidden="true" className="absolute left-7 right-7 top-7 hidden h-0.5 bg-gold-300/50 lg:block" />
+      <span aria-hidden="true" className={`absolute left-7 right-7 top-7 hidden h-0.5 bg-gold-500 line-grow lg:block ${seen ? 'is-in' : ''}`} />
+      <span aria-hidden="true" className="absolute bottom-7 left-7 top-7 w-0.5 bg-gold-300/50 lg:hidden" />
+      <span aria-hidden="true" className={`absolute bottom-7 left-7 top-7 w-0.5 bg-gold-500 line-grow-y lg:hidden ${seen ? 'is-in' : ''}`} />
 
       {steps.map((s, i) => {
         const Icon = ICONS[s.icon] ?? Wheat;
         return (
-          <li key={s.step} className="relative flex lg:block gap-5">
+          <li key={s.step} className="relative flex gap-5 lg:block">
             <span
-              className={`node-pop ${seen ? 'is-in' : ''} relative z-10 shrink-0 w-14 h-14 rounded-full bg-[#174A32] text-[#C9A227] border-4 border-[#F8F5EA] flex items-center justify-center`}
+              className={`node-pop ${seen ? 'is-in' : ''} relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-full bg-forest-800 text-gold-400 ring-4 ring-paper shadow-soft`}
               style={{ ['--d' as string]: `${i * stagger}ms` }}
             >
-              <Icon className="w-6 h-6" />
+              <Icon className="h-6 w-6" />
             </span>
-            <div
-              className={`reveal ${seen ? 'is-in' : ''} lg:mt-5`}
-              style={{ ['--d' as string]: `${i * stagger + 150}ms` }}
-            >
-              <p className="text-sm font-semibold text-[#5F806D]">Step {s.step}</p>
-              <h3 className="mt-1 font-serif-brand font-bold text-lg text-[#174A32]">{s.title}</h3>
-              <p className="mt-1.5 text-sm text-[#202522]/80 leading-relaxed">{s.desc}</p>
+            <div className={`reveal ${seen ? 'is-in' : ''} lg:mt-5`} style={{ ['--d' as string]: `${i * stagger + 150}ms` }}>
+              <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-700">Step {s.step}</p>
+              <h3 className="mt-1 font-display text-xl text-forest-800">{s.title}</h3>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{s.desc}</p>
             </div>
           </li>
         );

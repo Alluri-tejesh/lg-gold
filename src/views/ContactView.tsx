@@ -1,289 +1,209 @@
 import React, { useState } from 'react';
-import {
-  MapPin,
-  Phone,
-  Mail,
-  MessageCircle,
-  Clock,
-  Send,
-  Building2,
-  ExternalLink,
-  ShieldCheck,
-  CheckCircle2,
-} from 'lucide-react';
-import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
-import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { MapPin, Phone, Mail, MessageCircle, Clock, Navigation, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { BRAND_CONFIG, createWhatsAppUrl, createEnquiryWhatsAppUrl, openWhatsApp, phoneTelHref } from '../config/brandConfig';
+import { OpenNowBadge } from '../components/common/OpenNow';
+import { Reveal } from '../components/common/motion';
+import { PageHero } from '../components/ui/PageHero';
+import { Container, Section } from '../components/ui/Section';
+import { Button } from '../components/ui/Button';
+import { SelectField, TextAreaField, TextField } from '../components/ui/Field';
 
 interface ContactViewProps {
   onNavigate: (route: string, param?: string) => void;
 }
 
 export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    inquiryType: 'Wholesale Orders',
-    message: '',
-  });
+  const { contact, location } = BRAND_CONFIG;
+  const [form, setForm] = useState({ name: '', email: '', phone: '', inquiryType: 'Wholesale Orders', message: '' });
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [k]: e.target.value });
+  /** The WhatsApp link opened by the form, kept so the visitor can open it again. Empty until the form is sent. */
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
+  // The browser checks the required fields before this runs.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.phone) {
-      alert('Please provide your name and phone number.');
-      return;
-    }
-    setIsSubmitted(true);
+    const url = createEnquiryWhatsAppUrl(
+      'I have a question for the mill.',
+      [
+        ['Name', form.name],
+        ['Phone / WhatsApp', form.phone],
+        ['Email', form.email],
+        ['Regarding', form.inquiryType],
+        ['Message', form.message],
+      ],
+      'Thank you.',
+    );
+    openWhatsApp(url);
+    setWhatsappUrl(url);
   };
 
-  const handleDirectWhatsApp = () => {
-    const msg = `Hi LG Gold Team, I am contacting you regarding ${form.inquiryType}. My name is ${form.name || 'a customer'}.`;
-    window.open(createWhatsAppUrl(msg), '_blank');
-  };
+  const ways = [
+    {
+      icon: Phone,
+      title: 'Call the mill',
+      value: contact.primaryPhone,
+      href: phoneTelHref(),
+      cta: 'Call now',
+    },
+    {
+      icon: MessageCircle,
+      title: 'WhatsApp',
+      value: 'Fastest reply',
+      href: createWhatsAppUrl('Hi LG Gold Team, I have a question.'),
+      cta: 'Start chat',
+      whatsapp: true,
+    },
+    // Shown only once a working email address is set in brandConfig.
+    ...(contact.emailRetail
+      ? [
+          {
+            icon: Mail,
+            title: 'Email',
+            value: contact.emailRetail,
+            href: `mailto:${contact.emailRetail}`,
+            cta: 'Write an email',
+          },
+        ]
+      : []),
+    {
+      icon: Navigation,
+      title: 'Visit',
+      value: `${location.city}, ${location.state}`,
+      href: location.googleMapsUrl,
+      cta: 'Get directions',
+    },
+  ];
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
-      
-      {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-8 sm:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
-          <Breadcrumbs items={[{ label: 'Contact Us' }]} onNavigate={onNavigate} variant="dark" />
-          
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-[#C9A227]">
-              Mill & Commercial Desk
-            </span>
-            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
-              Contact LG Gold
-            </h1>
-            <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
-              Reach out to Sri Lakshmi Ganapathi Trading Company for retail inquiries, wholesale dealership, bulk godown deliveries, or international export shipments.
-            </p>
-          </div>
-        </div>
-      </div>
+    <>
+      <PageHero
+        crumbs={[{ label: 'Contact' }]}
+        onNavigate={onNavigate}
+        eyebrow="Talk to the mill"
+        title="We're a call or a message away"
+        intro="Orders, prices, wholesale, export or a visit to the mill: reach the people who mill your rice."
+        actions={<OpenNowBadge dark />}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-10 space-y-12">
-        
-        {/* Contact Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Location Box */}
-          <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-3">
-            <div className="w-10 h-10 rounded-xs bg-[#174A32]/10 text-[#174A32] flex items-center justify-center">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Mill & Office Address</h3>
-            <p className="text-sm text-[#202522] leading-relaxed">
-              <strong>{BRAND_CONFIG.parentCompany}</strong><br />
-              {BRAND_CONFIG.location.address}, {BRAND_CONFIG.location.state}, {BRAND_CONFIG.location.country}<br />
-              Plus Code: <strong className="text-[#C9A227]">{BRAND_CONFIG.location.plusCode}</strong>
-            </p>
-            <a
-              href={BRAND_CONFIG.location.googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#174A32] hover:text-[#C9A227] transition-colors pt-1"
-            >
-              <span>Open in Google Maps</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          {/* Direct Phone & WhatsApp */}
-          <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-3">
-            <div className="w-10 h-10 rounded-xs bg-[#174A32]/10 text-[#174A32] flex items-center justify-center">
-              <Phone className="w-5 h-5" />
-            </div>
-            <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Phone & WhatsApp</h3>
-            <div className="space-y-1 text-xs text-[#202522]">
-              <p>Direct Calling: <strong>{BRAND_CONFIG.contact.primaryPhone}</strong></p>
-              <p>Email: <strong>{BRAND_CONFIG.contact.emailRetail}</strong></p>
-            </div>
-            <button
-              onClick={handleDirectWhatsApp}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#128C7E] hover:underline pt-1 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-[#25D366]" />
-              <span>Direct WhatsApp Desk</span>
-            </button>
-          </div>
-
-          {/* Operating Hours */}
-          <div className="p-6 rounded-sm bg-white border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean space-y-3">
-            <div className="w-10 h-10 rounded-xs bg-[#174A32]/10 text-[#174A32] flex items-center justify-center">
-              <Clock className="w-5 h-5" />
-            </div>
-            <h3 className="font-serif-brand font-bold text-lg text-[#174A32]">Operating Hours</h3>
-            <div className="space-y-1.5 text-xs text-[#202522]">
-              <div className="flex justify-between">
-                <span className="text-[#5F806D]">Mill Dispatch Desk:</span>
-                <span className="font-bold">Mon – Sat (8 AM – 8 PM)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#5F806D]">Wholesale Office:</span>
-                <span className="font-bold">Mon – Sat (9 AM – 7 PM)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#5F806D]">Sunday Operations:</span>
-                <span className="text-[#5F806D]">Online & WhatsApp only</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Contact Form & Map Simulation */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Contact Form (6 Cols) */}
-          <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-5">
-            <div>
-              <span className="text-xs font-bold text-[#C9A227]">Direct Message</span>
-              <h2 className="font-serif-brand font-medium text-2xl text-[#174A32]">
-                Send Us a Message
-              </h2>
-              <p className="text-xs text-[#5F806D] mt-0.5">
-                We typically respond within 2-4 business hours.
-              </p>
-            </div>
-
-            {isSubmitted ? (
-              <div className="p-8 text-center bg-[#F8F5EA] rounded-xs border border-[#C9A227]/30 space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-[#174A32] mx-auto" />
-                <h3 className="font-serif-brand font-bold text-xl text-[#174A32]">Thank you! Message Received</h3>
-                <p className="text-xs text-[#5F806D]">
-                  Our commercial team has received your query and will contact you promptly.
-                </p>
-                <button
-                  onClick={() => setIsSubmitted(false)}
-                  className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold rounded-xs cursor-pointer"
+      <Section tone="paper" tight>
+        <Container>
+          <div className={`grid gap-4 sm:grid-cols-2 ${ways.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
+            {ways.map((w, i) => (
+              <Reveal key={w.title} delay={i * 70} className="h-full">
+                <a
+                  href={w.href}
+                  {...(/^https?:/.test(w.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  className="group flex h-full flex-col rounded-3xl bg-white p-6 ring-1 ring-line transition-all duration-300 hover:-translate-y-1 hover:shadow-lift hover:ring-gold-500"
                 >
-                  Send Another Inquiry
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#174A32] mb-1">Your Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Anand Kumar"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                  />
-                </div>
+                  <span className={`grid h-12 w-12 place-items-center rounded-2xl ${w.whatsapp ? 'bg-whatsapp text-white' : 'bg-forest-800 text-gold-400'}`}>
+                    <w.icon className="h-6 w-6" />
+                  </span>
+                  <h2 className="mt-4 font-display text-xl text-forest-800">{w.title}</h2>
+                  <p className="mt-1 break-words text-[15px] text-muted">{w.value}</p>
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 font-semibold text-forest-800 group-hover:text-gold-700">
+                    {w.cta} <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#174A32] mb-1">Phone / WhatsApp *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="10-digit mobile number"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                    />
-                  </div>
+      <Section tone="cream">
+        <Container className="grid gap-8 lg:grid-cols-12">
+          {/* Message form */}
+          <div className="lg:col-span-6">
+            <div className="rounded-3xl bg-white p-6 ring-1 ring-line shadow-soft sm:p-8">
+              <h2 className="font-display text-3xl text-forest-800">Send a message</h2>
+              <p className="mt-1 text-muted">It opens in WhatsApp, and we reply there.</p>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#174A32] mb-1">Email Address</label>
-                    <input
-                      type="email"
-                      placeholder="name@domain.com"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none"
-                    />
+              {whatsappUrl ? (
+                <div className="mt-6 rounded-2xl bg-cream p-8 text-center ring-1 ring-line" role="status">
+                  <CheckCircle2 className="mx-auto h-12 w-12 text-whatsapp-ink" />
+                  <h3 className="mt-3 font-display text-2xl text-forest-800">Your message is ready on WhatsApp</h3>
+                  <p className="mt-2 text-muted">WhatsApp has opened with your message filled in. Press Send there and we will reply on WhatsApp.</p>
+                  <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+                    <Button variant="whatsapp" onClick={() => openWhatsApp(whatsappUrl)}>
+                      Open WhatsApp again
+                    </Button>
+                    <Button variant="outline" onClick={() => setWhatsappUrl('')}>
+                      Send another message
+                    </Button>
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#174A32] mb-1">Inquiry Purpose</label>
-                  <select
+              ) : (
+                <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                  <TextField label="Your name" required value={form.name} onChange={set('name')} autoComplete="name" />
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <TextField label="Phone / WhatsApp" required type="tel" inputMode="tel" placeholder="98765 43210" value={form.phone} onChange={set('phone')} autoComplete="tel" />
+                    <TextField label="Email" type="email" placeholder="name@example.com" value={form.email} onChange={set('email')} autoComplete="email" />
+                  </div>
+                  <SelectField
+                    label="This is about"
                     value={form.inquiryType}
-                    onChange={(e) => setForm({ ...form, inquiryType: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none bg-white"
-                  >
-                    <option value="Retail Packs / Home Delivery">Retail Consumer Packs (5kg / 10kg)</option>
-                    <option value="Wholesale Orders">Wholesale Rice (25kg / 50kg Bags)</option>
-                    <option value="Export Enquiry">Export Container Loads (FOB / CIF)</option>
-                    <option value="Catering & Institutional Supply">Catering & Restaurant Supply</option>
-                    <option value="Distributorship Proposal">Distributor / Stockist Proposal</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#174A32] mb-1">Message</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Tell us about your requirement..."
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xs border border-gray-300 text-sm focus:border-[#174A32] focus:ring-1 focus:ring-[#174A32] outline-none resize-none"
+                    onChange={set('inquiryType')}
+                    options={[
+                      { value: 'Retail Packs / Home Delivery', label: 'Home delivery (26kg bags)' },
+                      { value: 'Wholesale Orders', label: 'Wholesale (26kg bags in bulk)' },
+                      { value: 'Export Enquiry', label: 'Export containers (FOB / CIF)' },
+                      { value: 'Catering & Institutional Supply', label: 'Catering or canteen supply' },
+                      { value: 'Distributorship Proposal', label: 'Becoming a distributor' },
+                      { value: 'Other', label: 'Something else' },
+                    ]}
                   />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3.5 bg-[#174A32] text-white font-bold text-xs rounded-xs hover:bg-[#1a5a3d] transition-colors flex items-center justify-center gap-2 border border-[#174A32] cursor-pointer"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Submit Inquiry</span>
-                </button>
-              </form>
-            )}
+                  <TextAreaField label="Message" rows={4} placeholder="How can we help?" value={form.message} onChange={set('message')} />
+                  <Button type="submit" variant="whatsapp" size="lg" block icon={<MessageCircle className="h-5 w-5" />}>
+                    Send Message on WhatsApp
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
 
-          {/* Interactive Map Visual (6 Cols) */}
-          <div className="lg:col-span-6 bg-white rounded-sm border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 p-6 sm:p-8 shadow-clean space-y-4 flex flex-col justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#C9A227]">Location & Logistics Hub</span>
-                <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 rounded-xs border border-[#C9A227]/30">
-                  Plus Code: VG3P+G6
-                </span>
-              </div>
-              <h3 className="font-serif-brand font-medium text-xl text-[#174A32]">
-                Venkatadri Palem, Telangana, India
-              </h3>
-            </div>
-
-            {/* Map Frame Card */}
-            <div className="aspect-4/3 rounded-xs overflow-hidden bg-emerald-950 relative border border-[#C9A227]/30">
+          {/* Map and hours */}
+          <div className="space-y-4 lg:col-span-6">
+            <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-line shadow-soft">
               <iframe
-                title="Sri Lakshmi Ganapathi Trading Company Location"
-                src="https://maps.google.com/maps?q=Venkatadri%20Palem,%20Telangana,%20India&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                className="w-full h-full border-0"
+                title="Map showing Sri Lakshmi Ganapathi Trading Company in Venkatadri Palem"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(location.plusCode)}&z=14&output=embed`}
+                className="h-80 w-full border-0 lg:h-96"
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
-            </div>
-
-            <div className="p-4 rounded-xs bg-[#F8F5EA] border border-[#C9A227]/30 flex items-center justify-between text-xs">
-              <div>
-                <span className="font-bold text-[#174A32] block">Sri Lakshmi Ganapathi Trading Company</span>
-                <span className="text-[#5F806D]">Venkatadri Palem, Telangana, India</span>
+              <div className="flex flex-wrap items-center justify-between gap-4 p-5">
+                <div className="flex gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" />
+                  <div>
+                    <p className="font-semibold text-forest-800">{BRAND_CONFIG.parentCompany}</p>
+                    <p className="text-[15px] text-muted">
+                      {location.address}, {location.state}, {location.country}
+                    </p>
+                  </div>
+                </div>
+                <Button href={location.googleMapsUrl} size="sm" icon={<Navigation className="h-4 w-4" />}>
+                  Directions
+                </Button>
               </div>
-              <a
-                href={BRAND_CONFIG.location.googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3.5 py-2 bg-[#174A32] text-white rounded-xs font-bold text-xs hover:bg-[#1a5a3d] transition-colors shrink-0"
-              >
-                Get Directions
-              </a>
             </div>
-
+            <div className="rounded-3xl bg-forest-800 p-6 text-cream">
+              <p className="flex items-center gap-2 font-semibold text-gold-300">
+                <Clock className="h-5 w-5" aria-hidden="true" /> Opening hours
+              </p>
+              <dl className="mt-3 space-y-2 text-[15px]">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-cream/70">Mill & office</dt>
+                  <dd>{contact.operatingHours}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-cream/70">Sunday</dt>
+                  <dd>WhatsApp only</dd>
+                </div>
+              </dl>
+            </div>
           </div>
-
-        </div>
-
-      </div>
-    </div>
+        </Container>
+      </Section>
+    </>
   );
 };

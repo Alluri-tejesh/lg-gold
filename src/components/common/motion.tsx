@@ -114,7 +114,7 @@ export const ScrollProgress: React.FC = () => {
   }, []);
   return (
     <div className="fixed top-0 inset-x-0 z-[60] h-[3px] pointer-events-none" aria-hidden="true">
-      <div ref={bar} className="h-full w-full bg-[#C9A227] origin-left" style={{ transform: 'scaleX(0)' }} />
+      <div ref={bar} className="h-full w-full bg-gradient-to-r from-gold-500 to-gold-400 origin-left" style={{ transform: 'scaleX(0)' }} />
     </div>
   );
 };

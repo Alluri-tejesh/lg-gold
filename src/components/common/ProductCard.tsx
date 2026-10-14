@@ -1,224 +1,166 @@
 import React, { useState } from 'react';
-import { ShoppingBag, ArrowRight, Star, Globe, Boxes, MessageCircle, Check } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Zap, ArrowUpRight } from 'lucide-react';
 import { Product, PackSize } from '../../types';
 import { useCart } from '../../context/CartContext';
-import { getProductWhatsAppMessage, createWhatsAppUrl } from '../../config/brandConfig';
+import { getProductWhatsAppMessage, createWhatsAppUrl, openWhatsApp } from '../../config/brandConfig';
 import { priceInfo, formatPriceDate } from '../../data/prices';
+import { getDefaultPack } from '../../data/products';
+import { AppLink } from '../ui/AppLink';
+import { Badge } from '../ui/Section';
+import { Button } from '../ui/Button';
+import { RollingNumber } from '../fx/RollingNumber';
+import { flyToCart } from '../fx/flyToCart';
+import { useTilt } from '../fx/useTilt';
+import { navigate } from '../../router';
 
 interface ProductCardProps {
   product: Product;
-  onViewDetails: (slug: string) => void;
+  /** Kept for callers that still pass it; the card links to the product page itself. */
+  onViewDetails?: (slug: string) => void;
   onSelectExportQuote?: (productName: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails, onSelectExportQuote }) => {
+const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+
+/** Price per kg, so a 5kg bag and a 26kg bag can be compared at a glance. */
+export const perKg = (price: number, kg: number) => (kg > 0 ? `₹${(price / kg).toFixed(price / kg < 100 ? 1 : 0)}/kg` : '');
+
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
-  const [selectedPackSize, setSelectedPackSize] = useState<PackSize>(product.packOptions[0]?.size || '26kg Bag');
-  const [isAdded, setIsAdded] = useState(false);
+  const tilt = useTilt<HTMLElement>(4);
+  const [selectedPackSize, setSelectedPackSize] = useState<PackSize>(getDefaultPack(product).size);
 
-  const currentPack = product.packOptions.find(p => p.size === selectedPackSize) || product.packOptions[0];
+  const pack = product.packOptions.find((p) => p.size === selectedPackSize) || getDefaultPack(product);
   const priceDate = formatPriceDate(priceInfo.updated);
-  const outOfStock = !currentPack.inStock;
-  const detailed = product.detailed !== false; // false for products added from the catalog
-  const mainPackName = product.packOptions[0].size.split(' (')[0];
+  const outOfStock = !pack.inStock;
+  const allOut = product.packOptions.every((p) => !p.inStock);
+  const discount = pack.mrp > pack.retailPrice ? Math.round(((pack.mrp - pack.retailPrice) / pack.mrp) * 100) : 0;
+  const contain = product.images.primaryFit === 'contain';
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addToCart(product, selectedPackSize, 1);
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1500);
+  const buyNow = () => {
+    addToCart(product, selectedPackSize, 1, { quiet: true });
+    navigate('checkout');
   };
 
-  const handleWhatsAppOrder = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const msg = outOfStock
-      ? `Hi LG Gold Team, ${product.name} (${selectedPackSize}) shows as out of stock on your website. Please let me know when it will be available again.`
-      : getProductWhatsAppMessage(product.name, selectedPackSize);
-    window.open(createWhatsAppUrl(msg), '_blank');
-  };
+  const whatsapp = () =>
+    openWhatsApp(
+      createWhatsAppUrl(
+        outOfStock
+          ? `Hi LG Gold Team, ${product.name} (${selectedPackSize}) shows as out of stock on your website. Please let me know when it will be available again.`
+          : getProductWhatsAppMessage(product.name, selectedPackSize),
+      ),
+    );
 
   return (
-    <div
-      onClick={() => onViewDetails(product.slug)}
-      className="bg-[#FFFFFF] border-t-4 border-[#C9A227] border-x border-b border-[#C9A227]/20 shadow-clean hover:border-[#C9A227] transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer rounded-sm"
-    >
-      {/* Top Image Container */}
-      <div className="relative aspect-4/3 bg-[#F8F5EA] overflow-hidden border-b border-[#C9A227]/20">
+    <article
+      ref={tilt.ref}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
+      className="tilt group relative flex h-full flex-col overflow-hidden rounded-3xl bg-white ring-1 ring-line shadow-soft transition-shadow duration-300 hover:shadow-lift has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-gold-500">
+      <span className="tilt-sheen" aria-hidden="true" />
+      {/* Photo */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(ellipse_at_center,_#fffdf8_0%,_#f0e9d5_100%)]">
         <img
           src={product.images.primary}
           alt={product.name}
-          className={`w-full h-full group-hover:scale-103 transition-transform duration-500 ${
-            product.images.primaryFit === 'contain' ? 'object-contain pt-11 pb-10' : 'object-cover'
+          loading="lazy"
+          className={`tilt-depth h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04] ${
+            contain ? 'object-contain p-6 pt-12 drop-shadow-[0_18px_22px_rgb(23_74_50/0.25)]' : 'object-cover'
           }`}
           referrerPolicy="no-referrer"
         />
-
-        {/* Brand Stamp */}
-        <div className="absolute top-3.5 left-3.5 bg-[#174A32] text-white px-2.5 py-0.5 border border-[#C9A227]/40 shadow-xs flex items-center gap-1.5 rounded-xs">
-          <span className="font-serif-brand font-bold text-xs text-[#C9A227]">LG GOLD</span>
-          {product.grainSpecs.aging && (
-            <span className="hidden sm:inline text-xs text-[#E7D59A]">• {product.grainSpecs.aging}</span>
-          )}
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          {product.grainSpecs.aging && <Badge tone="forest">{product.grainSpecs.aging.replace(/ Naturally Aged| Controlled Aging/, ' aged')}</Badge>}
+          {allOut && <Badge tone="danger">Out of stock</Badge>}
         </div>
-
-        {/* Rating badge: only when there are real reviews */}
-        {product.reviewCount > 0 && (
-          <div className="absolute top-3.5 right-3.5 bg-white text-[#202522] px-2 py-0.5 text-xs font-bold shadow-xs flex items-center gap-1 border border-gray-200 rounded-xs">
-            <Star className="w-3.5 h-3.5 fill-[#C9A227] text-[#C9A227]" />
-            <span>{product.rating}</span>
-            <span className="text-gray-400 font-normal text-xs">({product.reviewCount})</span>
-          </div>
-        )}
-
-        {/* Grain Spec Ribbon */}
-        {detailed && (
-          <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/80 via-black/40 to-transparent p-3 pt-6 text-white flex items-center justify-between text-xs font-medium">
-            <span className="truncate">{product.grainSpecs.grainLength}</span>
-            <span className="text-[#E7D59A] text-xs font-bold">100% Sortex Clean</span>
-          </div>
-        )}
       </div>
 
-      {/* Product Content */}
-      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
-        <div>
-          {/* Variety & Title */}
-          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 mb-1">
-            <span className="text-xs font-bold text-[#5F806D]">
-              {product.grainSpecs.variety}
-            </span>
-            <span className="text-xs font-bold text-[#174A32] bg-[#F8F5EA] px-2 py-0.5 border border-[#C9A227]/30">
-              {detailed ? 'Standard 26kg Pack' : `Pack: ${mainPackName}`}
-            </span>
-          </div>
-
-          <h3 className="font-serif-brand font-medium text-2xl text-[#174A32] group-hover:text-[#C9A227] transition-colors leading-tight">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-700">{product.grainSpecs.variety.split(' (')[0]} rice</p>
+        <h3 className="mt-1.5 font-display text-[1.75rem] leading-tight text-forest-800">
+          {/* The title link covers the whole card, so a tap anywhere opens the product. Buttons sit above it. */}
+          <AppLink to="product-detail" param={product.slug} className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none">
             {product.name}
-          </h3>
+          </AppLink>
+        </h3>
+        {product.subTitle && <p className="mt-1.5 line-clamp-2 text-[15px] leading-relaxed text-muted">{product.subTitle}</p>}
 
-          <p className="text-sm sm:text-sm text-[#5F806D] mt-2 line-clamp-2 leading-relaxed">
-            {product.description}
-          </p>
-        </div>
-
-        {/* Commercial Availability Badges */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/20 rounded-xs">
-            ✓ {detailed ? '26kg Mill Bags' : mainPackName}
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/20 rounded-xs">
-            <Boxes className="w-3 h-3 text-[#C9A227]" /> Wholesale Supply
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 bg-[#F8F5EA] text-[#174A32] border border-[#C9A227]/20 rounded-xs">
-            <Globe className="w-3 h-3 text-[#C9A227]" /> Export Ready
-          </span>
-        </div>
-
-        {/* Pack Size Selector */}
-        <div className="pt-2">
-          <div className="flex items-center justify-between text-xs font-bold text-[#174A32] mb-1.5">
-            <span className="text-xs">Choose Quantity / Pack:</span>
-            <span className="text-xs text-[#5F806D] font-medium lowercase">{currentPack.packagingType}</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5" onClick={(e) => e.stopPropagation()}>
-            {product.packOptions.map((pack) => {
-              const isSelected = selectedPackSize === pack.size;
+        {/* Pack sizes */}
+        <fieldset className="relative z-10 mt-5">
+          <legend className="mb-2 text-sm font-semibold text-forest-800">Pack size</legend>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {product.packOptions.map((o) => {
+              const on = o.size === selectedPackSize;
               return (
-                <button
-                  key={pack.size}
-                  type="button"
-                  onClick={() => setSelectedPackSize(pack.size)}
-                  className={`py-2 px-1 text-xs font-bold rounded-xs border transition-all cursor-pointer text-center ${
-                    isSelected
-                      ? 'border-[#174A32] bg-[#174A32] text-white shadow-xs'
-                      : 'border-gray-200 bg-[#F8F5EA]/60 text-gray-700 hover:border-[#C9A227]'
-                  }`}
+                <label
+                  key={o.size}
+                  className={`relative flex min-h-14 cursor-pointer flex-col justify-center rounded-xl px-3 py-2 text-left ring-1 ring-inset transition-all has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-gold-500 ${
+                    on ? 'bg-forest-800 text-white ring-forest-800 shadow-soft' : 'bg-cream/70 text-forest-800 ring-line hover:ring-forest-700'
+                  } ${!o.inStock ? 'opacity-60' : ''}`}
                 >
-                  <span className="block truncate">{pack.size}</span>
-                  <span className={`text-xs block mt-0.5 ${isSelected ? 'text-[#E7D59A]' : 'text-gray-500'}`}>
-                    {pack.inStock ? `₹${pack.retailPrice}` : 'Out of stock'}
+                  <input
+                    type="radio"
+                    name={`pack-${product.slug}`}
+                    value={o.size}
+                    checked={on}
+                    onChange={() => setSelectedPackSize(o.size)}
+                    className="sr-only"
+                  />
+                  <span className="text-[13px] font-semibold leading-tight">{o.size}</span>
+                  <span className={`text-[13px] tabular ${on ? 'text-gold-300' : 'text-muted'}`}>
+                    {o.inStock ? inr(o.retailPrice) : 'Out of stock'}
                   </span>
-                </button>
+                </label>
               );
             })}
           </div>
+        </fieldset>
+
+        {/* Price */}
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-2 border-t border-line pt-4">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <RollingNumber value={pack.retailPrice} className="text-[2rem] font-bold leading-none tracking-tight text-forest-800" />
+              {discount > 0 && <span className="text-sm text-muted line-through tabular">{inr(pack.mrp)}</span>}
+              {discount > 0 && <span className="rounded-full bg-forest-100 px-2 py-0.5 text-xs font-bold text-forest-700">{discount}% off</span>}
+            </div>
+            <p className="mt-1 text-[13px] text-muted">
+              {perKg(pack.retailPrice, pack.weightKg)}
+              {priceDate ? ` · today's rate, ${priceDate}` : ''}
+            </p>
+          </div>
         </div>
 
-        {/* Price & Action Buttons */}
-        <div className="pt-3 border-t border-[#C9A227]/20 flex flex-col gap-3">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-xs text-[#5F806D] font-bold block">
-                Retail price{priceDate ? `, ${priceDate}` : ''}
-              </span>
-              <div className="flex items-baseline gap-2">
-                <span className="font-serif-brand font-bold text-2xl text-[#174A32]">
-                  ₹{currentPack.retailPrice.toLocaleString('en-IN')}
-                </span>
-                {currentPack.mrp > currentPack.retailPrice && (
-                  <span className="text-xs text-gray-400 line-through">
-                    ₹{currentPack.mrp.toLocaleString('en-IN')}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-xs text-[#5F806D] block font-bold">Mill Direct</span>
-              <span
-                className={`text-xs font-bold px-2 py-0.5 border rounded-xs ${
-                  outOfStock
-                    ? 'text-[#9B2C2C] bg-[#FDECEC] border-[#9B2C2C]/30'
-                    : 'text-[#174A32] bg-[#F8F5EA] border-[#C9A227]/30'
-                }`}
-              >
-                {outOfStock ? 'Out of stock' : 'In Stock'}
-              </span>
-            </div>
-          </div>
-
-          {/* Action Row */}
-          <div className="grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={handleAddToCart}
-              disabled={outOfStock}
-              className={`w-full py-2.5 px-2 sm:px-3 rounded-xs font-bold text-xs sm:text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs whitespace-nowrap ${
-                outOfStock
-                  ? 'bg-gray-200 text-gray-500 border border-gray-200 cursor-not-allowed'
-                  : isAdded
-                  ? 'bg-[#226444] text-white cursor-pointer'
-                  : 'bg-[#174A32] text-white hover:bg-[#1a5a3d] border border-[#174A32] cursor-pointer'
-              }`}
-            >
-              {isAdded ? (
-                <>
-                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227] shrink-0" />
-                  <span className="truncate">Added</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227] shrink-0" />
-                  <span className="truncate">{outOfStock ? 'Out of stock' : 'Add to Cart'}</span>
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handleWhatsAppOrder}
-              className="w-full py-2.5 px-2 sm:px-3 rounded-xs bg-[#25D366]/15 hover:bg-[#25D366] text-[#128C7E] hover:text-white font-bold text-xs sm:text-xs flex items-center justify-center gap-1.5 border border-[#25D366]/40 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span className="truncate">{outOfStock ? 'Ask when back' : 'WhatsApp'}</span>
-            </button>
-          </div>
-
-          {/* Detail link */}
-          <div className="flex items-center justify-between text-xs text-[#174A32] font-bold group-hover:text-[#C9A227] pt-1">
-            <span>View Specifications</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </div>
+        {/* Actions */}
+        <div className="relative z-10 mt-4 grid grid-cols-2 gap-2">
+          <Button
+            onClick={(e) => {
+              addToCart(product, selectedPackSize, 1);
+              flyToCart(e.currentTarget);
+            }}
+            disabled={outOfStock}
+            icon={<ShoppingBag className="h-4 w-4 text-gold-400" />}
+          >
+            Add to Cart
+          </Button>
+          <Button variant="gold" onClick={buyNow} disabled={outOfStock} icon={<Zap className="h-4 w-4" />}>
+            Buy Now
+          </Button>
+          <button
+            type="button"
+            onClick={whatsapp}
+            className="col-span-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-full text-[15px] font-semibold text-whatsapp-ink hover:bg-whatsapp/10 cursor-pointer"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {outOfStock ? 'Ask on WhatsApp when it is back' : 'Ask the mill about this rice'}
+          </button>
         </div>
+
+        <p className="mt-auto flex items-center justify-between pt-3 text-sm font-semibold text-forest-800">
+          Specs, cooking guide &amp; recipes
+          <ArrowUpRight className="h-4 w-4 text-gold-600 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+        </p>
       </div>
-    </div>
+    </article>
   );
 };

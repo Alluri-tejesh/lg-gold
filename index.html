@@ -2,20 +2,116 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LG Gold Rice | HMT & JSR Rice | Wholesale & Export Supplier India</title>
-    <meta name="description" content="LG Gold by Sri Lakshmi Ganapathi Trading Company supplies premium export quality HMT and JSR rice for retail, wholesale, bulk, and global export markets from Telangana, India." />
-    <meta property="og:title" content="LG Gold Rice | Quality Rice for India & Global Markets" />
-    <meta property="og:description" content="Carefully selected and processed HMT & JSR rice for everyday meals, retail, wholesale, bulk, and export orders." />
-    <meta property="og:type" content="website" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>LG Gold Rice</title>
+    <meta name="description" content="LG Gold by Sri Lakshmi Ganapathi Trading Company: aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export. FSSAI certified." />
     <meta name="theme-color" content="#174A32" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <meta name="robots" content="index,follow" />
+
+    <!-- Link previews on WhatsApp, Facebook, LinkedIn and X -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LG Gold Rice" />
+    <meta property="og:title" content="LG Gold Rice" />
+    <meta property="og:description" content="Aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export." />
+    <meta property="og:image" content="og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tells search engines who the business is, where it is and how to reach it -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "LG Gold Rice - Sri Lakshmi Ganapathi Trading Company",
+        "description": "Rice mill and trader supplying aged HMT and JSR rice for retail, wholesale, bulk and export.",
+        "telephone": "+91 97015 35231",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "VG3P+G6, Venkatadri Palem",
+          "addressRegion": "Telangana",
+          "addressCountry": "IN"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "20:00"
+        },
+        "brand": { "@type": "Brand", "name": "LG Gold" }
+      }
+    </script>
+
+    <style>
+      /*
+       * "Grain to Gold" loader. Shown while the site starts (index.html) and while a page loads (BrandLoader in React,
+       * which reuses these classes). Rice grains fall into the LG Gold coin while liquid gold rises inside it.
+       * Plain SVG + CSS, so it appears on the very first paint with nothing to download.
+       */
+      #splash { position: fixed; inset: 0; display: grid; place-items: center; background: #f8f5ea; }
+      .bl-wrap { display: flex; flex-direction: column; align-items: center; }
+      .bl { width: 120px; height: 120px; overflow: visible; filter: drop-shadow(0 10px 22px rgb(23 74 50 / .16)); }
+      .bl-sm .bl { width: 92px; height: 92px; }
+      .bl-ring { transform-origin: 60px 60px; stroke-dasharray: 18 82; animation: bl-spin 1.6s cubic-bezier(.55,.15,.45,.85) infinite, bl-sweep 3.2s ease-in-out infinite; }
+      .bl-fill { animation: bl-rise 2.8s cubic-bezier(.25,.7,.2,1) forwards; }
+      .bl-wave { animation: bl-wave 1.8s linear infinite; }
+      .bl-wave2 { animation: bl-wave 2.6s linear infinite reverse; opacity: .45; }
+      .bl-grain { transform-box: fill-box; transform-origin: center; opacity: 0; animation: bl-fall 1.5s cubic-bezier(.55,0,.9,.5) infinite; }
+      .bl-grain:nth-of-type(2) { animation-delay: .25s; }
+      .bl-grain:nth-of-type(3) { animation-delay: .5s; }
+      .bl-grain:nth-of-type(4) { animation-delay: .75s; }
+      .bl-grain:nth-of-type(5) { animation-delay: 1s; }
+      .bl-grain:nth-of-type(6) { animation-delay: 1.25s; }
+      .bl-mono { animation: bl-breathe 2.4s ease-in-out infinite; transform-origin: 60px 60px; }
+      .bl-mono .lm-g, .bl-mono .lm-l { stroke-dasharray: 100; animation: bl-draw 1.1s cubic-bezier(.6,.05,.25,1) both; }
+      .bl-mono .lm-l { animation-delay: .35s; }
+      .bl-mono .lm-wheat { animation: bl-sprout .6s .9s cubic-bezier(.34,1.56,.64,1) both; }
+      .bl-word { margin-top: 20px; font: 700 22px/1 'Playfair Display', Georgia, serif; letter-spacing: .08em; color: #174a32; }
+      .bl-word span { color: #b38a17; }
+      .bl-sm .bl-word { font-size: 18px; margin-top: 16px; }
+      .bl-tag { margin-top: 10px; font: 600 11px/1 Inter, system-ui, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #8a650c; animation: bl-tag 2.4s ease-in-out infinite; }
+      @keyframes bl-spin { to { transform: rotate(360deg); } }
+      @keyframes bl-sweep { 0%, 100% { stroke-dasharray: 10 90; } 50% { stroke-dasharray: 46 54; } }
+      @keyframes bl-rise { from { transform: translateY(0); } to { transform: translateY(-58px); } }
+      @keyframes bl-wave { to { transform: translateX(-60px); } }
+      @keyframes bl-fall {
+        0% { opacity: 0; transform: translateY(-6px) rotate(-30deg); }
+        15% { opacity: 1; }
+        70% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(52px) rotate(40deg); }
+      }
+      @keyframes bl-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+      @keyframes bl-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+      @keyframes bl-sprout { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+      @keyframes bl-tag { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+      @media (prefers-reduced-motion: reduce) {
+        .bl-ring, .bl-wave, .bl-wave2, .bl-mono, .bl-tag, .bl-mono .lm-g, .bl-mono .lm-l, .bl-mono .lm-wheat { animation: none; }
+        .bl-grain { display: none; }
+        .bl-fill { animation: none; transform: translateY(-58px); }
+      }
+    </style>
   </head>
-  <body class="bg-[#F8F5EA] text-[#202522] font-sans antialiased selection:bg-[#C9A227]/30 selection:text-[#174A32]">
-    <div id="root"></div>
+  <body>
+    <div id="root">
+      <div id="splash"><div role="status" aria-label="Loading LG Gold Rice" class="bl-wrap"><svg class="bl" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="splg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D46B"></stop><stop offset="0.6" stop-color="#D8B23A"></stop><stop offset="1" stop-color="#B38A17"></stop></linearGradient><clipPath id="splc"><circle cx="60" cy="60" r="43"></circle></clipPath></defs><circle cx="60" cy="60" r="43" fill="#FFFAF0"></circle><g clip-path="url(#splc)"><g><ellipse class="bl-grain" cx="46" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="58" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="70" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="52" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="64" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="75" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse></g><g class="bl-fill"><path class="bl-wave2" fill="url(#splg)" d="M-60 104 q15 -5 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 V240 H-60 Z"></path><path class="bl-wave" fill="url(#splg)" d="M-60 106 q15 5 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 V240 H-60 Z"></path></g></g><circle cx="60" cy="60" r="43" fill="none" stroke="#174A32" stroke-width="2.2"></circle><circle cx="60" cy="60" r="51" fill="none" stroke="#EFE3BF" stroke-width="3"></circle><circle class="bl-ring" cx="60" cy="60" r="51" fill="none" stroke="#D8B23A" stroke-width="3" stroke-linecap="round" pathLength="100"></circle><g class="bl-mono"><g transform="translate(60 60) scale(0.92) translate(-50 -50)"><g fill="none" stroke="#174A32" stroke-width="5.2"><path class="lm-g" pathLength="100" d="M47.3 19.1 A31 31 0 1 0 81 50" stroke-linecap="butt"></path><path class="lm-l" pathLength="100" d="M46.5 35.5 V65.5 H65 V50 H83.6" stroke-linejoin="miter" stroke-linecap="butt"></path><circle cx="35" cy="34" r="5.024" fill="#174A32" stroke="none"></circle><text x="35" y="34.3" fill="#fff" stroke="none" font-size="6.180000000000001" font-weight="800" font-family="Inter, Arial, sans-serif" text-anchor="middle" dominant-baseline="central">S</text><g class="lm-wheat lm-wheat-l" style="transform-origin:56.6px 46.5px"><path d="M56.6 46.5 L52.92759019748197 34.69582563476347" stroke="#174A32" stroke-width="0.8140000000000001" stroke-linecap="round"></path><ellipse cx="53.40551496378804" cy="42.45957312237705" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-59.28149837181667 53.40551496378804 42.45957312237705)"></ellipse><ellipse cx="56.93848503621195" cy="41.36042687762294" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(24.718501628183333 56.93848503621195 41.36042687762294)"></ellipse><ellipse cx="52.733514963788046" cy="40.299573122377055" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-59.28149837181667 52.733514963788046 40.299573122377055)"></ellipse><ellipse cx="56.266485036211954" cy="39.200426877622945" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(24.718501628183333 56.266485036211954 39.200426877622945)"></ellipse><ellipse cx="52.06151496378805" cy="38.13957312237706" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-59.28149837181667 52.06151496378805 38.13957312237706)"></ellipse><ellipse cx="55.59448503621196" cy="37.04042687762295" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(24.718501628183333 55.59448503621196 37.04042687762295)"></ellipse><ellipse cx="51.389514963788045" cy="35.979573122377055" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-59.28149837181667 51.389514963788045 35.979573122377055)"></ellipse><ellipse cx="54.92248503621195" cy="34.880426877622945" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(24.718501628183333 54.92248503621195 34.880426877622945)"></ellipse><ellipse cx="52.4" cy="33" rx="0.6215999999999999" ry="1.924" fill="#174A32" stroke="none" transform="rotate(-17.281498371816667 52.4 33)"></ellipse></g><g class="lm-wheat lm-wheat-r" style="transform-origin:61.6px 46.5px"><path d="M61.6 46.5 L67.0354807958102 35.10302413781733" stroke="#174A32" stroke-width="0.8140000000000001" stroke-linecap="round"></path><ellipse cx="62.03818318977361" cy="41.28362582896895" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-16.502448506662233 62.03818318977361 41.28362582896895)"></ellipse><ellipse cx="65.37781681022638" cy="42.876374171031046" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(67.49755149333777 65.37781681022638 42.876374171031046)"></ellipse><ellipse cx="63.03018318977362" cy="39.20362582896895" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-16.502448506662233 63.03018318977362 39.20362582896895)"></ellipse><ellipse cx="66.36981681022638" cy="40.79637417103105" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(67.49755149333777 66.36981681022638 40.79637417103105)"></ellipse><ellipse cx="64.02218318977361" cy="37.123625828968954" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-16.502448506662233 64.02218318977361 37.123625828968954)"></ellipse><ellipse cx="67.36181681022637" cy="38.71637417103105" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(67.49755149333777 67.36181681022637 38.71637417103105)"></ellipse><ellipse cx="65.01418318977362" cy="35.043625828968956" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(-16.502448506662233 65.01418318977362 35.043625828968956)"></ellipse><ellipse cx="68.35381681022638" cy="36.63637417103105" rx="0.6215999999999999" ry="1.702" fill="#174A32" stroke="none" transform="rotate(67.49755149333777 68.35381681022638 36.63637417103105)"></ellipse><ellipse cx="67.8" cy="33.5" rx="0.6215999999999999" ry="1.924" fill="#174A32" stroke="none" transform="rotate(25.497551493337767 67.8 33.5)"></ellipse></g></g></g></g></svg><p class="bl-word">LG <span>GOLD</span></p><p class="bl-tag">Fresh from our mill</p></div></div>
+    </div>
+    <noscript>
+      <p style="padding: 24px; font-family: system-ui, sans-serif">
+        LG Gold Rice needs JavaScript to show prices and products. Call or WhatsApp us on +91 97015 35231.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

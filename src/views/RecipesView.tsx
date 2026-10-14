@@ -1,186 +1,208 @@
-import React, { useState } from 'react';
-import { ChefHat, Sparkles, Clock, Utensils, ArrowRight, Search, Heart } from 'lucide-react';
+import React, { useDeferredValue, useMemo, useState } from 'react';
+import { Search, X, SlidersHorizontal, ChefHat } from 'lucide-react';
 import { RECIPES, RECIPE_CATEGORIES } from '../data/recipes';
 import { RecipeCard } from '../components/common/RecipeCard';
-import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { Reveal } from '../components/common/motion';
+import { PageHero } from '../components/ui/PageHero';
+import { Container, Section } from '../components/ui/Section';
+import { Button } from '../components/ui/Button';
 
 interface RecipesViewProps {
   onNavigate: (route: string, param?: string) => void;
 }
 
+type Quick = 'quick' | 'veg' | 'hmt' | 'jsr';
+type Sort = 'featured' | 'quickest' | 'easiest';
+
+const QUICK: { id: Quick; label: string; test: (r: (typeof RECIPES)[number]) => boolean }[] = [
+  { id: 'quick', label: 'Under 30 min', test: (r) => r.totalTimeMinutes <= 30 },
+  { id: 'veg', label: 'Vegetarian', test: (r) => r.categories.includes('Vegetarian') },
+  { id: 'hmt', label: 'HMT rice', test: (r) => r.recommendedProductId === 'lg-gold-hmt-rice' },
+  { id: 'jsr', label: 'JSR rice', test: (r) => r.recommendedProductId === 'lg-gold-jsr-rice' },
+];
+
+const LEVEL = { Easy: 0, Medium: 1, Advanced: 2 };
+const PAGE = 12;
+
 export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [visibleCount, setVisibleCount] = useState(12);
-  
-  // "What can I cook today" interactive tool state
-  const [mealTimeFilter, setMealTimeFilter] = useState<'any' | 'quick' | 'special' | 'comfort'>('any');
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('All');
+  const [quick, setQuick] = useState<Set<Quick>>(new Set());
+  const [sort, setSort] = useState<Sort>('featured');
+  const [visible, setVisible] = useState(PAGE);
+  // Typing stays smooth: filtering 100+ recipes waits for a pause in typing.
+  const q = useDeferredValue(query.trim().toLowerCase());
 
-  const filteredRecipes = RECIPES.filter((r) => {
-    const matchesCategory = selectedCategory === 'All' || r.categories.includes(selectedCategory);
-    const matchesSearch =
-      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.categories.some(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
+  const results = useMemo(() => {
+    const words = q.split(/\s+/).filter(Boolean);
+    const list = RECIPES.filter((r) => {
+      if (category !== 'All' && !r.categories.includes(category)) return false;
+      for (const f of QUICK) if (quick.has(f.id) && !f.test(r)) return false;
+      if (!words.length) return true;
+      const hay = `${r.title} ${r.shortDescription} ${r.categories.join(' ')} ${r.cuisine} ${r.ingredients.map((i) => i.item).join(' ')}`.toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+    if (sort === 'quickest') return [...list].sort((a, b) => a.totalTimeMinutes - b.totalTimeMinutes);
+    if (sort === 'easiest') return [...list].sort((a, b) => LEVEL[a.difficulty] - LEVEL[b.difficulty] || a.totalTimeMinutes - b.totalTimeMinutes);
+    return [...list].sort((a, b) => Number(!!b.featured) - Number(!!a.featured));
+  }, [q, category, quick, sort]);
 
-    let matchesMealTime = true;
-    if (mealTimeFilter === 'quick') {
-      matchesMealTime = r.totalTimeMinutes <= 25;
-    } else if (mealTimeFilter === 'special') {
-      matchesMealTime = r.categories.includes('Festival') || r.categories.includes('Special Occasions') || r.categories.includes('Biryani');
-    } else if (mealTimeFilter === 'comfort') {
-      matchesMealTime = r.categories.includes('South Indian') || r.categories.includes('Everyday Meals');
-    }
-
-    return matchesCategory && matchesSearch && matchesMealTime;
-  });
+  const reset = () => {
+    setQuery('');
+    setCategory('All');
+    setQuick(new Set());
+    setSort('featured');
+    setVisible(PAGE);
+  };
+  const filtered = query || category !== 'All' || quick.size > 0;
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { All: RECIPES.length };
+    for (const r of RECIPES) for (const cat of r.categories) c[cat] = (c[cat] || 0) + 1;
+    return c;
+  }, []);
 
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
-      
-      {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-8 sm:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          <Breadcrumbs items={[{ label: 'Recipes' }]} onNavigate={onNavigate} variant="dark" />
-          
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
-              <ChefHat className="w-4 h-4" />
-              LG Gold Culinary Kitchen
-            </span>
-            <h1 className="font-serif-brand font-extrabold text-3xl sm:text-5xl text-white">
-              Cook Something Delicious
-            </h1>
-            <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
-              Unlock the full culinary potential of LG Gold HMT and JSR rice. From aromatic Hyderabadi biryanis and fluffy South Indian bagara rice to comforting curd rice and lemon rice.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-12">
-        
-        {/* "What Can I Cook Today?" Interactive Tool */}
-        <div className="bg-white rounded-3xl border border-[#E7D59A] p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="flex items-center gap-2 text-[#C9A227] text-xs font-bold uppercase">
-            <Sparkles className="w-4 h-4" />
-            <span>Interactive Kitchen Assistant</span>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <h2 className="font-serif-brand font-bold text-2xl text-[#174A32]">
-                What Can I Cook Today?
-              </h2>
-              <p className="text-xs text-gray-600 mt-1">
-                Filter by occasion or cooking mood to discover the best match for your pantry.
-              </p>
-            </div>
-
-            {/* Quick Mood Filter */}
-            <div className="flex flex-wrap gap-2">
-              {[
-                { id: 'any', label: 'All Moods' },
-                { id: 'quick', label: '⚡ Under 25 Mins' },
-                { id: 'special', label: '👑 Festive & Biryani' },
-                { id: 'comfort', label: '🍲 Daily Comfort' },
-              ].map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setMealTimeFilter(m.id as any)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    mealTimeFilter === m.id
-                      ? 'bg-[#174A32] text-white shadow-xs'
-                      : 'bg-[#F8F5EA] text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search bar */}
-          <div className="relative">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+    <>
+      <PageHero
+        crumbs={[{ label: 'Recipes' }]}
+        onNavigate={onNavigate}
+        eyebrow="From the mill kitchen"
+        title="Cook something delicious"
+        intro={`${RECIPES.length} recipes made with LG Gold HMT and JSR rice, from Hyderabadi dum biryani to five-minute curd rice. Each one scales to your family size and has built-in timers.`}
+        actions={
+          <div className="relative w-full max-w-xl">
+            <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" aria-hidden="true" />
             <input
-              type="text"
-              placeholder="Search recipes by name, ingredient (e.g. biryani, ghee, lemon, curd)..."
-              value={searchQuery}
+              type="search"
+              value={query}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setVisibleCount(12);
+                setQuery(e.target.value);
+                setVisible(PAGE);
               }}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-[#174A32] outline-none"
+              placeholder="Search a dish or ingredient: biryani, ghee, curd…"
+              aria-label="Search recipes"
+              className="h-14 w-full rounded-full bg-white pl-13 pr-12 text-base text-ink shadow-lift placeholder:text-muted/70 focus:outline-none focus:ring-4 focus:ring-gold-500/40 [&::-webkit-search-cancel-button]:hidden"
             />
-          </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2">
-          {RECIPE_CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
-                setVisibleCount(12);
-              }}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-                selectedCategory === cat
-                  ? 'bg-[#174A32] text-white shadow-sm'
-                  : 'bg-white text-gray-700 border border-[#E7D59A]/80 hover:border-[#C9A227]'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Recipes Grid */}
-        {filteredRecipes.length > 0 ? (
-          <div className="space-y-8">
-            <p className="text-sm text-[#5F806D]" aria-live="polite">
-              Showing {Math.min(visibleCount, filteredRecipes.length)} of {filteredRecipes.length} recipes
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredRecipes.slice(0, visibleCount).map((recipe) => (
-                <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  onViewRecipe={(slug) => onNavigate('recipe-detail', slug)}
-                />
-              ))}
-            </div>
-            {visibleCount < filteredRecipes.length && (
-              <div className="text-center">
-                <button
-                  onClick={() => setVisibleCount((n) => n + 12)}
-                  className="px-8 py-3 bg-[#174A32] text-white font-semibold rounded-sm hover:bg-[#226444] transition-colors cursor-pointer"
-                >
-                  Show 12 more recipes
-                </button>
-              </div>
+            {query && (
+              <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-cream cursor-pointer">
+                <X className="h-4 w-4" />
+              </button>
             )}
           </div>
-        ) : (
-          <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-gray-300 space-y-3">
-            <ChefHat className="w-10 h-10 text-gray-400 mx-auto" />
-            <h3 className="font-bold text-lg text-gray-700">No recipes matched your criteria</h3>
-            <p className="text-xs text-gray-500">Try resetting filters or searching for different ingredients.</p>
-            <button
-              onClick={() => {
-                setSelectedCategory('All');
-                setSearchQuery('');
-                setMealTimeFilter('any');
-              }}
-              className="px-4 py-2 bg-[#174A32] text-white text-xs font-bold rounded-lg"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
+        }
+      />
 
+      {/* Filters, kept in reach while scrolling the list */}
+      <div className="sticky top-16 z-20 border-b border-line bg-paper/90 backdrop-blur-xl">
+        <Container className="py-3">
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none" role="radiogroup" aria-label="Category">
+            {RECIPE_CATEGORIES.filter((c) => counts[c]).map((c) => (
+              <button
+                key={c}
+                type="button"
+                role="radio"
+                aria-checked={category === c}
+                onClick={() => {
+                  setCategory(c);
+                  setVisible(PAGE);
+                }}
+                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-colors cursor-pointer ${
+                  category === c ? 'bg-forest-800 text-white' : 'bg-white text-forest-800 ring-1 ring-inset ring-line hover:ring-forest-700'
+                }`}
+              >
+                {c}
+                <span className={`text-xs ${category === c ? 'text-gold-300' : 'text-muted'}`}>{counts[c]}</span>
+              </button>
+            ))}
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4 text-muted" aria-hidden="true" />
+            {QUICK.map((f) => {
+              const on = quick.has(f.id);
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => {
+                    const next = new Set(quick);
+                    if (on) next.delete(f.id);
+                    else {
+                      next.add(f.id);
+                      // HMT and JSR exclude each other.
+                      if (f.id === 'hmt') next.delete('jsr');
+                      if (f.id === 'jsr') next.delete('hmt');
+                    }
+                    setQuick(next);
+                    setVisible(PAGE);
+                  }}
+                  className={`min-h-9 rounded-full px-3.5 text-[13px] font-semibold transition-colors cursor-pointer ${
+                    on ? 'bg-gold-500 text-forest-900' : 'bg-cream text-forest-800 ring-1 ring-inset ring-line hover:ring-gold-500'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              );
+            })}
+            <label className="ml-auto flex items-center gap-2 text-sm text-muted">
+              Sort
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as Sort)}
+                className="min-h-9 rounded-full bg-white px-3 text-sm font-semibold text-forest-800 ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-forest-700 cursor-pointer"
+              >
+                <option value="featured">Featured</option>
+                <option value="quickest">Quickest first</option>
+                <option value="easiest">Easiest first</option>
+              </select>
+            </label>
+          </div>
+        </Container>
       </div>
-    </div>
+
+      <Section tone="cream" tight>
+        <Container>
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <p className="text-[15px] text-muted" aria-live="polite">
+              {results.length === RECIPES.length ? `All ${results.length} recipes` : `${results.length} of ${RECIPES.length} recipes`}
+            </p>
+            {filtered && (
+              <button type="button" onClick={reset} className="text-sm font-semibold text-forest-800 underline underline-offset-4 cursor-pointer">
+                Clear filters
+              </button>
+            )}
+          </div>
+
+          <h2 className="sr-only">Recipes</h2>
+          {results.length > 0 ? (
+            <>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {results.slice(0, visible).map((r, i) => (
+                  <Reveal key={r.id} delay={(i % PAGE) * 40} className="h-full">
+                    <RecipeCard recipe={r} />
+                  </Reveal>
+                ))}
+              </div>
+              {visible < results.length && (
+                <div className="mt-10 text-center">
+                  <Button variant="outline" size="lg" onClick={() => setVisible(visible + PAGE)}>
+                    Show more ({results.length - visible} left)
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="rounded-3xl bg-white px-6 py-16 text-center ring-1 ring-line">
+              <ChefHat className="mx-auto h-12 w-12 text-gold-500" aria-hidden="true" />
+              <p className="mt-4 font-display text-2xl text-forest-800">No recipe matches yet</p>
+              <p className="mt-2 text-muted">Try another ingredient, or clear the filters.</p>
+              <Button className="mt-6" onClick={reset}>
+                Show all recipes
+              </Button>
+            </div>
+          )}
+        </Container>
+      </Section>
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import { Product } from '../types';
+import { Product, PackOption } from '../types';
 import { jsrBagImage } from '../assets';
 
 export const PRODUCTS: Product[] = [
@@ -83,8 +83,9 @@ export const PRODUCTS: Product[] = [
       export: true
     },
     tags: ['Aged Rice', 'Non-Sticky', 'Fluffy', 'Sortex Cleaned', 'Daily Table Rice', 'Export Quality'],
-    rating: 4.9,
-    reviewCount: 148
+    // Show a rating only once real customer reviews exist. The badge hides itself while reviewCount is 0.
+    rating: 0,
+    reviewCount: 0
   },
   {
     id: 'lg-gold-jsr-rice',
@@ -168,11 +169,44 @@ export const PRODUCTS: Product[] = [
       export: true
     },
     tags: ['Fine Grain', 'Light & Digestible', 'Silky Polish', 'Premium Table Rice', 'Bulk Ready'],
-    rating: 4.9,
-    reviewCount: 119
+    // Show a rating only once real customer reviews exist. The badge hides itself while reviewCount is 0.
+    rating: 0,
+    reviewCount: 0
   }
 ];
+
+export interface BuiltInBase {
+  slug: string;
+  name: string;
+  shortName: string;
+  subTitle: string;
+  description: string;
+  image: string;
+  imageFit: 'cover' | 'contain';
+  packs: { size: string; weightKg: number; price: number; mrp: number }[];
+}
+
+/**
+ * HMT and JSR exactly as written above, copied before catalog.json and prices.json are applied to PRODUCTS.
+ * The admin page compares against this to know which changes it has to save.
+ */
+export const BUILT_IN_BASE: BuiltInBase[] = PRODUCTS.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  shortName: p.shortName,
+  subTitle: p.subTitle,
+  description: p.description,
+  image: p.images.primary,
+  imageFit: p.images.primaryFit ?? 'cover',
+  packs: p.packOptions.map((o) => ({ size: o.size, weightKg: o.weightKg, price: o.retailPrice, mrp: o.mrp })),
+}));
 
 export const getProductBySlug = (slug: string): Product | undefined => {
   return PRODUCTS.find(p => p.slug === slug || p.id === slug);
 };
+
+/** The pack shown selected first: the popular one (the 26kg bag), otherwise the first pack. */
+export const getDefaultPack = (product: Product): PackOption =>
+  product.packOptions.find((o) => o.isPopular) ?? product.packOptions.find((o) => o.size === '26kg Bag') ?? product.packOptions[0];
+
+/** Single-bag sizes a product comes in, smallest first, e.g. "5kg · 10kg · 26kg". Multi-bag lots are left out. */

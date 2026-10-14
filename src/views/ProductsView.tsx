@@ -1,126 +1,89 @@
-import React, { useState } from 'react';
-import { ShieldCheck, Globe, Boxes, Check, Star, ArrowRight, Sparkles } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Truck, ShieldCheck, MessageCircle } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
+import { priceInfo, formatPriceDate } from '../data/prices';
+import { BRAND_CONFIG, fssaiLabel } from '../config/brandConfig';
 import { ProductCard } from '../components/common/ProductCard';
-import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import { GrainComparison } from '../components/common/GrainComparison';
+import { RiceFinder } from '../components/common/RiceFinder';
+import { Reveal } from '../components/common/motion';
+import { PageHero } from '../components/ui/PageHero';
+import { Container, Section, SectionHeader } from '../components/ui/Section';
+import { AppLink } from '../components/ui/AppLink';
+import { buttonClass } from '../components/ui/Button';
 
 interface ProductsViewProps {
   onNavigate: (route: string, param?: string) => void;
 }
 
 export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
-  const [selectedVarietyFilter, setSelectedVarietyFilter] = useState<string>('all');
-
-  const filteredProducts = PRODUCTS.filter(p => selectedVarietyFilter === 'all' || p.slug === selectedVarietyFilter);
-
+  const date = formatPriceDate(priceInfo.updated);
   return (
-    <div className="bg-[#F8F5EA] min-h-screen pb-24">
-      
-      {/* Header Banner */}
-      <div className="bg-[#174A32] text-white py-8 sm:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-4">
-          <Breadcrumbs items={[{ label: 'Rice Products' }]} onNavigate={onNavigate} variant="dark" />
-          
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-bold text-[#C9A227] flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              100% Sortex Optical Checked
-            </span>
-            <h1 className="font-serif-brand font-medium text-3xl sm:text-5xl text-white">
-              LG Gold Premium Rice Collection
-            </h1>
-            <p className="text-sm sm:text-base text-[#F8F5EA]/85 leading-relaxed">
-              Explore our flagship HMT and JSR rice varieties. Available in standard 26kg family & commercial bags, wholesale lots, and containerized export shipments.
-            </p>
-          </div>
-        </div>
+    <>
+      <PageHero
+        crumbs={[{ label: 'Shop' }]}
+        onNavigate={onNavigate}
+        eyebrow={date ? `Today’s mill rates · ${date}` : 'Mill-direct prices'}
+        title="Shop LG Gold rice"
+        intro="Choose your rice and pack, place your order, and follow its journey from our mill to your door in your account."
+      />
+
+      {/* Quick reassurance row */}
+      <div className="border-b border-line bg-paper">
+        <Container className="flex flex-wrap gap-x-8 gap-y-2 py-4 text-[15px] text-ink-soft">
+          <span className="inline-flex items-center gap-2">
+            <Truck className="h-5 w-5 text-gold-600" aria-hidden="true" /> Free delivery over ₹{BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN')}
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-gold-600" aria-hidden="true" /> {fssaiLabel()}
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-gold-600" aria-hidden="true" /> Orders saved to your account
+          </span>
+        </Container>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-8 space-y-12">
-        
-        {/* Filters and Variety Picker */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white border border-[#C9A227]/20 shadow-clean rounded-sm">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-[#174A32]">Filter Variety:</span>
-            <div className="flex gap-1.5">
-              <button
-                onClick={() => setSelectedVarietyFilter('all')}
-                className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-xs ${
-                  selectedVarietyFilter === 'all'
-                    ? 'bg-[#174A32] text-white'
-                    : 'bg-[#F8F5EA] text-[#202522] hover:bg-[#E7D59A]/40'
-                }`}
-              >
-                All ({PRODUCTS.length})
-              </button>
-              {PRODUCTS.map((p) => (
-                <button
-                  key={p.slug}
-                  onClick={() => setSelectedVarietyFilter(p.slug)}
-                  className={`px-3 py-1.5 text-xs font-bold transition-all cursor-pointer rounded-xs ${
-                    selectedVarietyFilter === p.slug
-                      ? 'bg-[#174A32] text-white'
-                      : 'bg-[#F8F5EA] text-[#202522] hover:bg-[#E7D59A]/40'
-                  }`}
-                >
-                  {p.shortName}
-                </button>
-              ))}
-            </div>
+      <Section tone="cream" tight>
+        <Container>
+          <h2 className="sr-only">Our rice</h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+            {PRODUCTS.map((product, i) => (
+              <Reveal key={product.id} delay={i * 100} className="h-full">
+                <ProductCard product={product} />
+              </Reveal>
+            ))}
           </div>
+        </Container>
+      </Section>
 
-          <div className="flex items-center gap-2 text-xs text-[#5F806D] font-semibold">
-            <ShieldCheck className="w-4 h-4 text-[#C9A227]" />
-            <span>Direct Mill Dispatch • Telangana</span>
+      <Section tone="paper">
+        <Container>
+          <SectionHeader eyebrow="Side by side" title="HMT or JSR?" intro="Same mill, same care. The difference is the grain, and the dishes each one is made for." />
+          <Reveal>
+            <GrainComparison />
+          </Reveal>
+          <Reveal className="mt-10">
+            <RiceFinder />
+          </Reveal>
+        </Container>
+      </Section>
+
+      <Section tone="forest" grain tight>
+        <Container className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+          <div className="max-w-2xl">
+            <p className="font-display text-3xl text-white sm:text-4xl">Buying for a shop, hotel or container?</p>
+            <p className="mt-3 text-cream/75">Trade rates from about 500kg, full truckloads, and export containers with private-label bags.</p>
           </div>
-        </div>
-
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onViewDetails={(slug) => onNavigate('product-detail', slug)}
-              onSelectExportQuote={() => onNavigate('export')}
-            />
-          ))}
-        </div>
-
-        {/* Grain Comparison Section */}
-        <GrainComparison onNavigate={onNavigate} />
-
-        {/* Commercial Inquiries CTA banner */}
-        <div className="bg-[#174A32] text-white p-8 sm:p-10 border-t-4 border-[#C9A227] flex flex-col md:flex-row items-center justify-between gap-6 shadow-clean rounded-sm">
-          <div className="space-y-2 text-center md:text-left">
-            <span className="text-xs font-bold text-[#C9A227]">
-              B2B Commercial Procurement
-            </span>
-            <h3 className="font-serif-brand font-medium text-2xl sm:text-3xl text-white">
-              Looking for Wholesale Packs or Container Export?
-            </h3>
-            <p className="text-xs sm:text-sm text-[#F8F5EA]/80 max-w-xl">
-              We provide customized bag printing, competitive mill-gate rates, and international FOB/CIF container shipping.
-            </p>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <AppLink to="wholesale" className={buttonClass('gold', 'lg')}>
+              Wholesale rates <ArrowRight className="h-5 w-5" />
+            </AppLink>
+            <AppLink to="export" className={buttonClass('outline-light', 'lg')}>
+              Export quote
+            </AppLink>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <button
-              onClick={() => onNavigate('wholesale')}
-              className="px-6 py-3 bg-white text-[#174A32] text-xs font-bold hover:bg-[#F8F5EA] transition-colors rounded-xs cursor-pointer"
-            >
-              Wholesale Inquiry
-            </button>
-            <button
-              onClick={() => onNavigate('export')}
-              className="px-6 py-3 bg-[#C9A227] text-[#174A32] text-xs font-bold hover:bg-[#E7D59A] transition-colors rounded-xs cursor-pointer"
-            >
-              Request Export Quote
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
+        </Container>
+      </Section>
+    </>
   );
 };

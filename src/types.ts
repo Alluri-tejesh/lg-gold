@@ -157,27 +157,4 @@ export interface WholesaleEnquiryForm {
   message: string;
 }
 
-export interface Review {
-  id: string;
-  author: string;
-  role: string;
-  location: string;
-  rating: number;
-  comment: string;
-  date: string;
-  verified: boolean;
-  productTarget?: string;
-}
 
-export type PageRoute = 
-  | 'home'
-  | 'products'
-  | 'product-detail'
-  | 'recipes'
-  | 'recipe-detail'
-  | 'quality'
-  | 'wholesale'
-  | 'bulk'
-  | 'export'
-  | 'about'
-  | 'contact';
