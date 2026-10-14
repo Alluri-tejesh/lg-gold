@@ -18,6 +18,7 @@ import { ApiError } from '../customer/api';
 import { formatPriceDate } from '../data/prices';
 import type { StoreSettings, Storefront } from '../data/storefront';
 import { LogoMark } from '../components/ui/Logo';
+import { BrandLoader } from '../components/ui/BrandLoader';
 import { Button } from '../components/ui/Button';
 import { Field, TextField, inputClass } from '../components/ui/Field';
 import { toast } from '../components/ui/Toast';
@@ -72,7 +73,7 @@ export const AdminView: React.FC<{ tab?: string }> = ({ tab }) => {
         </Button>
       </Centered>
     );
-  if (!me) return <Centered>{<div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-forest-200 border-t-forest-700" aria-label="Loading" />}</Centered>;
+  if (!me) return <Centered><BrandLoader small /></Centered>;
   if (!me.admin) return <SignIn configured={me.configured} onSignedIn={check} />;
   const current = (TABS.some((t) => t.id === tab) ? tab : 'orders') as Tab;
   return (

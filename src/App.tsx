@@ -5,6 +5,7 @@ import { ScrollProgress } from './components/common/motion';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
+import { BrandLoader } from './components/ui/BrandLoader';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { WhatsAppFloatingButton } from './components/common/WhatsAppFloatingButton';
 import { Toaster } from './components/ui/Toast';
@@ -52,8 +53,8 @@ const CustomerView = named(() => import('./customer/CustomerView'), 'CustomerVie
 
 /** While a page downloads (usually a few milliseconds), keep the layout steady instead of flashing white. */
 const PageFallback = () => (
-  <div className="min-h-[70vh] grid place-items-center" aria-busy="true" aria-label="Loading">
-    <span className="h-10 w-10 animate-spin rounded-full border-[3px] border-gold-300 border-t-forest-800" />
+  <div className="min-h-[70vh] grid place-items-center" aria-busy="true">
+    <BrandLoader small />
   </div>
 );
 

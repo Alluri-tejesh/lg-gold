@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>LG Gold Rice | Aged HMT &amp; JSR Rice from Telangana, Direct from the Mill</title>
+    <title>LG Gold Rice</title>
     <meta name="description" content="LG Gold by Sri Lakshmi Ganapathi Trading Company: aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export. FSSAI certified." />
     <meta name="theme-color" content="#174A32" />
     <meta name="robots" content="index,follow" />
@@ -11,7 +11,7 @@
     <!-- Link previews on WhatsApp, Facebook, LinkedIn and X -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LG Gold Rice" />
-    <meta property="og:title" content="LG Gold Rice | Aged HMT &amp; JSR Rice, Direct from the Mill" />
+    <meta property="og:title" content="LG Gold Rice" />
     <meta property="og:description" content="Aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export." />
     <meta property="og:image" content="og-image.jpg" />
     <meta property="og:image:width" content="1200" />
@@ -56,22 +56,52 @@
     </script>
 
     <style>
-      /* Shown until the app has started (usually under a second), so the first paint is the brand, not a blank page. */
-      #splash { position: fixed; inset: 0; display: grid; place-items: center; background: #f8f5ea; transition: opacity .3s ease; }
-      #splash .ring { width: 64px; height: 64px; border-radius: 50%; border: 3px solid #e7d59a; border-top-color: #174a32; animation: s 0.9s linear infinite; }
-      #splash p { margin: 18px 0 0; font: 600 13px/1 system-ui, sans-serif; letter-spacing: .18em; color: #8a650c; text-transform: uppercase; text-align: center; }
-      @keyframes s { to { transform: rotate(360deg); } }
-      @media (prefers-reduced-motion: reduce) { #splash .ring { animation: none; } }
+      /*
+       * "Grain to Gold" loader. Shown while the site starts (index.html) and while a page loads (BrandLoader in React,
+       * which reuses these classes). Rice grains fall into the LG Gold coin while liquid gold rises inside it.
+       * Plain SVG + CSS, so it appears on the very first paint with nothing to download.
+       */
+      #splash { position: fixed; inset: 0; display: grid; place-items: center; background: #f8f5ea; }
+      .bl-wrap { display: flex; flex-direction: column; align-items: center; }
+      .bl { width: 120px; height: 120px; overflow: visible; filter: drop-shadow(0 10px 22px rgb(23 74 50 / .16)); }
+      .bl-sm .bl { width: 92px; height: 92px; }
+      .bl-ring { transform-origin: 60px 60px; stroke-dasharray: 18 82; animation: bl-spin 1.6s cubic-bezier(.55,.15,.45,.85) infinite, bl-sweep 3.2s ease-in-out infinite; }
+      .bl-fill { animation: bl-rise 2.8s cubic-bezier(.25,.7,.2,1) forwards; }
+      .bl-wave { animation: bl-wave 1.8s linear infinite; }
+      .bl-wave2 { animation: bl-wave 2.6s linear infinite reverse; opacity: .45; }
+      .bl-grain { transform-box: fill-box; transform-origin: center; opacity: 0; animation: bl-fall 1.5s cubic-bezier(.55,0,.9,.5) infinite; }
+      .bl-grain:nth-of-type(2) { animation-delay: .25s; }
+      .bl-grain:nth-of-type(3) { animation-delay: .5s; }
+      .bl-grain:nth-of-type(4) { animation-delay: .75s; }
+      .bl-grain:nth-of-type(5) { animation-delay: 1s; }
+      .bl-grain:nth-of-type(6) { animation-delay: 1.25s; }
+      .bl-mono { animation: bl-breathe 2.4s ease-in-out infinite; transform-origin: 60px 60px; }
+      .bl-word { margin-top: 20px; font: 700 22px/1 'Playfair Display', Georgia, serif; letter-spacing: .08em; color: #174a32; }
+      .bl-word span { color: #b38a17; }
+      .bl-sm .bl-word { font-size: 18px; margin-top: 16px; }
+      .bl-tag { margin-top: 10px; font: 600 11px/1 Inter, system-ui, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #8a650c; animation: bl-tag 2.4s ease-in-out infinite; }
+      @keyframes bl-spin { to { transform: rotate(360deg); } }
+      @keyframes bl-sweep { 0%, 100% { stroke-dasharray: 10 90; } 50% { stroke-dasharray: 46 54; } }
+      @keyframes bl-rise { from { transform: translateY(0); } to { transform: translateY(-58px); } }
+      @keyframes bl-wave { to { transform: translateX(-60px); } }
+      @keyframes bl-fall {
+        0% { opacity: 0; transform: translateY(-6px) rotate(-30deg); }
+        15% { opacity: 1; }
+        70% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(52px) rotate(40deg); }
+      }
+      @keyframes bl-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+      @keyframes bl-tag { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+      @media (prefers-reduced-motion: reduce) {
+        .bl-ring, .bl-wave, .bl-wave2, .bl-mono, .bl-tag { animation: none; }
+        .bl-grain { display: none; }
+        .bl-fill { animation: none; transform: translateY(-58px); }
+      }
     </style>
   </head>
   <body>
     <div id="root">
-      <div id="splash" aria-label="Loading LG Gold Rice">
-        <div>
-          <div class="ring" style="margin: 0 auto"></div>
-          <p>LG Gold Rice</p>
-        </div>
-      </div>
+      <div id="splash"><div role="status" aria-label="Loading LG Gold Rice" class="bl-wrap"><svg class="bl" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="splg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2D46B"></stop><stop offset="0.6" stop-color="#D8B23A"></stop><stop offset="1" stop-color="#B38A17"></stop></linearGradient><clipPath id="splc"><circle cx="60" cy="60" r="43"></circle></clipPath></defs><circle cx="60" cy="60" r="43" fill="#FFFAF0"></circle><g clip-path="url(#splc)"><g><ellipse class="bl-grain" cx="46" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="58" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="70" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="52" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="64" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse><ellipse class="bl-grain" cx="75" cy="24" rx="1.7" ry="4.2" fill="#FFFFFF" stroke="#B9922A" stroke-width="0.9"></ellipse></g><g class="bl-fill"><path class="bl-wave2" fill="url(#splg)" d="M-60 104 q15 -5 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 V240 H-60 Z"></path><path class="bl-wave" fill="url(#splg)" d="M-60 106 q15 5 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 V240 H-60 Z"></path></g></g><circle cx="60" cy="60" r="43" fill="none" stroke="#174A32" stroke-width="2.2"></circle><circle cx="60" cy="60" r="51" fill="none" stroke="#EFE3BF" stroke-width="3"></circle><circle class="bl-ring" cx="60" cy="60" r="51" fill="none" stroke="#D8B23A" stroke-width="3" stroke-linecap="round" pathLength="100"></circle><g class="bl-mono"><g transform="translate(60 60) scale(1.25) translate(-30 -32)" fill="#174A32"><path d="M18 20h5.2v19.4h9.4V44H18z"></path><path d="M41.5 33.6h-7v4.1h3.2c-.6 1.8-2.1 2.8-4.1 2.8-2.9 0-4.8-2.3-4.8-5.6s1.9-5.6 4.7-5.6c1.6 0 2.8.7 3.6 1.9l3.8-2.4c-1.6-2.5-4.2-3.9-7.4-3.9-5.7 0-9.7 4.1-9.7 10s3.9 10 9.6 10c5.6 0 8.9-3.9 8.9-9.7z" transform="translate(2 -1.5) scale(0.92)"></path></g></g></svg><p class="bl-word">LG <span>GOLD</span></p><p class="bl-tag">Fresh from our mill</p></div></div>
     </div>
     <noscript>
       <p style="padding: 24px; font-family: system-ui, sans-serif">
