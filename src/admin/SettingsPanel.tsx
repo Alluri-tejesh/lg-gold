@@ -42,6 +42,19 @@ export const SettingsPanel: React.FC<{
           </span>
           Delivery
         </h2>
+        <div className="mt-4">
+          <Switch
+            checked={s.deliveryAvailable === true}
+            onChange={(v) => set({ deliveryAvailable: v })}
+            label="Doorstep delivery is available"
+            onText="Delivery open"
+            offText="Delivery not open yet"
+          />
+          <p className="mt-2 text-sm text-muted">
+            Off: customers can collect from the mill or send a delivery request that you confirm on WhatsApp, and pay after you confirm.
+            On: they pay online and delivery is charged below.
+          </p>
+        </div>
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           <TextField
             label="Free delivery from (₹)"

@@ -5,6 +5,8 @@ import { applyPrices, loadPrices, PriceTable } from './prices';
 /** Delivery and payment settings the admin page can change without a deploy. */
 export interface StoreSettings {
   delivery: { freeFromOrderValue: number; charge: number };
+  /** Doorstep delivery is open. Off: pickup from the mill, or a delivery request the mill confirms. */
+  deliveryAvailable?: boolean;
   cashOnDelivery: boolean;
   upiId: string;
   upiPayeeName: string;
@@ -21,6 +23,7 @@ export interface Storefront {
 }
 
 const applySettings = (s: StoreSettings) => {
+  BRAND_CONFIG.delivery.available = s.deliveryAvailable === true;
   BRAND_CONFIG.delivery.freeFromOrderValue = s.delivery.freeFromOrderValue;
   BRAND_CONFIG.delivery.charge = s.delivery.charge;
   BRAND_CONFIG.payments.cashOnDelivery = s.cashOnDelivery;

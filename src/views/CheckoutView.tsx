@@ -27,11 +27,11 @@ import { useCart } from "../context/CartContext";
 import {
   BRAND_CONFIG,
   createWhatsAppUrl,
-  fssaiLabel,
   openWhatsApp,
   phoneTelHref,
 } from "../config/brandConfig";
 import { priceInfo, formatPriceDate } from "../data/prices";
+import { uuid } from "../data/uuid";
 import {
   buildOrderMessage,
   createOrderId,
@@ -93,6 +93,8 @@ interface Placed {
   orderId: string;
   items: CartItem[];
   totals: { rice: number; delivery: number; total: number };
+  fulfilment?: "pickup" | "delivery";
+  deliveryPending?: boolean;
   url: string;
   payment: OrderPayment;
   address: string;
@@ -112,7 +114,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
     updateQuantity,
     removeFromCart,
     completeOrder,
+    deliveryAvailable,
   } = useCart();
+
+  // Pickup from the mill is always possible. Doorstep delivery is a request the mill confirms until it is switched on.
+  const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">("pickup");
+  const pickup = fulfilment === "pickup";
+  const deliveryRequest = !pickup && !deliveryAvailable;
+  const orderTotal = pickup ? totalAmount : grandTotal;
 
   const methods = useMemo(() => {
     const list: {
@@ -122,6 +131,15 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
       icon: React.ComponentType<{ className?: string }>;
       badge?: string;
     }[] = [];
+    if (!pickup && !deliveryAvailable) {
+      list.push({
+        id: "later",
+        title: "Pay after the mill confirms",
+        body: "The mill confirms delivery and the delivery cost on WhatsApp first, then shares payment details",
+        icon: Clock,
+      });
+      return list;
+    }
     if (upiEnabled())
       list.push({
         id: "upi",
@@ -140,8 +158,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
     if (BRAND_CONFIG.payments.cashOnDelivery)
       list.push({
         id: "cod",
-        title: "Cash on delivery",
-        body: "Pay in cash or UPI when the rice reaches you",
+        title: pickup ? "Pay at the mill" : "Cash on delivery",
+        body: pickup ? "Pay in cash or UPI when you collect your rice" : "Pay in cash or UPI when the rice reaches you",
         icon: Banknote,
       });
     list.push({
@@ -151,7 +169,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
       icon: Clock,
     });
     return list;
-  }, [config.gateway]);
+  }, [config.gateway, pickup, deliveryAvailable]);
 
   const [d, setD] = useState<Details>(EMPTY);
   const [errors, setErrors] = useState<
@@ -159,6 +177,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
   >({});
   const [orderId] = useState(createOrderId);
   const [method, setMethod] = useState<PaymentMethod>(methods[0].id);
+  // Switching between pickup and delivery changes which payment options exist.
+  useEffect(() => {
+    if (!methods.some((m) => m.id === method)) setMethod(methods[0].id);
+  }, [methods, method]);
   const [pin, setPin] = useState<{
     state: "idle" | "loading" | "found" | "notfound";
     place?: PinPlace;
@@ -172,7 +194,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
   const [placed, setPlaced] = useState<Placed | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<SavedOrder | null>(null);
-  const submission = useRef({ signature: "", requestId: crypto.randomUUID() });
+  const submission = useRef({ signature: "", requestId: uuid() });
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => setPageMeta({ route: "checkout" }), []);
@@ -184,7 +206,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
       address
         ? {
             name: address.name,
-            phone: address.phone,
+            phone: normalizeIndianMobile(address.phone) ?? address.phone,
             pin: address.pin,
             house: address.house,
             landmark: address.landmark,
@@ -194,7 +216,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
         : {
             ...EMPTY,
             name: user.name === "Customer" ? "" : user.name,
-            phone: user.phone,
+            phone: normalizeIndianMobile(user.phone) ?? user.phone,
           },
     );
   }, [user?.id]);
@@ -235,9 +257,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
 
   const validate = () => {
     const e: typeof errors = {};
-    if (!d.name.trim()) e.name = "Enter your name.";
+    if (d.name.trim().length < 2) e.name = "Enter your name.";
     if (!normalizeIndianMobile(d.phone))
       e.phone = "Enter a 10-digit mobile number, for example 98765 43210.";
+    if (pickup) return e;
     if (!/^[1-9]\d{5}$/.test(d.pin)) e.pin = "Enter the 6-digit PIN code.";
     if (d.house.trim().length < 4)
       e.house = "Enter your house or flat number and street.";
@@ -264,6 +287,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
           address,
         },
         payment,
+        fulfilment: order.fulfilment,
+        deliveryPending: order.deliveryPending,
       }),
     );
     setPlaced({
@@ -271,6 +296,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
       orderId: order.orderId,
       items: order.items,
       totals: order.totals,
+      fulfilment: order.fulfilment,
+      deliveryPending: order.deliveryPending,
       url,
       payment,
       address,
@@ -304,13 +331,26 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
         packSize: i.packSize,
         quantity: i.quantity,
       })),
-      expectedTotal: grandTotal,
+      expectedTotal: orderTotal,
       method,
-      address: { ...d, label: "Checkout", isDefault: false },
+      fulfilment,
+      address: pickup
+        ? {
+            name: d.name,
+            phone: d.phone,
+            house: BRAND_CONFIG.location.address,
+            landmark: "Pickup at the mill",
+            city: BRAND_CONFIG.location.city,
+            state: BRAND_CONFIG.location.state,
+            pin: BRAND_CONFIG.location.pin,
+            label: "Pickup",
+            isDefault: false,
+          }
+        : { ...d, label: "Checkout", isDefault: false },
     };
     const signature = JSON.stringify(payload);
     if (submission.current.signature !== signature)
-      submission.current = { signature, requestId: crypto.randomUUID() };
+      submission.current = { signature, requestId: uuid() };
     try {
       const saved = await api<{ order: SavedOrder }>("/orders", "POST", {
         ...payload,
@@ -369,7 +409,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
 
   const date = formatPriceDate(priceInfo.updated);
   const ctaLabel =
-    method === "card" ? `Pay securely & place order` : `Place order`;
+    method === "card"
+      ? `Pay securely & place order`
+      : deliveryRequest
+        ? `Send order request`
+        : `Place order`;
 
   const Summary = (
     <div className="rounded-3xl bg-white ring-1 ring-line shadow-soft">
@@ -451,14 +495,20 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
           </div>
         )}
         <div className="flex justify-between">
-          <dt className="text-muted">Doorstep delivery</dt>
+          <dt className="text-muted">{pickup ? "Pickup from the mill" : "Delivery"}</dt>
           <dd
-            className={`tabular ${isFreeDelivery ? "font-semibold text-forest-700" : ""}`}
+            className={`tabular ${pickup || isFreeDelivery ? "font-semibold text-forest-700" : ""}`}
           >
-            {isFreeDelivery ? "FREE" : inr(deliveryCharge)}
+            {pickup
+              ? "No charge"
+              : deliveryRequest
+                ? "Mill will confirm"
+                : isFreeDelivery
+                  ? "FREE"
+                  : inr(deliveryCharge)}
           </dd>
         </div>
-        {!isFreeDelivery && (
+        {!pickup && deliveryAvailable && !isFreeDelivery && (
           <p className="rounded-xl bg-gold-50 px-3 py-2 text-sm text-gold-700">
             Add {inr(amountForFreeDelivery)} more for free delivery.
           </p>
@@ -466,7 +516,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
         <div className="flex items-baseline justify-between border-t border-line pt-3">
           <dt className="font-semibold text-forest-800">Total</dt>
           <dd className="text-3xl font-bold tracking-tight text-forest-800">
-            <RollingNumber value={grandTotal} />
+            <RollingNumber value={orderTotal} />
           </dd>
         </div>
         {date && (
@@ -511,7 +561,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
               />
             </span>
             <span className="text-2xl font-bold tracking-tight text-forest-800 tabular">
-              {inr(grandTotal)}
+              {inr(orderTotal)}
             </span>
           </button>
           {summaryOpen && <div className="mt-3 animate-pop-in">{Summary}</div>}
@@ -533,14 +583,52 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                     1
                   </span>
                   <span className="font-display text-2xl text-forest-800">
-                    Where should we deliver?
+                    How would you like your rice?
                   </span>
                 </span>
               </legend>
               <p className="mt-4 text-sm text-muted">
                 Ordering as <strong className="text-forest-800">{user.name}</strong>. The order is saved in My orders.
               </p>
-              {user.addresses.length > 0 && (
+              <div className="mt-6 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Pickup or delivery">
+                {(
+                  [
+                    {
+                      id: "pickup",
+                      title: "Collect from our mill",
+                      body: `${BRAND_CONFIG.location.city}, ${BRAND_CONFIG.location.state}. No delivery charge. Open ${BRAND_CONFIG.contact.operatingHours.replace(/ IST$/, "")}.`,
+                    },
+                    {
+                      id: "delivery",
+                      title: deliveryAvailable ? "Home delivery" : "Request delivery",
+                      body: deliveryAvailable
+                        ? "To your door, at the delivery charge shown in your order."
+                        : "Delivery is not open yet. Send your address and the mill confirms if and how it can deliver, with the cost.",
+                    },
+                  ] as const
+                ).map((o) => (
+                  <label
+                    key={o.id}
+                    className={`flex cursor-pointer items-start gap-3 rounded-2xl p-4 ring-1 transition-colors ${
+                      fulfilment === o.id ? "bg-gold-50 ring-2 ring-gold-500" : "bg-cream ring-line"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="fulfilment"
+                      value={o.id}
+                      checked={fulfilment === o.id}
+                      onChange={() => setFulfilment(o.id)}
+                      className="mt-1 h-4 w-4 accent-forest-800"
+                    />
+                    <span>
+                      <span className="block font-semibold text-forest-800">{o.title}</span>
+                      <span className="mt-1 block text-sm text-muted">{o.body}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {!pickup && user.addresses.length > 0 && (
                 <div className="mt-6">
                   <p className="mb-3 text-sm font-semibold text-forest-800">
                     Choose a saved address
@@ -553,7 +641,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                         onClick={() =>
                           setD({
                             name: a.name,
-                            phone: a.phone,
+                            phone: normalizeIndianMobile(a.phone) ?? a.phone,
                             pin: a.pin,
                             house: a.house,
                             landmark: a.landmark,
@@ -604,6 +692,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                     </div>
                   )}
                 </Field>
+                {!pickup && (<>
                 <Field label="PIN code" required error={errors.pin}>
                   {({ id, describedBy, invalid }) => (
                     <div className="relative">
@@ -693,7 +782,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                     <option key={t} value={t} />
                   ))}
                 </datalist>
+                </>)}
               </div>
+              {pickup && (
+                <p className="mt-5 flex items-start gap-2 rounded-2xl bg-forest-50 px-4 py-3 text-sm text-forest-800 ring-1 ring-forest-200">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-forest-700" aria-hidden="true" />
+                  <span>
+                    <strong>{BRAND_CONFIG.parentCompany}</strong>, {BRAND_CONFIG.location.address}.{" "}
+                    The mill confirms on WhatsApp when your order is ready to collect.
+                  </span>
+                </p>
+              )}
             </fieldset>
 
             {/* 2. Payment */}
@@ -802,7 +901,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                               }
                               onClick={payByCard}
                             >
-                              Pay {inr(grandTotal)} & place order
+                              Pay {inr(orderTotal)} & place order
                             </Button>
                             {card.error && (
                               <p
@@ -874,16 +973,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                 className="mt-6 whitespace-normal text-center"
                 icon={<ShoppingBag className="h-5 w-5" />}
               >
-                {ctaLabel} · {inr(grandTotal)}
+                {ctaLabel} · {inr(orderTotal)}
               </Button>
               <ul className="mt-5 grid gap-2 text-sm text-cream/75 sm:grid-cols-3">
-                <li className="flex items-center gap-2">
-                  <ShieldCheck
-                    className="h-4 w-4 text-gold-400"
-                    aria-hidden="true"
-                  />{" "}
-                  {fssaiLabel()}
-                </li>
                 <li className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-gold-400" aria-hidden="true" />{" "}
                   From our mill
@@ -902,7 +994,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                   <div className="shrink-0">
                     <p className="text-xs text-muted">Total</p>
                     <p className="text-2xl font-bold leading-none tracking-tight text-forest-800">
-                      <RollingNumber value={grandTotal} />
+                      <RollingNumber value={orderTotal} />
                     </p>
                   </div>
                   <Button
@@ -995,8 +1087,12 @@ const OrderPlaced: React.FC<{
           Your order has a place at the table.
         </h1>
         <p className="mx-auto mt-3 max-w-md text-lg text-ink-soft">
-          The mill has your order and will confirm the dispatch time. Follow
-          every update in My orders.
+          {placed.fulfilment === "pickup"
+            ? "The mill has your order and will confirm when it is ready to collect."
+            : placed.deliveryPending
+              ? "The mill has your request and will confirm delivery, its cost and payment with you on WhatsApp."
+              : "The mill has your order and will confirm the dispatch time."}{" "}
+          Follow every update in My orders.
         </p>
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <Button
@@ -1049,7 +1145,13 @@ const OrderPlaced: React.FC<{
             <li className="flex justify-between gap-3 text-muted">
               <span>Delivery</span>
               <span>
-                {placed.totals.delivery ? inr(placed.totals.delivery) : "Free"}
+                {placed.fulfilment === "pickup"
+                  ? "Pickup, no charge"
+                  : placed.deliveryPending
+                    ? "Mill will confirm"
+                    : placed.totals.delivery
+                      ? inr(placed.totals.delivery)
+                      : "Free"}
               </span>
             </li>
             <li className="flex justify-between gap-3 border-t border-line pt-2 font-semibold text-forest-800">
@@ -1058,8 +1160,12 @@ const OrderPlaced: React.FC<{
             </li>
           </ul>
           <p className="mt-4 text-sm text-muted">
-            <strong className="text-forest-800">Deliver to:</strong>{" "}
-            {placed.address}
+            <strong className="text-forest-800">
+              {placed.fulfilment === "pickup" ? "Collect from:" : placed.deliveryPending ? "Delivery requested to:" : "Deliver to:"}
+            </strong>{" "}
+            {placed.fulfilment === "pickup"
+              ? `${BRAND_CONFIG.parentCompany}, ${BRAND_CONFIG.location.address}`
+              : placed.address}
           </p>
           <p className="mt-1 text-sm text-muted">
             <strong className="text-forest-800">Payment:</strong>{" "}
@@ -1078,11 +1184,11 @@ const OrderPlaced: React.FC<{
               },
               {
                 t: "The mill confirms",
-                s: "Payment and dispatch updates appear in My orders.",
+                s: placed.fulfilment === "pickup" ? "Updates appear in My orders and on WhatsApp." : "Payment and dispatch updates appear in My orders.",
               },
               {
-                t: "Rice at your door",
-                s: "Fresh from our mill in Venkatadri Palem.",
+                t: placed.fulfilment === "pickup" ? "Collect your rice" : placed.deliveryPending ? "Delivery, if the mill can" : "Rice at your door",
+                s: placed.fulfilment === "pickup" ? "Fresh from our mill in Venkatadri Palem." : "Fresh from our mill in Venkatadri Palem.",
               },
             ].map((step, i) => (
               <li key={step.t} className="flex gap-3">
@@ -1127,7 +1233,7 @@ const SignInStep: React.FC<{ total: number; items: number; error: string; onRetr
           <span className="grid h-9 w-9 place-items-center rounded-full bg-forest-800 font-display text-lg text-gold-300">1</span>
           <h1 className="mt-4 font-display text-3xl text-forest-800 sm:text-4xl">Sign in to place your order</h1>
           <p className="mt-3 text-ink-soft">
-            Your order is saved to your account, so you can follow its delivery and reorder your usual rice in two taps.
+            Your order is saved to your account, so you can follow it and reorder your usual rice in two taps.
             Your cart stays exactly as it is.
           </p>
           {error && (
@@ -1149,7 +1255,7 @@ const SignInStep: React.FC<{ total: number; items: number; error: string; onRetr
           <p className="mt-4 text-center text-sm text-muted">New here? It takes under a minute: your name, mobile number and a password.</p>
           <ul className="mt-8 grid gap-3 border-t border-line pt-6 text-sm text-ink-soft sm:grid-cols-3">
             <li className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-gold-600" aria-hidden="true" /> Follow every delivery
+              <Truck className="h-4 w-4 text-gold-600" aria-hidden="true" /> Follow every order
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-gold-600" aria-hidden="true" /> Address saved for next time

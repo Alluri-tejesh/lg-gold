@@ -112,6 +112,8 @@ const storefrontInput = z.object({
       charge: money,
     }),
     cashOnDelivery: z.boolean(),
+    // Off: delivery orders are enquiries the mill confirms by WhatsApp; customers can still pick up at the mill.
+    deliveryAvailable: z.boolean().default(false),
     upiId: z
       .string()
       .trim()
@@ -260,10 +262,25 @@ export function createApp(db, config, injectedDelivery) {
     const allowedOrigins = [config.origin];
     if (!config.production && new URL(config.origin).hostname === "localhost")
       allowedOrigins.push(config.origin.replace("localhost", "127.0.0.1"));
+    // Development only: a phone on the same Wi-Fi opens the site at http://<computer's address>:3000, so accept
+    // addresses on the home network (never in production, where only the configured origin is allowed).
+    const originAllowed = (origin) => {
+      if (allowedOrigins.includes(origin)) return true;
+      if (config.production) return false;
+      try {
+        const o = new URL(origin);
+        return (
+          o.port === new URL(config.origin).port &&
+          /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)\d+\.\d+(\.\d+)?$|\.local$/.test(o.hostname)
+        );
+      } catch {
+        return false;
+      }
+    };
     if (
       !["GET", "HEAD", "OPTIONS"].includes(req.method) &&
       (req.get("x-lg-client") !== "web" ||
-        (req.get("origin") && !allowedOrigins.includes(req.get("origin"))))
+        (req.get("origin") && !originAllowed(req.get("origin"))))
     )
       return res.status(403).json({ error: "Request origin is not allowed." });
     next();
@@ -738,6 +755,8 @@ export function createApp(db, config, injectedDelivery) {
         expectedTotal: z.number().positive(),
         address,
         method: z.enum(["upi", "card", "cod", "later"]),
+        // "pickup": the customer collects from the mill (the address is then the mill's).
+        fulfilment: z.enum(["pickup", "delivery"]).default("delivery"),
       })
       .parse(req.body);
     const previous = await orders.findOne({
@@ -750,7 +769,16 @@ export function createApp(db, config, injectedDelivery) {
       input.expectedTotal,
       await store.get(),
       config.dataDir,
+      input.fulfilment,
     );
+    // A delivery request while delivery is off is an enquiry: no payment is taken until the mill confirms.
+    const deliveryPending =
+      input.fulfilment === "delivery" && !priced.rules.deliveryAvailable;
+    if (deliveryPending && input.method !== "later")
+      fail(
+        400,
+        "Delivery is not open yet. The mill will confirm delivery and payment with you on WhatsApp.",
+      );
     if (input.method === "cod" && !priced.rules.cashOnDelivery)
       fail(400, "Cash on delivery is unavailable.");
     if (input.method === "upi" && !priced.rules.upiId)
@@ -769,6 +797,8 @@ export function createApp(db, config, injectedDelivery) {
       items: priced.items,
       totals: priced.totals,
       address: input.address,
+      fulfilment: input.fulfilment,
+      deliveryPending,
       status: "placed",
       payment: {
         method: input.method,
@@ -781,7 +811,12 @@ export function createApp(db, config, injectedDelivery) {
         {
           status: "placed",
           at: now,
-          note: "Order saved. The mill will confirm availability and dispatch.",
+          note:
+            input.fulfilment === "pickup"
+              ? "Order saved. The mill will confirm availability and when you can collect it."
+              : deliveryPending
+                ? "Order request saved. The mill will confirm availability, delivery and payment on WhatsApp."
+                : "Order saved. The mill will confirm availability and dispatch.",
         },
       ],
       version: 1,

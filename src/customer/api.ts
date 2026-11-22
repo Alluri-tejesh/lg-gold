@@ -32,6 +32,10 @@ export interface SavedOrder {
   items: CartItem[];
   totals: { rice: number; delivery: number; total: number };
   address: Address;
+  /** Older orders have no value and were home deliveries. */
+  fulfilment?: "pickup" | "delivery";
+  /** Delivery was requested while it was not open: the mill confirms it and its cost. */
+  deliveryPending?: boolean;
   status: OrderStatus;
   payment: {
     method: "upi" | "card" | "cod" | "later";

@@ -193,7 +193,7 @@ export function OrdersPanel({ onExpired }: { onExpired: () => void }) {
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="font-medium">
-                    {o.address.name} · {o.address.city}
+                    {o.address.name} · {o.fulfilment === 'pickup' ? 'Pickup at mill' : o.deliveryPending ? 'Delivery request' : o.address.city}
                   </p>
                   <p className="mt-1 text-sm text-muted">
                     {packs(o)} · {METHOD[o.payment.method]} · {PAYMENT_STATUS[o.payment.status]}
@@ -237,7 +237,18 @@ export function OrdersPanel({ onExpired }: { onExpired: () => void }) {
 
               <div className="mt-5 rounded-2xl bg-cream p-4">
                 <p className="font-semibold text-forest-800">{selected.address.name}</p>
-                <p className="mt-1 text-sm text-ink-soft">{formatAddress(selected.address)}</p>
+                {selected.fulfilment === 'pickup' ? (
+                  <p className="mt-1 text-sm font-semibold text-gold-700">Pickup at the mill. No address or delivery needed.</p>
+                ) : (
+                  <>
+                    {selected.deliveryPending && (
+                      <p className="mt-1 text-sm font-semibold text-gold-700">
+                        Delivery request: confirm if you can deliver, and the delivery cost, on WhatsApp.
+                      </p>
+                    )}
+                    <p className="mt-1 text-sm text-ink-soft">{formatAddress(selected.address)}</p>
+                  </>
+                )}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <a href={`tel:${selected.address.phone}`} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white px-4 text-sm font-semibold text-forest-800 ring-1 ring-line">
                     <Phone className="h-4 w-4" /> {selected.address.phone}
@@ -271,7 +282,9 @@ export function OrdersPanel({ onExpired }: { onExpired: () => void }) {
               <dl className="mt-2 space-y-1 border-t border-line pt-3 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted">Delivery</dt>
-                  <dd className="tabular">{selected.totals.delivery ? money(selected.totals.delivery) : 'Free'}</dd>
+                  <dd className="tabular">
+                    {selected.fulfilment === 'pickup' ? 'Pickup' : selected.deliveryPending ? 'To confirm' : selected.totals.delivery ? money(selected.totals.delivery) : 'Free'}
+                  </dd>
                 </div>
                 <div className="flex justify-between text-base font-bold text-forest-800">
                   <dt>Total</dt>

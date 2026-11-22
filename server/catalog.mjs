@@ -8,6 +8,7 @@ export async function priceOrder(
   expectedTotal,
   store,
   dataDir = resolve("public"),
+  fulfilment = "delivery",
 ) {
   const base = JSON.parse(
     await readFile(resolve(dataDir, "storefront.json"), "utf8"),
@@ -74,8 +75,14 @@ export async function priceOrder(
   const rice =
     snapshot.reduce((n, i) => n + Math.round(i.price * 100) * i.quantity, 0) /
     100;
+  // Mill pickup has no delivery charge. Until delivery is switched on in the admin settings, a delivery request is
+  // only an enquiry: the mill confirms the delivery cost with the customer, so nothing is added here.
   const delivery =
-    rice >= rules.delivery.freeFromOrderValue ? 0 : rules.delivery.charge;
+    fulfilment === "pickup" ||
+    !rules.deliveryAvailable ||
+    rice >= rules.delivery.freeFromOrderValue
+      ? 0
+      : rules.delivery.charge;
   const total = Math.round((rice + delivery) * 100) / 100;
   if (Math.abs(total - expectedTotal) > 0.005)
     throw Object.assign(

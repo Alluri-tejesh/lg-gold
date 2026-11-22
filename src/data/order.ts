@@ -61,8 +61,12 @@ export function buildOrderMessage(opts: {
   totals: OrderTotals;
   customer?: OrderCustomer;
   payment?: OrderPayment;
+  /** "pickup": the customer collects from the mill. */
+  fulfilment?: 'pickup' | 'delivery';
+  /** Delivery was requested but is not open yet: the mill confirms it and its cost. */
+  deliveryPending?: boolean;
 }): string {
-  const { orderId, items, totals, customer, payment } = opts;
+  const { orderId, items, totals, customer, payment, fulfilment, deliveryPending } = opts;
   const lines: string[] = [];
   lines.push(customer ? 'Hello LG Gold, I’d like to place an order.' : 'Hello LG Gold, I’d like to order:');
   if (orderId) lines.push('', `Order ${orderId}`);
@@ -70,12 +74,20 @@ export function buildOrderMessage(opts: {
   for (const i of items) {
     lines.push(`• ${i.productName}, ${i.packSize} × ${i.quantity} = ${inr(i.price * i.quantity)}`);
   }
-  lines.push('', `Rice: ${inr(totals.rice)}`, `Delivery: ${totals.delivery ? inr(totals.delivery) : 'Free'}`, `Total: ${inr(totals.total)}`);
+  const deliveryLine =
+    fulfilment === 'pickup'
+      ? 'Pickup from the mill: no delivery charge'
+      : deliveryPending
+        ? 'Delivery: to be confirmed by the mill'
+        : `Delivery: ${totals.delivery ? inr(totals.delivery) : 'Free'}`;
+  lines.push('', `Rice: ${inr(totals.rice)}`, deliveryLine, `Total: ${inr(totals.total)}`);
   if (customer) {
-    lines.push('', 'Deliver to:', `${customer.name}, ${customer.phone}`, customer.address);
+    if (fulfilment === 'pickup') lines.push('', 'I will collect from the mill:', `${customer.name}, ${customer.phone}`);
+    else lines.push('', deliveryPending ? 'Please confirm delivery to:' : 'Deliver to:', `${customer.name}, ${customer.phone}`, customer.address);
   }
   if (payment) lines.push('', `Payment: ${paymentLine(payment)}`);
   const asOf = formatPriceDate(priceInfo.updated);
-  lines.push('', customer ? `Prices as of ${asOf ?? 'today'}. Please confirm the dispatch time. Thank you!` : `Please confirm today’s rate and delivery. Thank you!`);
+  lines.push('', customer
+      ? `Prices as of ${asOf ?? 'today'}. ${fulfilment === 'pickup' ? 'Please confirm when I can collect it.' : 'Please confirm the dispatch time.'} Thank you!` : `Please confirm today’s rate and delivery. Thank you!`);
   return lines.join('\n');
 }

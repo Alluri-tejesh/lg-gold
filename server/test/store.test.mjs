@@ -5,6 +5,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import request from "supertest";
 import { connectDatabase } from "../db.mjs";
 import { createApp } from "../app.mjs";
+import { createStore } from "../store.mjs";
 import { digest, hashPassword, sign } from "../security.mjs";
 
 let mongo, client, db, app, alice, bob, administrator;
@@ -69,6 +70,11 @@ before(async () => {
   mongo = await MongoMemoryServer.create();
   ({ db, client } = await connectDatabase(mongo.getUri(), "lg_gold_test"));
   config.dummyHash = await hashPassword("fixture-not-a-user-password");
+  // The shop ships with doorstep delivery off; most tests exercise the delivery-on flow.
+  await createStore(db).get();
+  await db
+    .collection("store")
+    .updateOne({ _id: "storefront" }, { $set: { "settings.deliveryAvailable": true } });
   app = createApp(db, config, provider);
   alice = request.agent(app);
   bob = request.agent(app);
@@ -657,4 +663,39 @@ test("email verification is bound to the requested address; reset links expire, 
   );
   assert.equal((await post(alice, "/account/logout-all")).status, 200);
   assert.equal((await alice.get("/api/auth/me")).body.user, null);
+});
+
+test("pickup has no delivery charge; delivery is an enquiry while delivery is switched off", async () => {
+  const reg = request.agent(app);
+  assert.equal(
+    (await post(reg, "/auth/register", { name: "Pick Up", phone: "+91 90000 00077", email: "pickup@example.test", password: "correct horse battery staple" })).status,
+    201,
+  );
+  const setDelivery = (on) =>
+    db.collection("store").updateOne({ _id: "storefront" }, { $set: { "settings.deliveryAvailable": on } });
+  try {
+    await setDelivery(false);
+    // Below the free-delivery threshold, a pickup order still has no delivery charge.
+    const pickup = await post(reg, "/orders", payload({ fulfilment: "pickup", method: "upi", expectedTotal: 1650 }));
+    assert.equal(pickup.status, 201);
+    assert.equal(pickup.body.order.fulfilment, "pickup");
+    assert.equal(pickup.body.order.totals.delivery, 0);
+    assert.equal(pickup.body.order.deliveryPending, false);
+    // A delivery request is accepted only as "pay after the mill confirms", with no delivery charge added.
+    assert.equal((await post(reg, "/orders", payload({ fulfilment: "delivery", method: "upi", expectedTotal: 1650 }))).status, 400);
+    const enquiry = await post(reg, "/orders", payload({ fulfilment: "delivery", method: "later", expectedTotal: 1650 }));
+    assert.equal(enquiry.status, 201);
+    assert.equal(enquiry.body.order.deliveryPending, true);
+    assert.equal(enquiry.body.order.totals.delivery, 0);
+    // With delivery on, pickup is still free and delivery is charged as before.
+    await setDelivery(true);
+    const picked = await post(reg, "/orders", payload({ fulfilment: "pickup", method: "upi", expectedTotal: 1650 }));
+    assert.equal(picked.body.order.totals.delivery, 0);
+    const delivered = await post(reg, "/orders", payload({ fulfilment: "delivery", method: "upi", expectedTotal: 1700 }));
+    assert.equal(delivered.status, 201);
+    assert.equal(delivered.body.order.totals.delivery, 50);
+    assert.equal(delivered.body.order.deliveryPending, false);
+  } finally {
+    await setDelivery(true);
+  }
 });

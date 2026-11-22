@@ -33,7 +33,7 @@ export const AnnouncementBar: React.FC = () => {
         </AppLink>
         <p className="inline-flex items-center gap-2 font-medium">
           <Truck className="h-4 w-4 text-gold-400" aria-hidden="true" />
-          Free doorstep delivery on orders over ₹{free}
+          {BRAND_CONFIG.delivery.available ? `Free doorstep delivery on orders over ₹${free}` : 'Collect from our mill or order on WhatsApp'}
         </p>
       </div>
     </aside>

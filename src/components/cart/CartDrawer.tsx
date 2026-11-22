@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trash2, Plus, Minus, ShoppingBag, MessageCircle, ArrowRight, Truck, RotateCcw, ShieldCheck } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { BRAND_CONFIG, fssaiLabel, openWhatsApp } from '../../config/brandConfig';
+import { BRAND_CONFIG, openWhatsApp } from '../../config/brandConfig';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
 import { RollingNumber } from '../fx/RollingNumber';
@@ -21,6 +21,7 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
     isFreeDelivery,
     deliveryCharge,
     amountForFreeDelivery,
+    deliveryAvailable,
     grandTotal,
     getQuickOrderUrl,
     lastOrder,
@@ -47,7 +48,11 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
           <div className="border-b border-line bg-cream px-5 py-4">
             <p className="flex items-center gap-2 text-[15px] font-medium text-forest-800">
               <Truck className="h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" />
-              {isFreeDelivery ? (
+              {!deliveryAvailable ? (
+                <span>
+                  <strong>Collect from our mill</strong>, or request delivery at checkout
+                </span>
+              ) : isFreeDelivery ? (
                 <span>
                   <strong>Free doorstep delivery</strong> on this order
                 </span>
@@ -57,7 +62,7 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
                 </span>
               )}
             </p>
-            <div
+            {deliveryAvailable && <div
               className="mt-3 h-2 overflow-hidden rounded-full bg-cream-deep"
               role="progressbar"
               aria-valuemin={0}
@@ -69,7 +74,7 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
                 className="h-full rounded-full bg-gradient-to-r from-gold-500 to-gold-400 transition-[width] duration-700 ease-out"
                 style={{ width: `${progress}%` }}
               />
-            </div>
+            </div>}
           </div>
         )}
 
@@ -175,9 +180,9 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
                 </div>
               )}
               <div className="flex justify-between text-muted">
-                <dt>Doorstep delivery</dt>
+                <dt>{deliveryAvailable ? 'Doorstep delivery' : 'Delivery'}</dt>
                 <dd className={`tabular ${isFreeDelivery ? 'font-semibold text-forest-700' : 'text-ink'}`}>
-                  {isFreeDelivery ? 'FREE' : inr(deliveryCharge)}
+                  {!deliveryAvailable ? 'Chosen at checkout' : isFreeDelivery ? 'FREE' : inr(deliveryCharge)}
                 </dd>
               </div>
               <div className="flex items-baseline justify-between border-t border-line pt-3">
@@ -202,7 +207,7 @@ export const CartDrawer: React.FC<{ onNavigate: (route: string) => void }> = ({ 
             </div>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-sm text-muted">
               <ShieldCheck className="h-4 w-4 text-gold-600" aria-hidden="true" />
-              Track your order in your account · {fssaiLabel()}
+              Track your order in your account
             </p>
           </div>
         )}

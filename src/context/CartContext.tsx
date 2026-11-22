@@ -16,6 +16,8 @@ interface CartContextType {
   totalAmount: number;
   totalMrp: number;
   totalSavings: number;
+  /** Doorstep delivery is open. Off: pickup from the mill, or a delivery request. */
+  deliveryAvailable: boolean;
   isFreeDelivery: boolean;
   /** 0 when delivery is free or the cart is empty. */
   deliveryCharge: number;
@@ -158,10 +160,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const totalSavings = Math.max(0, totalMrp - totalAmount);
 
   // Free delivery once the order reaches the threshold in BRAND_CONFIG.delivery.
-  const { freeFromOrderValue, charge } = BRAND_CONFIG.delivery;
-  const isFreeDelivery = cart.length > 0 && totalAmount >= freeFromOrderValue;
-  const deliveryCharge = cart.length === 0 || isFreeDelivery ? 0 : charge;
-  const amountForFreeDelivery = isFreeDelivery ? 0 : Math.max(0, freeFromOrderValue - totalAmount);
+  // While delivery is switched off there is no delivery charge or free-delivery goal to show.
+  const { freeFromOrderValue, charge, available: deliveryAvailable } = BRAND_CONFIG.delivery;
+  const isFreeDelivery = deliveryAvailable && cart.length > 0 && totalAmount >= freeFromOrderValue;
+  const deliveryCharge = !deliveryAvailable || cart.length === 0 || isFreeDelivery ? 0 : charge;
+  const amountForFreeDelivery = !deliveryAvailable || isFreeDelivery ? 0 : Math.max(0, freeFromOrderValue - totalAmount);
   const grandTotal = totalAmount + deliveryCharge;
 
   const getQuickOrderUrl = () =>
@@ -183,6 +186,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalAmount,
         totalMrp,
         totalSavings,
+        deliveryAvailable,
         isFreeDelivery,
         deliveryCharge,
         amountForFreeDelivery,

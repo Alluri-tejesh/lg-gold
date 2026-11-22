@@ -8,6 +8,7 @@ export const BRAND_CONFIG = {
   location: {
     address: 'VG3P+G6, Venkatadri Palem',
     city: 'Venkatadri Palem',
+    pin: '508207',
     state: 'Telangana',
     country: 'India',
     plusCode: 'VG3P+G6, Venkatadri Palem, Telangana',
@@ -25,15 +26,12 @@ export const BRAND_CONFIG = {
   },
 
   /**
-   * FSSAI food licence. The website shows "FSSAI Certified" everywhere it builds trust.
-   * Fill in the 14-digit licence number: FSSAI rules require it to be displayed by food businesses selling online.
+   * Doorstep delivery. `available` is off until the mill has logistics in place (the admin Settings page switches it
+   * on without a deploy). While it is off, customers can collect from the mill, or send a delivery request that the
+   * mill confirms on WhatsApp. Once on, delivery is free from `freeFromOrderValue`; below that, `charge` is added.
    */
-  fssai: {
-    licenseNumber: '',
-  },
-
-  /** Doorstep delivery is free once the rice in the order reaches `freeFromOrderValue`. Below that, `charge` is added. */
   delivery: {
+    available: false,
     freeFromOrderValue: 2500,
     charge: 50,
   },
@@ -63,9 +61,6 @@ export const BRAND_CONFIG = {
 /** A tap-to-call link for the main number, without spaces so every phone dials it correctly. */
 export const phoneTelHref = (): string => `tel:${BRAND_CONFIG.contact.primaryPhone.replace(/\s/g, '')}`;
 
-/** "FSSAI Certified", plus the licence number once it is filled in above. */
-export const fssaiLabel = (): string =>
-  BRAND_CONFIG.fssai.licenseNumber ? `FSSAI Lic. No. ${BRAND_CONFIG.fssai.licenseNumber}` : 'FSSAI Certified';
 
 /** Phones and tablets open the WhatsApp app directly; computers are better served by WhatsApp Web. */
 const onPhone = (): boolean =>

@@ -33,6 +33,8 @@ export async function defaultStore(dataDir = resolve("public")) {
     settings: {
       delivery: rules.delivery || { freeFromOrderValue: 2500, charge: 50 },
       cashOnDelivery: rules.cashOnDelivery ?? true,
+      // Doorstep delivery is off until the mill has logistics in place; switch it on in the admin settings.
+      deliveryAvailable: rules.deliveryAvailable ?? false,
       upiId: rules.upiId || "",
       upiPayeeName: rules.upiPayeeName || "LG Gold Rice",
       smsLogin: false,

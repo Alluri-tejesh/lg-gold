@@ -502,7 +502,13 @@ function OrderDetails({ id }: { id: string }) {
             <div className="flex justify-between text-sm">
               <dt>Delivery</dt>
               <dd>
-                {order.totals.delivery ? money(order.totals.delivery) : "Free"}
+                {order.fulfilment === "pickup"
+                  ? "Pickup · no charge"
+                  : order.deliveryPending
+                    ? "Mill will confirm"
+                    : order.totals.delivery
+                      ? money(order.totals.delivery)
+                      : "Free"}
               </dd>
             </div>
             <div className="flex justify-between border-t border-line pt-3 font-semibold text-forest-800">
@@ -526,11 +532,17 @@ function OrderDetails({ id }: { id: string }) {
           <div className="account-panel">
             <MapPin className="h-5 w-5 text-gold-700" />
             <h2 className="mt-3 font-display text-xl text-forest-800">
-              Delivering to
+              {order.fulfilment === "pickup"
+                ? "Collect from our mill"
+                : order.deliveryPending
+                  ? "Delivery requested for"
+                  : "Delivering to"}
             </h2>
             <p className="mt-3 font-semibold">{order.address.name}</p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              {formatAddress(order.address)}
+              {order.fulfilment === "pickup"
+                ? `${BRAND_CONFIG.location.address}. ${BRAND_CONFIG.contact.operatingHours}`
+                : formatAddress(order.address)}
             </p>
             <p className="mt-2 text-sm text-muted">{order.address.phone}</p>
             {order.tracking && (
