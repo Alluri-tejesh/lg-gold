@@ -126,7 +126,6 @@ export const Logo: React.FC<{ dark?: boolean; compact?: boolean; className?: str
   taglineOnPhones = true,
 }) => (
   <span className={`logo-lockup inline-flex items-center gap-3 ${className}`}>
-    <LogoMark className="w-11 h-11 shrink-0 drop-shadow-sm" />
     <span className="flex flex-col leading-none">
       <span className={`font-display font-bold text-[1.55rem] tracking-tight ${dark ? 'text-white' : 'text-forest-800'}`}>
         LG <span className={dark ? 'text-gold-400' : 'text-gold-600'}>GOLD</span>
