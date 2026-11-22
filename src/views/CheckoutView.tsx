@@ -1188,7 +1188,7 @@ const OrderPlaced: React.FC<{
               },
               {
                 t: placed.fulfilment === "pickup" ? "Collect your rice" : placed.deliveryPending ? "Delivery, if the mill can" : "Rice at your door",
-                s: placed.fulfilment === "pickup" ? "Fresh from our mill in Venkatadri Palem." : "Fresh from our mill in Venkatadri Palem.",
+                s: placed.fulfilment === "pickup" ? "Fresh from our mill in Miryalaguda." : "Fresh from our mill in Miryalaguda.",
               },
             ].map((step, i) => (
               <li key={step.t} className="flex gap-3">

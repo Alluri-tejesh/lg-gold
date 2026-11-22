@@ -267,7 +267,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate, sectio
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-cream/70">From</dt>
-                  <dd>Venkatadri Palem mill</dd>
+                  <dd>Miryalaguda mill</dd>
                 </div>
               </dl>
               <Button variant="whatsapp" size="lg" block className="mt-6" icon={<MessageCircle className="h-5 w-5" />} onClick={handleCalculatorQuote}>
@@ -287,7 +287,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigate, sectio
             dark
             eyebrow="Tonnes & truckloads"
             title="Bulk rice, straight off the mill floor"
-            intro="For distributors, institutions and large kitchens: HMT and JSR by the tonne, packed in 26kg bags and loaded at Venkatadri Palem."
+            intro="For distributors, institutions and large kitchens: HMT and JSR by the tonne, packed in 26kg bags and loaded at Miryalaguda."
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {TRUCKLOAD.map((p, i) => (

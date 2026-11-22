@@ -101,7 +101,7 @@ export const MillView: React.FC<MillViewProps> = ({ onNavigate, section }) => {
             <h2 className="mt-3 font-display text-4xl leading-tight text-forest-800 sm:text-5xl">Rooted in the soil of Telangana</h2>
             <div className="mt-6 space-y-4 text-lg leading-relaxed text-ink-soft">
               <p>
-                Our mill sits in Venkatadri Palem, in one of India&apos;s richest paddy-growing regions. We buy straight from the farmers around
+                Our mill sits in Miryalaguda, in one of India&apos;s richest paddy-growing regions. We buy straight from the farmers around
                 us, so we know where every lot comes from.
               </p>
               <p>

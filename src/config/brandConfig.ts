@@ -6,13 +6,13 @@ export const BRAND_CONFIG = {
   parentCompany: 'Sri Lakshmi Ganapathi Trading Company',
 
   location: {
-    address: 'VG3P+G6, Venkatadri Palem',
-    city: 'Venkatadri Palem',
+    address: 'VG3P+G6, Miryalaguda',
+    city: 'Miryalaguda',
     pin: '508207',
     state: 'Telangana',
     country: 'India',
-    plusCode: 'VG3P+G6, Venkatadri Palem, Telangana',
-    googleMapsUrl: 'https://maps.google.com/?q=VG3P%2BG6,+Venkatadri+Palem,+Telangana,+India',
+    plusCode: 'VG3P+G6, Miryalaguda, Telangana',
+    googleMapsUrl: 'https://maps.google.com/?q=VG3P%2BG6,+Miryalaguda,+Telangana,+India',
   },
 
   contact: {

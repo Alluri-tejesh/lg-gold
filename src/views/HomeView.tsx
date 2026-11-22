@@ -40,7 +40,7 @@ export const HomeView: React.FC<HomeViewProps> = () => {
         <GrainField className="opacity-25 lg:opacity-100" />
         <Container className="relative grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
           <div className="lg:col-span-7">
-            <Eyebrow className="fade-up">Single-origin · Venkatadri Palem, Telangana</Eyebrow>
+            <Eyebrow className="fade-up">Single-origin · Miryalaguda, Telangana</Eyebrow>
             <h1
               className="fade-up mt-5 font-display text-[2.9rem] font-medium leading-[1.1] tracking-tight lg:leading-[1.02] text-forest-800 sm:text-6xl lg:text-[4.6rem]"
               style={{ ['--d' as string]: '80ms' }}
@@ -168,7 +168,7 @@ export const HomeView: React.FC<HomeViewProps> = () => {
                 src={millPlantImage}
                 srcSet={millPlantSrcSet}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                alt="Milltec rice milling machinery at the Sri Lakshmi Ganapathi mill, Venkatadri Palem"
+                alt="Milltec rice milling machinery at the Sri Lakshmi Ganapathi mill, Miryalaguda"
                 loading="lazy"
                 className="h-72 w-full object-cover sm:h-96 lg:h-full"
               />

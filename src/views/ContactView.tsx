@@ -165,7 +165,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onNavigate }) => {
           <div className="space-y-4 lg:col-span-6">
             <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-line shadow-soft">
               <iframe
-                title="Map showing Sri Lakshmi Ganapathi Trading Company in Venkatadri Palem"
+                title="Map showing Sri Lakshmi Ganapathi Trading Company in Miryalaguda"
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(location.plusCode)}&z=14&output=embed`}
                 className="h-80 w-full border-0 lg:h-96"
                 loading="lazy"

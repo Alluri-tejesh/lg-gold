@@ -311,7 +311,7 @@ const ProductPage: React.FC<ProductDetailViewProps> = ({ productSlug, onNavigate
                 <Truck className="mt-0.5 h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" />
                 {!BRAND_CONFIG.delivery.available ? (
                   <span>
-                    <strong className="text-forest-800">Collect from our mill</strong> in Venkatadri Palem, or request delivery at checkout.
+                    <strong className="text-forest-800">Collect from our mill</strong> in Miryalaguda, or request delivery at checkout.
                   </span>
                 ) : willBeFree ? (
                   <span>
