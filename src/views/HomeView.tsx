@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, ShieldCheck, Globe, Boxes, CheckCircle2, MessageCircle, Phone, TrendingUp, Factory, Container as ContainerIcon, Store, Truck } from 'lucide-react';
 import { PRODUCTS, getProductBySlug } from '../data/products';
 import { RECIPES } from '../data/recipes';
-import { createWhatsAppUrl, fssaiLabel, phoneTelHref, BRAND_CONFIG } from '../config/brandConfig';
+import { createWhatsAppUrl, phoneTelHref, BRAND_CONFIG } from '../config/brandConfig';
 import { priceInfo, formatPriceDate } from '../data/prices';
 import { ProductCard } from '../components/common/ProductCard';
 import { RecipeCard } from '../components/common/RecipeCard';
@@ -37,18 +37,18 @@ export const HomeView: React.FC<HomeViewProps> = () => {
       <section className="relative overflow-hidden bg-cream bg-grain">
         <div aria-hidden="true" className="pointer-events-none absolute -right-40 top-10 h-[34rem] w-[34rem] rounded-full bg-gold-300/40 blur-3xl" />
         {/* Rice grains that drift and part around the cursor */}
-        <GrainField />
+        <GrainField className="opacity-25 lg:opacity-100" />
         <Container className="relative grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
           <div className="lg:col-span-7">
             <Eyebrow className="fade-up">Single-origin · Venkatadri Palem, Telangana</Eyebrow>
             <h1
-              className="fade-up mt-5 font-display text-[2.9rem] font-medium leading-[1.02] tracking-tight text-forest-800 sm:text-6xl lg:text-[4.6rem]"
+              className="fade-up mt-5 font-display text-[2.9rem] font-medium leading-[1.1] tracking-tight lg:leading-[1.02] text-forest-800 sm:text-6xl lg:text-[4.6rem]"
               style={{ ['--d' as string]: '80ms' }}
             >
               Pure Telangana rice,{' '}
               <span className="relative whitespace-nowrap italic text-gold-600">
                 straight
-                <svg aria-hidden="true" viewBox="0 0 200 12" className="absolute -bottom-2 left-0 w-full" preserveAspectRatio="none">
+                <svg aria-hidden="true" viewBox="0 0 200 12" className="absolute -bottom-1 left-0 h-2 w-full lg:-bottom-2 lg:h-3" preserveAspectRatio="none">
                   <path d="M2 9 C 50 2, 150 2, 198 8" fill="none" stroke="#C9A227" strokeWidth="3" strokeLinecap="round" className="[stroke-dasharray:220] [stroke-dashoffset:220] animate-[draw_1.2s_0.7s_ease-out_forwards]" />
                 </svg>
               </span>{' '}
@@ -66,10 +66,10 @@ export const HomeView: React.FC<HomeViewProps> = () => {
                 Wholesale &amp; export rates
               </AppLink>
             </div>
-            <ul className="fade-up mt-8 grid grid-cols-2 gap-x-6 gap-y-3 text-[15px] font-medium text-ink-soft sm:flex sm:flex-wrap" style={{ ['--d' as string]: '350ms' }}>
-              {['FSSAI certified', '12+ months aged', '100% Sortex sorted', 'Direct from the mill'].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" /> {t}
+            <ul className="fade-up mt-8 grid grid-cols-1 gap-x-6 gap-y-3 text-[15px] font-medium text-ink-soft sm:flex sm:flex-wrap" style={{ ['--d' as string]: '350ms' }}>
+              {['12+ months aged', '100% Sortex sorted', 'Direct from the mill'].map((t) => (
+                <li key={t} className="flex items-start gap-2 leading-snug">
+                  <CheckCircle2 className="mt-px h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" /> <span>{t}</span>
                 </li>
               ))}
             </ul>
@@ -302,8 +302,8 @@ export const HomeView: React.FC<HomeViewProps> = () => {
       <section className="border-t border-line bg-paper">
         <Container className="grid grid-cols-2 gap-6 py-8 text-[15px] text-ink-soft lg:grid-cols-4">
           {[
-            { icon: ShieldCheck, text: fssaiLabel() },
-            { icon: Truck, text: `Free delivery over ₹${BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN')}` },
+            { icon: ShieldCheck, text: 'Aged 12+ months, Sortex cleaned' },
+            { icon: Truck, text: BRAND_CONFIG.delivery.available ? `Free delivery over ₹${BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN')}` : 'Collect from our mill' },
             { icon: Boxes, text: 'Wholesale & bulk supply' },
             { icon: Globe, text: 'Export orders accepted' },
           ].map(({ icon: Icon, text }) => (

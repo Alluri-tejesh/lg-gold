@@ -28,7 +28,6 @@ Everything below is placeholder or inconsistent today. Items are ordered by how 
 
 | Claim | Where |
 | --- | --- |
-| "LG GOLD is a registered brand" (needs a trademark registration number or removal) | `src/components/layout/Footer.tsx` |
 | "Japanese Sortex", "30,000 frames per second", "Milltec units 12, 14, 15" | `src/views/QualityView.tsx`, `src/data/trustPoints.ts` |
 | Ratings 4.9 with 148 and 119 reviews | `src/data/products.ts` (`rating`, `reviewCount`) |
 | Customer reviews (names, cities, "6 containers monthly") | `src/data/trustPoints.ts` (`REVIEWS`) |

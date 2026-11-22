@@ -30,7 +30,7 @@ import { GrainComparison } from '../components/common/GrainComparison';
 import { CookingCalculator } from '../components/common/CookingCalculator';
 import { perKg } from '../components/common/ProductCard';
 import { Reveal } from '../components/common/motion';
-import { BRAND_CONFIG, createWhatsAppUrl, fssaiLabel, getProductWhatsAppMessage, openWhatsApp } from '../config/brandConfig';
+import { BRAND_CONFIG, createWhatsAppUrl, getProductWhatsAppMessage, openWhatsApp } from '../config/brandConfig';
 import { priceInfo, formatPriceDate } from '../data/prices';
 import { navigate, setPageMeta } from '../router';
 import { Container, Section, SectionHeader, Badge } from '../components/ui/Section';
@@ -228,9 +228,6 @@ const ProductPage: React.FC<ProductDetailViewProps> = ({ productSlug, onNavigate
             </div>
             {product.subTitle && <p className="mt-3 text-lg text-muted">{product.subTitle}</p>}
             <div className="mt-4 flex flex-wrap gap-2">
-              <Badge tone="gold" icon={<ShieldCheck className="h-3.5 w-3.5" />}>
-                {fssaiLabel()}
-              </Badge>
               {detailed && <Badge tone="cream">100% Sortex cleaned</Badge>}
               {product.grainSpecs.aging && <Badge tone="cream">{product.grainSpecs.aging}</Badge>}
             </div>
@@ -312,7 +309,11 @@ const ProductPage: React.FC<ProductDetailViewProps> = ({ productSlug, onNavigate
             <ul className="mt-5 space-y-2.5 text-[15px] text-ink-soft">
               <li className="flex items-start gap-3">
                 <Truck className="mt-0.5 h-5 w-5 shrink-0 text-gold-600" aria-hidden="true" />
-                {willBeFree ? (
+                {!BRAND_CONFIG.delivery.available ? (
+                  <span>
+                    <strong className="text-forest-800">Collect from our mill</strong> in Venkatadri Palem, or request delivery at checkout.
+                  </span>
+                ) : willBeFree ? (
                   <span>
                     <strong className="text-forest-800">Free doorstep delivery</strong> on this order.
                   </span>

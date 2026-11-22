@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Globe2, Boxes, Store, ChefHat, Building2, Tag, MessageCircle, CheckCircle2, FlaskConical, FileCheck2, Ship } from 'lucide-react';
+import { Globe2, Boxes, Store, ChefHat, Building2, Tag, MessageCircle, CheckCircle2, FlaskConical, Ship } from 'lucide-react';
 import { ExportEnquiryForm } from '../types';
-import { createEnquiryWhatsAppUrl, createWhatsAppUrl, openWhatsApp, fssaiLabel } from '../config/brandConfig';
+import { createEnquiryWhatsAppUrl, createWhatsAppUrl, openWhatsApp } from '../config/brandConfig';
 import { getProductBySlug } from '../data/products';
 import { EXPORT_JOURNEY_STEPS, WHO_WE_SUPPLY_TARGETS, FAQS } from '../data/trustPoints';
 import { QuoteSuccessModal } from '../components/common/QuoteSuccessModal';
@@ -146,9 +146,6 @@ export const ExportView: React.FC<ExportViewProps> = ({ onNavigate }) => {
             )}
           </div>
           <div className="mt-6 flex flex-wrap gap-2">
-            <Badge tone="gold" icon={<FileCheck2 className="h-3.5 w-3.5" />}>
-              {fssaiLabel()}
-            </Badge>
             <Badge tone="cream">Phytosanitary certificate</Badge>
             <Badge tone="cream">Fumigation certificate</Badge>
             <Badge tone="cream">Certificate of analysis on request</Badge>

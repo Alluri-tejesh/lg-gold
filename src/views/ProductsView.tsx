@@ -1,8 +1,8 @@
 import React from 'react';
-import { ArrowRight, Truck, ShieldCheck, MessageCircle } from 'lucide-react';
+import { ArrowRight, Truck, MessageCircle } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
 import { priceInfo, formatPriceDate } from '../data/prices';
-import { BRAND_CONFIG, fssaiLabel } from '../config/brandConfig';
+import { BRAND_CONFIG } from '../config/brandConfig';
 import { ProductCard } from '../components/common/ProductCard';
 import { GrainComparison } from '../components/common/GrainComparison';
 import { RiceFinder } from '../components/common/RiceFinder';
@@ -32,10 +32,10 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ onNavigate }) => {
       <div className="border-b border-line bg-paper">
         <Container className="flex flex-wrap gap-x-8 gap-y-2 py-4 text-[15px] text-ink-soft">
           <span className="inline-flex items-center gap-2">
-            <Truck className="h-5 w-5 text-gold-600" aria-hidden="true" /> Free delivery over ₹{BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN')}
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-gold-600" aria-hidden="true" /> {fssaiLabel()}
+            <Truck className="h-5 w-5 text-gold-600" aria-hidden="true" />{' '}
+            {BRAND_CONFIG.delivery.available
+              ? `Free delivery over ₹${BRAND_CONFIG.delivery.freeFromOrderValue.toLocaleString('en-IN')}`
+              : 'Collect from our mill'}
           </span>
           <span className="inline-flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-gold-600" aria-hidden="true" /> Orders saved to your account

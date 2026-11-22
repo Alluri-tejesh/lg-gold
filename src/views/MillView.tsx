@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Sprout, Wind, Thermometer, ScanEye, Hourglass, PackageCheck, HeartHandshake, ShieldCheck, Globe2, FileCheck2, MessageCircle, ArrowRight } from 'lucide-react';
-import { BRAND_CONFIG, createWhatsAppUrl, fssaiLabel } from '../config/brandConfig';
+import { BRAND_CONFIG, createWhatsAppUrl } from '../config/brandConfig';
 import { millPlantImage, millPlantSrcSet } from '../assets';
 import { Reveal, CountUp, useInView } from '../components/common/motion';
 import { PageHero } from '../components/ui/PageHero';
@@ -122,7 +122,6 @@ export const MillView: React.FC<MillViewProps> = ({ onNavigate, section }) => {
               { label: 'Company', value: BRAND_CONFIG.parentCompany },
               { label: 'Brand', value: 'LG Gold' },
               { label: 'Mill', value: `${BRAND_CONFIG.location.city}, ${BRAND_CONFIG.location.state}` },
-              { label: 'Food safety', value: fssaiLabel() },
             ].map((f) => (
               <div key={f.label} className="rounded-2xl bg-cream p-4 ring-1 ring-line">
                 <dt className="text-[13px] font-semibold uppercase tracking-[0.12em] text-muted">{f.label}</dt>

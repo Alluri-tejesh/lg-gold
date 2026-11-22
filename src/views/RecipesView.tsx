@@ -176,7 +176,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onNavigate }) => {
           <h2 className="sr-only">Recipes</h2>
           {results.length > 0 ? (
             <>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {results.slice(0, visible).map((r, i) => (
                   <Reveal key={r.id} delay={(i % PAGE) * 40} className="h-full">
                     <RecipeCard recipe={r} />

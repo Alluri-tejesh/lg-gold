@@ -1,7 +1,6 @@
 import React from 'react';
-import { MapPin, Phone, Mail, MessageCircle, Clock, ShieldCheck, ArrowUpRight } from 'lucide-react';
-import { BRAND_CONFIG, createWhatsAppUrl, fssaiLabel, phoneTelHref } from '../../config/brandConfig';
-import { LogoSeal } from '../ui/Logo';
+import { MapPin, Phone, Mail, MessageCircle, Clock, ArrowUpRight } from 'lucide-react';
+import { BRAND_CONFIG, createWhatsAppUrl, phoneTelHref } from '../../config/brandConfig';
 import { AppLink } from '../ui/AppLink';
 import { buttonClass } from '../ui/Button';
 
@@ -70,17 +69,12 @@ export const Footer: React.FC = () => {
       <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-12 lg:px-8">
         <div className="lg:col-span-3">
           <div className="flex items-center gap-4">
-            <LogoSeal className="h-24 w-24 shrink-0 drop-shadow-[0_6px_18px_rgb(0_0_0/0.35)]" />
             <span className="font-display text-[1.7rem] font-bold leading-none tracking-tight text-white">
               LG <span className="text-gold-400">GOLD</span>
             </span>
           </div>
           <p className="mt-5 max-w-sm leading-relaxed text-cream/70">
             Single-origin HMT and JSR rice, aged 12 months or more and Sortex cleaned at our own mill in Venkatadri Palem, Telangana.
-          </p>
-          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/8 px-4 py-2 text-sm font-semibold text-gold-300 ring-1 ring-white/10">
-            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-            {fssaiLabel()}
           </p>
         </div>
 
@@ -142,7 +136,7 @@ export const Footer: React.FC = () => {
           <p>
             © {year} {BRAND_CONFIG.parentCompany}. All rights reserved.
           </p>
-          <p>LG GOLD™ is a brand of {BRAND_CONFIG.parentCompany}.</p>
+          <p>LG GOLD is a brand of {BRAND_CONFIG.parentCompany}.</p>
         </div>
       </div>
     </footer>

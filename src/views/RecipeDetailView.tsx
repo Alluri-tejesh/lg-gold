@@ -169,7 +169,7 @@ const RecipePage: React.FC<RecipeDetailViewProps> = ({ recipeSlug, onNavigate })
 
       {/* Hero */}
       <section className="bg-paper">
-        <Container className="grid items-center gap-10 py-8 lg:grid-cols-2 lg:py-12">
+        <Container className="grid grid-cols-1 items-center gap-10 py-8 lg:grid-cols-2 lg:py-12">
           <div>
             <div className="flex flex-wrap gap-2">
               {recipe.categories.slice(0, 4).map((c) => (
@@ -215,9 +215,9 @@ const RecipePage: React.FC<RecipeDetailViewProps> = ({ recipeSlug, onNavigate })
       </section>
 
       <Section tone="cream" tight>
-        <Container className="grid gap-8 lg:grid-cols-12">
+        <Container className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Ingredients */}
-          <aside className="lg:col-span-5">
+          <aside className="min-w-0 lg:col-span-5">
             <div className="rounded-3xl bg-white p-6 ring-1 ring-line shadow-soft lg:sticky lg:top-24">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-display text-3xl text-forest-800">Ingredients</h2>
@@ -263,7 +263,7 @@ const RecipePage: React.FC<RecipeDetailViewProps> = ({ recipeSlug, onNavigate })
               </ul>
 
               {/* The rice in this recipe */}
-              <div className="no-print mt-6 flex items-center gap-4 rounded-2xl bg-forest-800 p-4 text-cream">
+              <div className="no-print mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-2xl bg-forest-800 p-4 text-cream">
                 <img
                   src={product.images.primary}
                   alt=""
@@ -272,11 +272,11 @@ const RecipePage: React.FC<RecipeDetailViewProps> = ({ recipeSlug, onNavigate })
                 />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-400">Made with</p>
-                  <AppLink to="product-detail" param={product.slug} className="block truncate font-display text-xl text-white hover:underline">
+                  <AppLink to="product-detail" param={product.slug} className="block font-display text-xl leading-tight text-white hover:underline">
                     {product.name}
                   </AppLink>
                 </div>
-                <Button variant="gold" size="sm" icon={<ShoppingBag className="h-4 w-4" />} onClick={(e) => {
+                <Button variant="gold" size="sm" className="w-full sm:w-auto" icon={<ShoppingBag className="h-4 w-4" />} onClick={(e) => {
                     addToCart(product, '26kg Bag', 1);
                     flyToCart(e.currentTarget);
                   }}>
@@ -350,7 +350,7 @@ const RecipePage: React.FC<RecipeDetailViewProps> = ({ recipeSlug, onNavigate })
                 All recipes <ArrowRight className="h-4 w-4" />
               </AppLink>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <RecipeCard key={r.id} recipe={r} />
               ))}

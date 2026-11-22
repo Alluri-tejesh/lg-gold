@@ -113,7 +113,7 @@ const META: Record<string, { title: string; description: string }> = {
   home: {
     title: SITE,
     description:
-      'LG Gold by Sri Lakshmi Ganapathi Trading Company: aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export. FSSAI certified.',
+      'LG Gold by Sri Lakshmi Ganapathi Trading Company: aged, Sortex-cleaned HMT and JSR rice in 26kg bags for homes, wholesale, bulk and export.',
   },
   products: {
     title: `Buy HMT & JSR Rice, 26kg Bags | ${SITE}`,

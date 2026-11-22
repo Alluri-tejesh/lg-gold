@@ -26,7 +26,7 @@ const PAGES = [
   { title: 'Wholesale supply', meta: 'Trade rates for shops, hotels and caterers', route: 'wholesale', words: 'wholesale trade bulk shop retailer supermarket hotel catering' },
   { title: 'Truckloads & bulk', meta: 'Tonnes and truckloads', route: 'bulk', words: 'bulk tonnes ton truck lorry' },
   { title: 'Export enquiries', meta: '20ft and 40ft containers, FOB and CIF', route: 'export', words: 'export container fcl fob cif international import' },
-  { title: 'Quality process', meta: 'Sortex cleaning, ageing and packing', route: 'quality', words: 'quality sortex aged ageing moisture fssai process mill' },
+  { title: 'Quality process', meta: 'Sortex cleaning, ageing and packing', route: 'quality', words: 'quality sortex aged ageing moisture process mill' },
   { title: 'Our mill', meta: 'Sri Lakshmi Ganapathi Trading Company', route: 'about', words: 'about company mill family history story' },
   { title: 'Contact & directions', meta: 'Phone, WhatsApp, map and hours', route: 'contact', words: 'contact phone call whatsapp address map directions hours location' },
   { title: 'All products & prices', meta: 'Today’s rates for every pack', route: 'products', words: 'products price rate buy shop 26kg bag' },
