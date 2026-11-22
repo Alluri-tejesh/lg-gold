@@ -17,6 +17,7 @@ export const ROUTES = [
   'bulk',
   'quality',
   'about',
+  'mill',
   'contact',
   'checkout',
   'admin',
@@ -133,19 +134,23 @@ const META: Record<string, { title: string; description: string }> = {
   },
   bulk: {
     title: `Bulk Rice by the Truckload | ${SITE}`,
-    description: 'Bulk HMT and JSR rice by the tonne, dispatched in 26kg bags straight from the mill at Venkatadri Palem, Telangana.',
+    description: 'Bulk HMT and JSR rice by the tonne, dispatched in 26kg bags straight from the mill at Miryalaguda, Telangana.',
   },
   quality: {
     title: `Our Quality Process: Sortex Cleaned, 12+ Months Aged | ${SITE}`,
     description: 'How LG Gold rice is milled, optically sorted, aged and packed at our Telangana mill.',
   },
   about: {
+    title: `Our Journey Since 1996: Sri Lakshmi Ganapathi Trading Company | ${SITE}`,
+    description: 'From a small rava mill in Miryalaguda in 1996 to the high-tech rice mill behind LG Gold, and the Managing Directors who built it.',
+  },
+  mill: {
     title: `Our Mill: Sri Lakshmi Ganapathi Trading Company | ${SITE}`,
-    description: 'The mill behind LG Gold rice in Venkatadri Palem, Telangana, and how every grain is selected, sorted, aged and packed.',
+    description: 'The mill behind LG Gold rice in Miryalaguda, Telangana, and how every grain is selected, sorted, aged and packed.',
   },
   contact: {
     title: `Contact the Mill | ${SITE}`,
-    description: 'Call, WhatsApp or visit Sri Lakshmi Ganapathi Trading Company in Venkatadri Palem, Telangana.',
+    description: 'Call, WhatsApp or visit Sri Lakshmi Ganapathi Trading Company in Miryalaguda, Telangana.',
   },
   checkout: { title: `Checkout | ${SITE}`, description: '' },
   admin: { title: `Admin | ${SITE}`, description: '' },

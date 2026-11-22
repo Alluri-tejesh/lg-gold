@@ -26,7 +26,8 @@ const COLUMNS: { title: string; links: { label: string; to: string; param?: stri
   {
     title: 'Company',
     links: [
-      { label: 'Our mill', to: 'about' },
+      { label: 'Our journey', to: 'about' },
+      { label: 'Our mill', to: 'mill' },
       { label: 'Quality process', to: 'quality' },
       { label: 'Contact & directions', to: 'contact' },
     ],
@@ -74,7 +75,7 @@ export const Footer: React.FC = () => {
             </span>
           </div>
           <p className="mt-5 max-w-sm leading-relaxed text-cream/70">
-            Single-origin HMT and JSR rice, aged 12 months or more and Sortex cleaned at our own mill in Venkatadri Palem, Telangana.
+            Single-origin HMT and JSR rice, aged 12 months or more and Sortex cleaned at our own mill in Miryalaguda, Telangana.
           </p>
         </div>
 

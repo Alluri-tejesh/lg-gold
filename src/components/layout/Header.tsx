@@ -18,7 +18,8 @@ export const NAV_LINKS = [
   { label: 'Wholesale', route: 'wholesale', match: ['wholesale', 'bulk'] },
   { label: 'Export', route: 'export', match: ['export'] },
   { label: 'Recipes', route: 'recipes', match: ['recipes', 'recipe-detail'] },
-  { label: 'Our Mill', route: 'about', match: ['about', 'quality'] },
+  { label: 'Our Journey', route: 'about', match: ['about'] },
+  { label: 'Our Mill', route: 'mill', match: ['mill', 'quality'] },
   { label: 'Contact', route: 'contact', match: ['contact'] },
 ];
 

@@ -7,3 +7,8 @@ import jsrBagImage from './images/jsr-bag-front.webp';
 export const millPlantSrcSet = `${millPlantImageSmall} 900w, ${millPlantImage} 1376w`;
 
 export { millPlantImage, millPlantImageSmall, jsrBagImage };
+
+// Managing Directors, resized for the Our Journey page.
+import ramMohanRaoPhoto from './images/md-ram-mohan-rao.jpg';
+import kasiRamaRaoPhoto from './images/md-kasi-rama-rao.jpg';
+export { ramMohanRaoPhoto, kasiRamaRaoPhoto };

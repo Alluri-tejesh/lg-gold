@@ -31,6 +31,7 @@ const pages = {
   'recipe-detail': () => import('./views/RecipeDetailView'),
   export: () => import('./views/ExportView'),
   wholesale: () => import('./views/WholesaleView'),
+  about: () => import('./views/AboutView'),
   mill: () => import('./views/MillView'),
   contact: () => import('./views/ContactView'),
   checkout: () => import('./views/CheckoutView'),
@@ -43,6 +44,7 @@ const RecipesView = named(pages.recipes, 'RecipesView');
 const RecipeDetailView = named(pages['recipe-detail'], 'RecipeDetailView');
 const ExportView = named(pages.export, 'ExportView');
 const WholesaleView = named(pages.wholesale, 'WholesaleView');
+const AboutView = named(pages.about, 'AboutView');
 const MillView = named(pages.mill, 'MillView');
 const ContactView = named(pages.contact, 'ContactView');
 const CheckoutView = named(pages.checkout, 'CheckoutView');
@@ -133,11 +135,12 @@ export function AppContent() {
           {loc.route === 'recipes' && <RecipesView onNavigate={go} />}
           {loc.route === 'recipe-detail' && <RecipeDetailView key={loc.param} recipeSlug={loc.param || ''} onNavigate={go} />}
           {loc.route === 'export' && <ExportView onNavigate={go} />}
-          {/* Bulk, Quality and About were merged into Wholesale and Our Mill; old links land on the right section. */}
+          {/* Bulk and Quality were merged into Wholesale and Our Mill; old links land on the right section. */}
           {(loc.route === 'wholesale' || loc.route === 'bulk') && (
             <WholesaleView onNavigate={go} section={loc.route === 'bulk' ? 'truckloads' : undefined} />
           )}
-          {(loc.route === 'about' || loc.route === 'quality') && (
+          {loc.route === 'about' && <AboutView onNavigate={go} />}
+          {(loc.route === 'mill' || loc.route === 'quality') && (
             <MillView onNavigate={go} section={loc.route === 'quality' ? 'process' : undefined} />
           )}
           {loc.route === 'contact' && <ContactView onNavigate={go} />}
